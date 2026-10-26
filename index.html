@@ -34,13 +34,13 @@
 .index{position:absolute;left:12px;top:12px;background:#ffffffed;color:#47556b;padding:6px 9px;border-radius:10px;font-size:12px;font-weight:800}
 .content{display:flex;flex:1;flex-direction:column;padding:16px 17px 17px}
 .name-line{display:flex;align-items:baseline;justify-content:space-between;gap:8px}.name-line h2{font-size:20px;letter-spacing:-.05em;margin:0;font-weight:850}
-.age{font-size:13px;color:#718099;white-space:nowrap}.occupation{font-size:13px;color:#627188;margin:8px 0 20px;line-height:1.5;word-break:keep-all}
+.age{font-size:13px;color:#718099;white-space:nowrap}.occupation{font-size:13px;color:#485b74;margin:10px 0 4px;line-height:1.55;word-break:keep-all}.housing{font-size:12px;color:#738196;margin:0 0 20px;line-height:1.55;word-break:keep-all}
 .card-foot{margin-top:auto;display:grid;gap:9px}.visited{color:#8390a2;font-size:11px}.visited.yes{color:#287e66}
 .open{display:block;background:#5565de;color:#fff;text-decoration:none;text-align:center;border-radius:11px;padding:12px;font-size:14px;font-weight:850}
 .open:hover,.open:focus-visible{background:#404fc2}.foot{border-top:1px solid #e5eaf1;text-align:center;padding:24px 16px;font-size:12px;line-height:1.8;color:#778498}
 .empty{grid-column:1/-1;text-align:center;color:#6b7890;padding:65px 10px}
 @media(max-width:920px){.cards{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:640px){.hero{padding:38px 0 24px}.hero p{font-size:14px}.how{grid-template-columns:1fr}.cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.content{padding:12px}.name-line h2{font-size:18px}.age{font-size:12px}.occupation{min-height:40px}.tag{display:none}.open{font-size:13px}.index{top:8px;left:8px}}
+@media(max-width:640px){.hero{padding:38px 0 24px}.hero p{font-size:14px}.how{grid-template-columns:1fr}.cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.content{padding:12px}.name-line h2{font-size:18px}.age{font-size:12px}.occupation{min-height:0}.housing{min-height:40px}.tag{display:none}.open{font-size:13px}.index{top:8px;left:8px}}
 @media(max-width:365px){.cards{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){.card,.profile{transition:none}}
 </style>
@@ -48,14 +48,14 @@
 <body>
 <header class="top"><div class="wrap nav"><div class="brand">생각을 여는 <span>인터뷰</span></div><span class="tag">5학년 국어 · 토의 준비</span></div></header>
 <main class="wrap">
-<section class="hero"><span class="eyebrow">강릉 시민 27명과 인터뷰</span><h1>우리 동네 밤의 소음,<br><em>사람들의 이야기를 들어 볼까요?</em></h1><p>인터뷰할 사람을 선택해 궁금한 점을 직접 물어보세요.<br>답변에서 알게 된 내용을 바탕으로 나의 생각을 정리해 보세요.</p></section>
+<section class="hero"><span class="eyebrow">강릉 시민 27명과 인터뷰</span><h1>우리 동네 밤의 소음,<br><em>사람들의 이야기를 들어 볼까요?</em></h1><p>인터뷰할 사람을 선택해 궁금한 점을 직접 물어보세요.<br>직업과 주거 형태를 참고해 시민을 선택하고, 답변에서 알게 된 내용을 바탕으로 나의 생각을 정리해 보세요.</p></section>
 <section class="how" aria-label="활동 안내"><article><strong><span class="number">1</span> 인터뷰 상대 고르기</strong><p>아래 27개의 인터뷰 중 하나를 선택합니다.</p></article><article><strong><span class="number">2</span> 질문하고 더 묻기</strong><p>상대의 답변에 따라 궁금한 내용을 이어서 질문합니다.</p></article><article><strong><span class="number">3</span> 검토하고 기록하기</strong><p>알게 된 사실과 의견을 구분하고, 토의에 필요한 내용을 정리합니다.</p></article></section>
 <div class="notice">이곳의 인물은 모두 학습을 위해 만든 가상 시민입니다. 인터뷰 답변에 나온 사실은 다른 자료와 비교해 확인하세요. 인터뷰는 Google Gemini에서 열립니다.</div>
-<section aria-label="인터뷰 목록"><div class="panel"><div class="panel-left"><input id="search" class="search" type="search" placeholder="이름·나이·직업 검색" aria-label="인터뷰 인물 검색"><span id="counter" class="counter" aria-live="polite"></span></div><div class="actions"><button class="secondary" id="random" type="button">🎲 무작위 선택</button><button class="secondary" id="reset" type="button">방문 기록 초기화</button></div></div><div id="cards" class="cards"></div></section>
+<section aria-label="인터뷰 목록"><div class="panel"><div class="panel-left"><input id="search" class="search" type="search" placeholder="이름·나이·직업·주거 형태 검색" aria-label="인터뷰 인물 검색"><span id="counter" class="counter" aria-live="polite"></span></div><div class="actions"><button class="secondary" id="random" type="button">🎲 무작위 선택</button><button class="secondary" id="reset" type="button">방문 기록 초기화</button></div></div><div id="cards" class="cards"></div></section>
 </main><footer class="foot">생각을 여는 인터뷰 · 5학년 국어 토의 활동<br>방문 표시는 이 기기의 브라우저에만 저장됩니다.</footer>
 <script>
 const links=["https://gemini.google.com/gem/1cn_Gxn3kgyrSoc-jeCmyoFYBppcX2gQh?usp=sharing","https://gemini.google.com/gem/1F9p4GrUr8fHR1Jq7NAMZIm1ZQtWw1VRF?usp=sharing","https://gemini.google.com/gem/1vby9qDGjTIOWfjBDAwjRSOhPNJC-Zhtx?usp=sharing","https://gemini.google.com/gem/1tVpsqcRptHQb2jbww2PN5eJq2nSooAA4?usp=sharing","https://gemini.google.com/gem/1BJp1EIXAKw_0HMfXZNcKx2oK0yeSLRDj?usp=sharing","https://gemini.google.com/gem/1bYP7xbWjrHzDsH-EmacqlGxUfq7zxltC?usp=sharing","https://gemini.google.com/gem/1r_6iO63PgKLnxPPitxTc_ESAf0mY1gMz?usp=sharing","https://gemini.google.com/gem/1jtpSogrl48TmEKXWUXaJ2neLjR_p2POn?usp=sharing","https://gemini.google.com/gem/17FvtC1m6ALNhEYD8S0ECm_NqOVoPkqaj?usp=sharing","https://gemini.google.com/gem/1w9gHHfUcOIRhMqnx_wkBwid4TZuG0hJt?usp=sharing","https://gemini.google.com/gem/1s25zGceTVRwAZOkfwEz7oE0E11mwl_d6?usp=sharing","https://gemini.google.com/gem/1NtxiCNROwVjyY6iwK2r_pYofrawhgpJI?usp=sharing","https://gemini.google.com/gem/1hM4m0DdXB7tHwo2wieEzD_bglUTnE6FX?usp=sharing","https://gemini.google.com/gem/1iTFJP2Nwt55FoXY_Phr4qGMDb74KimV_?usp=sharing","https://gemini.google.com/gem/1tbLz0gRNHc5CrVqjZcK7-IDSEI1qWOcB?usp=sharing","https://gemini.google.com/gem/1FVJW5G85ARseaV5juCquuonEC3_i5abf?usp=sharing","https://gemini.google.com/gem/1hsygVLJStlRM8o202XwWpAOYtT4EEvWB?usp=sharing","https://gemini.google.com/gem/1yVU8h6kDZu3MaJvZg8jHM5PrcufsKyIn?usp=sharing","https://gemini.google.com/gem/1t_WY2sNhX29WhunH0FYzeR5GJe-c78br?usp=sharing","https://gemini.google.com/gem/140oaMIkIGfjOFzAfYxTB0Zdi9f8Xj5CS?usp=sharing","https://gemini.google.com/gem/1uG9C2_gc-pwY73bKOXQSkWOFUBOZ0cNB?usp=sharing","https://gemini.google.com/gem/1LJV3q57KuX7roK0L1kKiRVTkxt73e6GS?usp=sharing","https://gemini.google.com/gem/1GNZB_-ZCFg-BRNXAU1GmZu6ePlV5va-Q?usp=sharing","https://gemini.google.com/gem/12qnH5Z7WlkvbjOJiojz3IC3Cs_vIX8VV?usp=sharing","https://gemini.google.com/gem/1I_SjSwl-WapnsizTOdS7-E_nUlzFbbgc?usp=sharing","https://gemini.google.com/gem/1GdrT4omzYWeJ67eKQwJUVCimWoJXmh7D?usp=sharing","https://gemini.google.com/gem/1RcXk870tTe1DSnOy6tvBZn4nP24ju4Fo?usp=sharing"];
-const people=[["김하늘",38,"주택가 주민 · 자녀 양육"],["박정호",67,"주택가 장기 거주 주민"],["이수진",31,"교대근무 직장인"],["오세훈",45,"지역 주민"],["한유진",29,"원룸 거주 주민"],["최서연",43,"공동주택 거주 주민"],["최민석",42,"음식점 운영자"],["정은지",35,"디저트·음료 가게 운영자"],["김도현",51,"지역 상가 상인"],["윤지혜",27,"야간 매장 직원"],["강도윤",24,"오토바이 출퇴근 직장인"],["이준호",39,"야간 배송 종사자"],["배지훈",76,"도로 인근 장기 거주 주민"],["정다은",14,"강릉 여행 중인 중학생"],["박소영",48,"강릉 방문 관광객"],["남현우",68,"강릉 방문객"],["송미란",64,"지역 주민"],["임태호",17,"고등학생"],["조현숙",72,"주택가 장기 거주 주민"],["신재원",36,"다가구주택 거주 주민"],["서민아",44,"숙박업소 운영자"],["문태식",59,"야간 경비 근무자"],["유채린",16,"고등학교 1학년 학생"],["이보람",36,"아파트 거주 · 자녀 양육"],["정영택",74,"아파트 장기 거주 주민"],["고은솔",20,"빌라 거주 대학생"],["장미경",58,"빌라 거주 · 자영업"]];
+const people=[["김하늘",38,"자녀를 돌보며 생활하는 주택가 주민","주택가 주택 · 세부 유형은 면담에서 확인"],["박정호",67,"오랫동안 같은 동네에서 생활한 주민","주택가 주택 · 세부 유형은 면담에서 확인"],["이수진",31,"교대근무 직장인 · 근무시간이 일정하지 않음","거주 형태는 면담에서 확인"],["오세훈",45,"강릉에 거주하며 일상을 보내는 지역 주민","거주 형태와 직업은 면담에서 확인"],["한유진",29,"원룸에서 생활하는 1인 가구 주민","원룸"],["최서연",43,"공동주택에서 생활하는 주민","공동주택 · 세부 유형은 면담에서 확인"],["최민석",42,"지역 음식점을 운영하는 자영업자","거주 형태는 면담에서 확인"],["정은지",35,"디저트·음료 가게를 운영하는 자영업자","거주 형태는 면담에서 확인"],["김도현",51,"강릉 지역 상가에서 일하는 상인","거주 형태는 면담에서 확인"],["윤지혜",27,"늦은 시간 매장에서 근무하는 직원","거주 형태는 면담에서 확인"],["강도윤",24,"오토바이로 출퇴근하는 직장인","거주 형태는 면담에서 확인"],["이준호",39,"야간 시간대에 물품을 배송하는 종사자","거주 형태는 면담에서 확인"],["배지훈",76,"도로 근처에서 오래 생활한 주민","도로 인근 주택 · 세부 유형은 면담에서 확인"],["정다은",14,"강릉을 여행 중인 중학생","여행 중 · 평소 거주 형태는 면담에서 확인"],["박소영",48,"강릉에 여행을 온 방문객","여행 중 · 평소 거주 형태는 면담에서 확인"],["남현우",68,"강릉을 방문한 고령의 관광객","여행 중 · 평소 거주 형태는 면담에서 확인"],["송미란",64,"강릉에 거주하는 지역 주민","거주 형태와 직업은 면담에서 확인"],["임태호",17,"학교에 다니는 고등학생","거주 형태는 면담에서 확인"],["조현숙",72,"주택가에서 오랫동안 생활한 주민","주택가 주택 · 세부 유형은 면담에서 확인"],["신재원",36,"다가구주택에서 생활하는 주민","다가구주택"],["서민아",44,"숙박업소를 운영하는 자영업자","거주 형태는 면담에서 확인"],["문태식",59,"밤에 경비 업무를 담당하는 근무자","거주 형태는 면담에서 확인"],["유채린",16,"강릉에 거주하는 고등학교 1학년 학생","거주 형태는 면담에서 확인"],["이보람",36,"초등학생 자녀를 키우는 주민","아파트 중간층"],["정영택",74,"오래된 아파트에서 20년 넘게 살아온 주민","오래된 아파트"],["고은솔",20,"혼자 자취하며 학교에 다니는 대학생","빌라 원룸"],["장미경",58,"소규모 자영업을 하는 주민","다세대 빌라"]];
 const icons=["💬","🔎","💡","🌱","🌏","📚","🗣️","🤝","🎯","🧭","📌","📝","🧠","✨","🏫","🌿","📰","💭","🔭","🌊","🧩","📖","🎤","🏢","🏠","🏡","🏘️"];
 const palette=[["#e7ebff","#5865d9"],["#ddf6ee","#21876c"],["#fff0df","#b87529"],["#fbe5ef","#bf5781"],["#e5f3fc","#427cb4"]];
 const storeKey="interview-visited-v1";
@@ -69,7 +69,7 @@ function render(){
  list.replaceChildren();
  if(!matches.length){const empty=document.createElement("div");empty.className="empty";empty.textContent="검색 결과가 없습니다.";list.append(empty);return}
  for(const {url,n,person} of matches){
-  const [name,age,occupation]=person;
+  const [name,age,occupation,residence]=person;
   const label=String(n).padStart(2,"0");
   const card=document.createElement("article");card.className="card";
   const portrait=document.createElement("a");portrait.className="portrait-link";portrait.href=url;portrait.target="_blank";portrait.rel="noopener noreferrer";portrait.setAttribute("aria-label",name+" 인터뷰 시작");
@@ -83,12 +83,13 @@ function render(){
   const heading=document.createElement("h2");heading.textContent=name;
   const years=document.createElement("span");years.className="age";years.textContent=age+"세";nameLine.append(heading,years);
   const role=document.createElement("p");role.className="occupation";role.textContent=occupation;
+  const housing=document.createElement("p");housing.className="housing";housing.textContent="주거: "+residence;
   const foot=document.createElement("div");foot.className="card-foot";
   const status=document.createElement("span");status.className="visited"+(visited.has(n)?" yes":"");status.textContent=visited.has(n)?"✓ 방문한 인터뷰":"";
   const open=document.createElement("a");open.className="open";open.href=url;open.target="_blank";open.rel="noopener noreferrer";open.textContent="인터뷰하기 ↗";open.setAttribute("aria-label",name+"님과 인터뷰하기");
   const mark=()=>{visited.add(n);try{localStorage.setItem(storeKey,JSON.stringify([...visited]))}catch(e){}render()};
   portrait.addEventListener("click",mark);open.addEventListener("click",mark);
-  foot.append(status,open);content.append(nameLine,role,foot);card.append(portrait,content);list.append(card);
+  foot.append(status,open);content.append(nameLine,role,housing,foot);card.append(portrait,content);list.append(card);
  }
 }
 search.addEventListener("input",render);document.getElementById("random").addEventListener("click",()=>{const pool=links.map((_,i)=>i+1).filter(n=>!visited.has(n));const target=(pool.length?pool:links.map((_,i)=>i+1))[Math.floor(Math.random()*(pool.length||links.length))];search.value=String(target);render();document.getElementById("cards").scrollIntoView({behavior:"smooth",block:"center"})});document.getElementById("reset").addEventListener("click",()=>{if(!confirm("이 기기에 저장된 방문 기록을 초기화할까요?"))return;visited.clear();try{localStorage.removeItem(storeKey)}catch(e){}render()});render();
