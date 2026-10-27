@@ -1,0 +1,33 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {layoutOpinion,exportOpinionImage} from '../assets/opinion-image.mjs';
+const measure=(text,size)=>Array.from(text).length*size;
+test('opinion card is 1920 by 1080 and keeps large text within both regions',()=>{
+ const result=layoutOpinion({proposal:'학교 앞 통로를 확보하자',reason:'학생과 주민이 안전하게 지나다닐 수 있기 때문이다.'},measure);
+ assert.equal(result.width,1920);assert.equal(result.height,1080);
+ assert.ok(result.proposal.size>=44);assert.ok(result.reason.size>=36);
+ for(const part of [result.proposal,result.reason])assert.ok(part.lines.length*part.lineHeight<=part.height);
+});
+test('explicit line breaks and additional evidence are preserved',()=>{
+ const r=layoutOpinion({proposal:'첫 줄\n둘째 줄',reason:'이유',evidence:'확인한 근거'},measure);
+ assert.deepEqual(r.proposal.lines,['첫 줄','둘째 줄']);assert.match(r.reason.lines.join(''),/이유.*확인한 근거/);
+});
+test('empty or excessive writing is rejected without silently clipping it',()=>{
+ assert.throws(()=>layoutOpinion({proposal:'',reason:'이유'},measure),/의견/);
+ assert.throws(()=>layoutOpinion({proposal:'의견',reason:''},measure),/근거/);
+ assert.throws(()=>layoutOpinion({proposal:'가'.repeat(8000),reason:'이유'},measure),/줄여/);
+});
+test('PNG drawing contains only opinion and grounds, never identity or research notes',async()=>{
+ const previous=globalThis.document,drawn=[];
+ const context={fillRect(){},fillText(text){drawn.push(text);},measureText:text=>({width:Array.from(text).length*30})};
+ const canvas={getContext:()=>context,toBlob:callback=>callback(new Blob(['png'],{type:'image/png'}))};
+ globalThis.document={fonts:{ready:Promise.resolve()},createElement:()=>canvas};
+ try{
+  const result=await exportOpinionImage({label:'비공개 이름',proposal:'공유할 의견',reason:'공유할 이유',evidence:'공유할 근거',experience:'이미지에 넣지 않을 조사 과정'});
+  assert.equal(result.width,1920);assert.equal(result.height,1080);assert.equal(result.blob.type,'image/png');
+  assert.deepEqual(drawn,['의견','근거','공유할 의견','공유할 이유','공유할 근거']);
+  canvas.getContext=()=>null;await assert.rejects(exportOpinionImage({}),/사용할 수 없습니다/);
+  canvas.getContext=()=>context;canvas.toBlob=callback=>callback(null);
+  await assert.rejects(exportOpinionImage({proposal:'의견',reason:'근거'}),/만들지 못했습니다/);
+ }finally{globalThis.document=previous;}
+});

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f5f8f6">
+<meta name="description" content="보행 안전 문제를 탐구하고 개인 의견을 마련한 뒤 모둠에서 비교하고 조정하는 토의 활동 공간">
+<title>보행 안전 활동 기록 · 우리 동네 토의 탐구실</title>
+<link rel="stylesheet" href="assets/workroom.css">
+<script type="module" src="assets/workroom.mjs"></script>
+<link rel="stylesheet" href="assets/explore-pane.css">
+<script type="module" src="assets/explore-pane.mjs"></script>
+</head>
+<body>
+<a class="skip-link" href="#activity">활동 기록으로 바로가기</a>
+<header><div class="shell header-inner"><a class="brand" href="index.html#home">우리 동네 <span>토의 탐구실</span></a><a href="index.html#home" data-explore-route="home">탐구 자료 보기</a></div></header>
+<main class="shell">
+<section class="intro compact-intro"><span class="eyebrow">5학년 국어 · 의견을 조정해요</span><h1>탐구하며 짧게 기록해요</h1><p>핵심만 적고, 필요한 항목은 ‘더 기록하기’에서 펼쳐 보세요.</p></section>
+<nav class="pane-switch workbench-nav" aria-label="탐구와 기록"><button id="show-writing" type="button" aria-pressed="true">기록만</button><button id="show-explore" type="button" aria-pressed="false">탐구만</button><button id="show-both" type="button" aria-pressed="false">함께 보기</button><p id="workspace-hint"></p></nav>
+<div class="workbench">
+<aside id="explore-pane" hidden aria-label="탐구 자료"><div class="explore-toolbar"><a href="index.html#home" data-explore-route="home">탐구</a><a href="index.html#walking" data-explore-route="walking">인물 인터뷰</a><a href="index.html#study" data-explore-route="study">학습 자료</a><button id="open-explore-window" type="button">별도 창에서 보기</button><button id="close-explore" type="button">탐구 닫기</button></div><iframe id="explore-frame" title="보행 안전 탐구 자료" loading="lazy"></iframe></aside>
+<div id="writing-pane">
+<nav class="mode-nav" aria-label="기록할 활동"><button id="mode-personal" type="button" aria-pressed="true">9~10차시 · 의견 마련하기</button><button id="mode-group" type="button" aria-pressed="false">11~12차시 · 모둠 토의하기</button></nav>
+<aside class="save-panel" aria-label="기록 보관"><div><p id="save-status" role="status" aria-live="polite">기록을 준비하고 있습니다.</p><p>이 기기의 이 브라우저에만 저장됩니다. 친구의 기기와 자동으로 공유되지 않습니다. 공용 기기에서는 이름 대신 번호나 별칭을 쓰고, 마친 뒤 기록 파일을 보관하세요.</p></div><button id="save-now" type="button">지금 저장</button></aside>
+<div id="storage-warning" class="warning" hidden><p id="storage-warning-text"></p><button type="button" id="reload-record">저장된 기록 다시 읽기</button><button type="button" id="resume-saving">현재 내용으로 저장 다시 시작</button></div>
+<nav id="step-nav" class="step-nav" aria-label="활동 순서"></nav>
+<form id="activity" novalidate aria-labelledby="activity-title"><h2 id="activity-title" tabindex="-1"></h2><div id="activity-fields"></div></form><pre id="print-summary"></pre>
+<details class="storage-tools"><summary>기록 파일과 인쇄</summary><section class="record-tools" aria-labelledby="tools-title"><h2 id="tools-title">기록 보관과 인쇄</h2><p>기록 파일은 다른 기기에서 이어 쓸 때 사용합니다. 글 파일은 문서에 옮기거나 모둠에서 함께 볼 때 사용하세요. 파일을 불러오면 현재 선택한 활동의 내용이 바뀝니다.</p><div class="button-row"><button id="export-json" type="button">기록 파일 내려받기</button><label class="file-button" for="import-json">기록 파일 불러오기<input id="import-json" type="file" accept=".json,application/json"></label><button id="export-text" type="button">글 파일 내려받기</button><button id="copy-text" type="button">기록 복사</button><button id="print-record" type="button">작성한 기록 인쇄</button></div><p id="tool-status" role="status" aria-live="polite"></p><div id="copy-fallback" hidden><label for="copy-content">자동 복사를 사용할 수 없습니다. 아래 내용을 선택해 복사하세요.</label><textarea id="copy-content" readonly rows="10"></textarea></div></section>
+</details><section class="resource-links" aria-labelledby="resources-title"><h2 id="resources-title">인터뷰와 조사 자료</h2><p>가상 인물의 이야기는 입장을 이해하기 위한 자료입니다. 실제 지역의 현황이나 정책은 조사 자료로 확인하세요.</p><div class="button-row"><a href="index.html#walking" data-explore-route="walking">가상 인물 24명 인터뷰</a><a href="index.html#home" data-explore-route="home">보행 안전 탐구 자료</a><a href="index.html#study" data-explore-route="study">토의 방법 학습 자료</a></div><div class="button-row worksheet-links"><a href="materials/personal-9-10.pdf" download>개인 활동지 PDF</a><a href="materials/group-11-12.pdf" download>모둠 활동지 PDF</a></div></section>
+</div>
+</div>
+</main>
+<footer class="shell"><p>학생의 제안과 결정은 학생에게 있습니다. AI는 인물의 입장을 들려주거나, 결정한 내용의 설명이 명확한지 살피는 데 활용합니다.</p></footer>
+<noscript><p class="shell warning">활동 기록에는 JavaScript가 필요합니다. PDF 활동지를 내려받아 사용하거나 브라우저 설정을 확인하세요.</p></noscript>
+</body>
+</html>

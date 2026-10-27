@@ -1,0 +1,134 @@
+export const VERSION = 3;
+export const MAX_RECORD_BYTES = 2000000;
+const APP = 'interview-workroom';
+const MAX_TEXT = 8000;
+export const DEFAULT_CRITERIA = Object.freeze(['실천 가능한 방법인가?','문제 해결에 효과적인가?','여러 사람에게 도움이 되는가?']);
+export const MAX_CRITERIA = 12;
+export const MAX_CRITERION_LENGTH = 200;
+const blankPerspective = () => ({kind:'fictional',person:'',difficulty:'',value:''});
+const blankSource = () => ({title:'',url:'',date:'',claim:'',relevance:'',scope:''});
+export const blankMember = () => ({name:'',problem:'',proposal:'',reason:'',source:'',strength:'',concern:'',question:'',revision:'',checked:false});
+
+export function createData(kind) {
+  if (kind === 'personal') return {label:'',perspectives:[blankPerspective(),blankPerspective()],experience:'',sources:[blankSource(),blankSource()],who:'',where:'',difficulty:'',problem:'',ideas:['','',''],proposal:'',reason:'',evidence:'',uncertainties:'',handoff:''};
+  if (kind === 'group') return {label:'',focus:'',focusReason:'',discussion:'',members:Array.from({length:4},blankMember),criteria:{feasible:true,effective:true,shared:true,extra:''},criteriaList:[...DEFAULT_CRITERIA],proposal:'',reason:'',evidence:'',changes:'',remaining:'',method:'',clarity:'',next:''};
+  throw new Error('알 수 없는 활동 종류입니다.');
+}
+export function storageKey(kind,version=VERSION) { createData(kind); return `${APP}-v${version}-${kind}`; }
+function plain(value) { return value !== null && typeof value==='object' && !Array.isArray(value) && Object.getPrototypeOf(value)===Object.prototype; }
+function checkObject(value, template) {
+  if (!plain(value) || Object.keys(value).sort().join('|') !== Object.keys(template).sort().join('|')) throw new Error('활동 기록의 항목이 맞지 않습니다.');
+  for (const key of Object.keys(template)) {
+    const expected=template[key], actual=value[key];
+    if (typeof expected==='string' && (typeof actual!=='string' || actual.length>MAX_TEXT)) throw new Error('글 항목은 8000자 이내여야 합니다.');
+    if (typeof expected==='boolean' && typeof actual!=='boolean') throw new Error('확인 항목이 올바르지 않습니다.');
+    if (plain(expected)) checkObject(actual,expected);
+  }
+}
+function validateData(kind,data) {
+  const template=createData(kind); checkObject(data,template);
+  if(kind==='personal') {
+    if(!Array.isArray(data.perspectives)||data.perspectives.length!==2||!Array.isArray(data.sources)||data.sources.length!==2||!Array.isArray(data.ideas)||data.ideas.length!==3) throw new Error('개인 활동의 기록 수가 맞지 않습니다.');
+    data.perspectives.forEach(p=>{checkObject(p,blankPerspective());if(!['fictional','real'].includes(p.kind))throw new Error('인터뷰 출처 구분이 올바르지 않습니다.');});
+    data.sources.forEach(s=>checkObject(s,blankSource()));
+    data.ideas.forEach(s=>{if(typeof s!=='string'||s.length>MAX_TEXT)throw new Error('아이디어 항목이 올바르지 않습니다.');});
+  } else {
+    if(!Array.isArray(data.members)||data.members.length<3||data.members.length>5)throw new Error('모둠원 기록은 3~5명이어야 합니다.');
+    data.members.forEach(m=>checkObject(m,blankMember()));
+    validateCriteria(data.criteriaList);
+  }
+  return data;
+}
+function validateCriteria(list) {
+  if(!Array.isArray(list)||list.length>MAX_CRITERIA||list.some(value=>typeof value!=='string'||value.length>MAX_CRITERION_LENGTH))throw new Error('검토 기준은 12개 이내, 각 200자 이내로 적어 주세요.');
+}
+function migrateCriteria(criteria) {
+  const enabled=[criteria.feasible,criteria.effective,criteria.shared];
+  return [...DEFAULT_CRITERIA.filter((_,i)=>enabled[i]),...(criteria.extra.trim()&&criteria.extra.length<=MAX_CRITERION_LENGTH?[criteria.extra]:[])];
+}
+export function updateCriteria(group,list) {
+  validateData('group',group);validateCriteria(list);
+  return {...structuredClone(group),criteriaList:[...list],members:group.members.map(member=>({...member,checked:false}))};
+}
+export function makeRecord(kind,data,updatedAt=new Date().toISOString()) {
+  validateData(kind,data);
+  if(typeof updatedAt!=='string'||!Number.isFinite(Date.parse(updatedAt)))throw new Error('저장 시간이 올바르지 않습니다.');
+  return {app:APP,version:VERSION,kind,updatedAt,data:structuredClone(data)};
+}
+export function parseRecord(text,kind) {
+  if(typeof text!=='string'||new TextEncoder().encode(text).byteLength>MAX_RECORD_BYTES)throw new Error('파일 크기가 너무 큽니다. 2MB 이하의 활동 기록을 선택하세요.');
+  const record=JSON.parse(text);
+  if(!plain(record)||Object.keys(record).sort().join('|')!=='app|data|kind|updatedAt|version'||record.app!==APP||![1,2,VERSION].includes(record.version)||record.kind!==kind)throw new Error('현재 활동과 맞는 버전의 기록 파일이 아닙니다. 개인과 모둠 파일을 확인하세요.');
+  if(record.version<3&&kind==='group'){
+    const {criteriaList:unusedCriteria,...versionTwo}=createData('group');
+    const {discussion:unusedDiscussion,...versionOne}=versionTwo;
+    checkObject(record.data,record.version===1?versionOne:versionTwo);
+    return makeRecord(kind,{...record.data,discussion:record.version===1?'':record.data.discussion,criteriaList:migrateCriteria(record.data.criteria)},record.updatedAt);
+  }
+  return makeRecord(kind,record.data,record.updatedAt);
+}
+export function updateValue(data,path,value) {
+  const keys=path.split('.'); const result=structuredClone(data); let target=result;
+  for (const key of keys.slice(0,-1)) {
+    if(!Object.hasOwn(target,key)||['__proto__','constructor','prototype'].includes(key))throw new Error('없는 기록 항목입니다.');
+    target=target[key];
+  }
+  const key=keys.at(-1);
+  if(!Object.hasOwn(target,key)||typeof target[key]!==typeof value||typeof value==='object')throw new Error('기록 값의 종류가 맞지 않습니다.');
+  target[key]=value; return result;
+}
+export function updateActivity(kind,data,path,value) {
+  const next=updateValue(data,path,value);
+  if(kind==='group'&&path.startsWith('criteriaList.'))validateCriteria(next.criteriaList);
+  if(kind!=='group'||path==='label'||/^members\.\d+\.checked$/.test(path))return next;
+  return {...next,members:next.members.map(member=>({...member,checked:false}))};
+}
+export function importPersonalToMember(group,index,record) {
+  validateData('group',group);
+  if(!Number.isInteger(index)||index<0||index>=group.members.length)throw new Error('불러올 모둠원 칸을 확인하세요.');
+  const personal=parseRecord(JSON.stringify(record),'personal').data;
+  const sources=personal.sources.filter(source=>Object.values(source).some(Boolean)).map((source,i)=>[
+    `조사 자료 ${i+1}`,line('제목',source.title),line('출처',source.url),line('확인 날짜',source.date),line('자료의 대상과 범위',source.scope),line('확인한 내용',source.claim),line('문제와의 관련',source.relevance)
+  ].join('\n'));
+  const source=[personal.evidence,...sources].filter(Boolean).join('\n\n');
+  if(source.length>MAX_TEXT)throw new Error('근거와 출처가 한 칸의 8000자를 넘습니다. 개인 기록에서 핵심 내용을 정리한 뒤 다시 불러오세요. 원본 내용은 바꾸지 않았습니다.');
+  const member={...blankMember(),name:personal.label,problem:personal.problem||[personal.who,personal.where,personal.difficulty].filter(Boolean).join(' · '),proposal:personal.proposal,reason:personal.reason,source};
+  const next={...group,members:group.members.map((old,i)=>i===index?member:{...old,checked:false})};
+  validateData('group',next);return next;
+}
+export function loadRecord(storage,kind) {
+  try {
+    for(const version of [VERSION,2,1]) {
+      const text=storage.getItem(storageKey(kind,version));
+      if(text!==null)return {status:'loaded',record:parseRecord(text,kind)};
+    }
+    return {status:'empty'};
+  }
+  catch { return {status:'error',message:'저장 기록을 읽을 수 없습니다. 기존 기록을 덮어쓰지 않습니다. 파일을 불러오거나 저장을 다시 시작하세요.'}; }
+}
+export function saveRecord(storage,record) {
+  try { const checked=parseRecord(JSON.stringify(record),record.kind);storage.setItem(storageKey(record.kind),JSON.stringify(checked));return {ok:true}; }
+  catch { return {ok:false,message:'이 브라우저에 저장하지 못했습니다. 기록 파일을 내려받아 보관하세요.'}; }
+}
+const line=(label,value)=>`${label}: ${value||'(아직 기록하지 않음)'}`;
+export function formatText(kind,data) {
+  validateData(kind,data);
+  if(kind==='personal')return [
+    '개인 의견 마련하기 | 9~10차시',line('기록 이름',data.label),'',
+    '1 다양한 입장 알아보기',...data.perspectives.flatMap((p,i)=>[`${i+1}. ${p.kind==='fictional'?'수업용 가상 인물':'실제 주변 사람'} · ${p.person||'인물 미기록'}`,line('어려움',p.difficulty),line('중요하게 여기는 것',p.value)]),line('나의 경험',data.experience),'',
+    '2 자료로 확인하기',...data.sources.flatMap((s,i)=>[`${i+1}. ${s.title||'자료 제목 미기록'}`,line('주소 또는 발행 기관',s.url),line('확인 날짜',s.date),line('대상과 지역 및 시기',s.scope),line('확인한 내용',s.claim),line('내 문제와의 관련',s.relevance)]),'',
+    '3 해결할 문제',line('누가',data.who),line('어디에서',data.where),line('어떤 어려움',data.difficulty),line('내가 집중할 문제',data.problem),'',
+    '4 아이디어 자유롭게 적기',...data.ideas.map((s,i)=>line(String(i+1),s)),'',
+    '5 내 의견과 이유',line('제안',data.proposal),line('이유',data.reason),line('연결한 자료와 근거',data.evidence),line('더 확인할 점',data.uncertainties),line('모둠에서 함께 살펴볼 점',data.handoff),
+    '', '가상 인물의 이야기는 실제 지역 현황의 증거가 아닙니다.'
+  ].join('\n');
+  return ['모둠 의견 나누기 모으기 결정하기 | 11~12차시',line('모둠',data.label),'',
+    '1 의견 나누기',...data.members.flatMap((m,i)=>[`${i+1}. ${m.name||'모둠원'}`,line('해결하려는 문제',m.problem),line('제안',m.proposal),line('이유',m.reason),line('근거와 출처',m.source)]),'',
+    '2 함께 검토할 문제',line('모둠이 집중할 문제',data.focus),line('문제를 정한 까닭',data.focusReason),'',
+    '3 의견 모으기',line('함께 살펴본 좋은 점과 걱정',data.discussion),`검토 기준: ${data.criteriaList.filter(value=>value.trim()).join(', ')||'(정한 기준 없음)'}`,
+    ...data.members.flatMap((m,i)=>[`${i+1}. ${m.name||'모둠원'}의 의견 검토`,line('좋은 점과 까닭',m.strength),line('걱정되는 점과 까닭',m.concern),line('더 물어보거나 확인할 점',m.question),line('고치거나 더할 점',m.revision)]),'',
+    '4 의견 결정하기',line('최종 제안',data.proposal),line('선택한 이유',data.reason),line('핵심 근거와 출처',data.evidence),line('의견을 조정한 내용',data.changes),line('남은 걱정과 다른 의견',data.remaining),line('결정 방법과 협의 과정',data.method),line('전달을 위해 보완할 부분',data.clarity),line('다음에 확인하거나 할 일',data.next),
+    `최종 내용 확인: ${data.members.map((m,i)=>`${m.name||`모둠원 ${i+1}`} ${m.checked?'확인함':'아직 확인 전'}`).join(' / ')}`,
+    '', 'AI는 설명의 명확성을 점검할 수 있습니다. 제안과 근거는 모둠이 직접 결정합니다.'
+  ].join('\n');
+}
