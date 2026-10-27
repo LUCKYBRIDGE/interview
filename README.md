@@ -62,3 +62,7 @@ Gem 링크는 `index.html`의 `links`, 보행 인물 `.walk-card`에서 관리�
 GitHub Pages는 `main` 브랜치의 루트 폴더를 배포 대상으로 사용할 수 있습니다. 현재 수정본은 로컬 검토용이며 이 작업에서 푸시하거나 배포하지 않았습니다.
 
 상위 워크스페이스의 `../teaching/`에는 지도안과 활동지의 편집용 문서가 함께 관리됩니다. 상위 폴더는 이 Git 저장소나 GitHub Pages 배포에 포함되지 않으며, 웹 배포용 PDF만 이 저장소의 `materials/`에 복사합니다.
+
+## 활동지 다운로드
+
+홈페이지의 **활동지 다운로드** 탭 또는 `index.html#downloads`에서 개인 의견 마련(9~10차시)과 모둠 토의(11~12차시) 활동지를 받습니다. 각각 A4 한 쪽이며 인쇄용 PDF와 편집용 DOCX를 제공합니다. 최신 원본은 상위 teaching/02-활동지이며 scripts/sync_materials.py로 웹 materials/에 동기화합니다.
