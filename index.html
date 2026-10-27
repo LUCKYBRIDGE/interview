@@ -4,7 +4,7 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#f7f8fb">
 <meta name="description" content="우리 주변의 문제를 생각하고, 32명의 AI 인터뷰 상대에게 질문해 보세요.">
-<title>우리 동네 토의 탐구실 · 5학년 국어</title>
+<title>우리 동네 보행 안전 탐구 · 5학년 국어 토의</title>
 <style>
 :root{font-family:Pretendard,"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;color:#202f43;background:#f6f8fc;font-synthesis:none}
 *{box-sizing:border-box}body{margin:0}button,input{font:inherit}button{cursor:pointer}a{color:inherit}
@@ -106,9 +106,26 @@
 <body>
 <header class="top"><div class="wrap nav"><div class="brand">우리 동네 <span>토의 탐구실</span></div><span class="tag">5학년 국어 · 토의 준비</span></div></header>
 <main class="wrap">
-<nav class="tabbar" role="tablist" aria-label="학습 영역 선택"><button class="tab-button" type="button" id="tab-home" role="tab" aria-controls="panel-home" aria-selected="true" tabindex="0">토의 준비실</button><button class="tab-button" type="button" id="tab-interview" role="tab" aria-controls="panel-interview" aria-selected="false" tabindex="-1">소음 문제 인터뷰 (32명)</button><button class="tab-button" type="button" id="tab-resources" role="tab" aria-controls="panel-resources" aria-selected="false" tabindex="-1">토의 학습 자료</button><button class="tab-button" type="button" id="tab-walking" role="tab" aria-controls="panel-walking" aria-selected="false" tabindex="-1">보행 안전 인터뷰 (20명)</button></nav>
+<nav class="tabbar" role="tablist" aria-label="학습 영역 선택"><button class="tab-button" type="button" id="tab-home" role="tab" aria-controls="panel-home" aria-selected="true" tabindex="0">보행 안전 탐구</button><button class="tab-button" type="button" id="tab-interview" role="tab" aria-controls="panel-interview" aria-selected="false" tabindex="-1">소음 인터뷰 (32명)</button><button class="tab-button" type="button" id="tab-resources" role="tab" aria-controls="panel-resources" aria-selected="false" tabindex="-1">토의 학습 자료</button><button class="tab-button" type="button" id="tab-noise" role="tab" aria-controls="panel-noise" aria-selected="false" tabindex="-1">지난 소음 탐구</button><button class="tab-button" type="button" id="tab-walking" role="tab" aria-controls="panel-walking" aria-selected="false" tabindex="-1">보행 안전 인터뷰 (20명)</button></nav>
 <div 
 <div id="panel-home" class="tab-panel" role="tabpanel" aria-labelledby="tab-home">
+<section class="explore"><span class="eyebrow">5학년 국어 · 지역사회 문제 해결 토의</span><h1>우리 지역에서 보행자가<br><em>더 안전하게 다니려면?</em></h1><p class="explore-lead">길을 걸을 때 어떤 상황이 위험할까요? 나의 경험과 시민 인터뷰를 떠올리며 위험 상황을 찾아보고, 토의할 문제를 구체적으로 정리해 봅시다.</p>
+<section class="explore-section"><h2>01 · 보행 안전 문제 살펴보기</h2><div class="definition-line">보행 안전은 사람들이 길을 걸어 이동할 때 사고의 위험을 줄이고 안전하게 다닐 수 있도록 하는 것과 관련됩니다. 위험 상황은 <strong>길의 환경, 차량의 움직임, 시설, 사람들의 행동</strong> 등 여러 요인과 연결될 수 있습니다.</div><p><strong>생각 질문:</strong> 같은 길이라도 어린이, 노인, 휠체어 이용자에게는 어떤 점이 다르게 느껴질까요?</p></section>
+<section class="explore-section"><h2>02 · 내가 발견한 위험 상황 선택하기</h2><p>아래는 공식적인 사고 유형 분류가 아니라 <strong>보행 중 위험 상황을 탐색하기 위한 영역</strong>입니다. 겹치는 항목을 여러 개 선택해도 됩니다. 경험하거나 인터뷰에서 들은 내용을 중심으로 체크하세요.</p>
+<div class="noise-choices" id="walk-risk-choices"><label class="noise-choice"><input type="checkbox" class="risk-check" value="차량 움직임"><span><strong>차량 움직임</strong><small>횡단보도 앞 일시정지 미준수, 과속, 우회전 차량</small><select class="risk-source" aria-label="차량 움직임: 알게 된 경로"><option value="내가 직접 경험함">직접 경험</option><option value="시민 인터뷰에서 들음">인터뷰에서 들음</option><option value="다른 자료에서 확인함">다른 자료에서 확인함</option></select></span></label>
+<label class="noise-choice"><input type="checkbox" class="risk-check" value="보행 공간"><span><strong>보행 공간</strong><small>인도 위 주정차, 좁거나 끊긴 보도, 통행을 막는 물건</small><select class="risk-source" aria-label="보행 공간: 알게 된 경로"><option value="내가 직접 경험함">직접 경험</option><option value="시민 인터뷰에서 들음">인터뷰에서 들음</option><option value="다른 자료에서 확인함">다른 자료에서 확인함</option></select></span></label>
+<label class="noise-choice"><input type="checkbox" class="risk-check" value="시야·조명"><span><strong>시야·조명</strong><small>가려진 횡단보도, 어두운 길, 시야를 막는 구조물</small><select class="risk-source" aria-label="시야·조명: 알게 된 경로"><option value="내가 직접 경험함">직접 경험</option><option value="시민 인터뷰에서 들음">인터뷰에서 들음</option><option value="다른 자료에서 확인함">다른 자료에서 확인함</option></select></span></label>
+<label class="noise-choice"><input type="checkbox" class="risk-check" value="도로·안전시설"><span><strong>도로·안전시설</strong><small>고장 난 신호등, 파손된 보도블록, 부족한 안전시설</small><select class="risk-source" aria-label="도로·안전시설: 알게 된 경로"><option value="내가 직접 경험함">직접 경험</option><option value="시민 인터뷰에서 들음">인터뷰에서 들음</option><option value="다른 자료에서 확인함">다른 자료에서 확인함</option></select></span></label>
+<label class="noise-choice"><input type="checkbox" class="risk-check" value="보행 중 행동"><span><strong>보행 중 행동</strong><small>스마트폰 사용, 갑자기 차도로 진입하는 행동</small><select class="risk-source" aria-label="보행 중 행동: 알게 된 경로"><option value="내가 직접 경험함">직접 경험</option><option value="시민 인터뷰에서 들음">인터뷰에서 들음</option><option value="다른 자료에서 확인함">다른 자료에서 확인함</option></select></span></label>
+<label class="noise-choice"><input type="checkbox" class="risk-check" value="이동 약자 접근성"><span><strong>이동 약자 접근성</strong><small>휠체어·유모차가 지나가기 어려운 턱과 경사</small><select class="risk-source" aria-label="이동 약자 접근성: 알게 된 경로"><option value="내가 직접 경험함">직접 경험</option><option value="시민 인터뷰에서 들음">인터뷰에서 들음</option><option value="다른 자료에서 확인함">다른 자료에서 확인함</option></select></span></label></div>
+<label class="explore-label" for="risk-extra">선택지에 없는 위험 상황도 있나요?</label><input id="risk-extra" type="text" placeholder="새로 발견한 위험 상황을 직접 적어 보세요">
+<label class="explore-label" for="risk-place">어디에서, 어떤 상황이 위험했나요?</label><textarea id="risk-place" placeholder="장소와 상황을 구체적으로 적어 보세요. 예: 학교 앞 횡단보도에서 ..."></textarea>
+<label class="explore-label" for="risk-people">누구에게 특히 위험할까요? 왜 그렇게 생각하나요?</label><textarea id="risk-people" placeholder="보행자마다 이동 상황과 어려움이 다를 수 있어요."></textarea>
+<label class="explore-label" for="risk-question">인터뷰나 자료에서 더 확인하고 싶은 점</label><textarea id="risk-question" placeholder="해결책을 정하기 전에 어떤 사실이 더 필요할까요?"></textarea>
+</section>
+<section class="explore-section"><h2>03 · 활동지에 옮겨 적기</h2><p>선택한 내용이 자동으로 정리됩니다. 복사해서 활동지에 붙여 넣거나 아래 내용을 보고 직접 기록하세요.</p><div id="risk-preview" class="worksheet-preview" aria-live="polite"></div><div class="explore-actions"><button id="risk-copy" type="button">활동지 내용 복사</button><button id="risk-clear" class="light" type="button">다시 선택하기</button></div><p id="risk-status" class="study-note" role="status"></p></section>
+<section class="explore-section"><h2>04 · 인터뷰로 생각 넓히기</h2><p>모둠에서 어떤 문제를 토의할지 결정하기 전에 서로 다른 보행자의 경험을 들어 보세요. AI 가상 인물의 이야기는 <strong>실제 발생 사실의 증거가 아니므로</strong> 필요한 내용은 별도 자료로 확인하세요.</p><div class="path-links"><button type="button" data-go="walking">보행 안전 인터뷰 20명 ↗<span>다른 시각과 경험 탐색하기</span></button><button type="button" data-go="resources">토의 학습 자료 ↗<span>토의 절차와 사실조사 방법 익히기</span></button><button type="button" data-go="noise">이전 소음 탐구 ↗<span>완료한 소음 활동 다시 보기</span></button></div></section></section></div>
+<div id="panel-noise" class="tab-panel" hidden role="tabpanel" aria-labelledby="tab-noise">
 <section class="explore">
 <span class="eyebrow">5학년 국어 · 우리 지역 문제 해결 토의</span>
 <h1>소음을 알아보고,<br><em>사람들의 이야기를 듣고, 내 의견을 만들어요.</em></h1>
@@ -238,7 +255,7 @@ function render(){
 search.addEventListener("input",render);document.getElementById("random").addEventListener("click",()=>{const available=links.map((url,i)=>url?i+1:null).filter(Boolean);const pool=available.filter(n=>!visited.has(n));const candidates=pool.length?pool:available;const target=candidates[Math.floor(Math.random()*candidates.length)];search.value=String(target);render();document.getElementById("cards").scrollIntoView({behavior:"smooth",block:"center"})});document.getElementById("reset").addEventListener("click",()=>{if(!confirm("이 기기에 저장된 방문 기록을 초기화할까요?"))return;visited.clear();try{localStorage.removeItem(storeKey)}catch(e){}render()});render();
 
 (function(){
- const ids=["home","interview","resources","walking"],hashes=["#home","#interview","#study","#walking"];
+ const ids=["home","walking","resources","noise","interview"],hashes=["#home","#walking","#study","#noise","#interview"];
  const tabs=ids.map(id=>document.getElementById("tab-"+id)),panels=ids.map(id=>document.getElementById("panel-"+id));
  function setTab(index,writeHash=true){tabs.forEach((t,i)=>{const active=index===i;t.setAttribute("aria-selected",String(active));t.tabIndex=active?0:-1;panels[i].hidden=!active});if(writeHash)history.replaceState(null,"",hashes[index]);window.scrollTo({top:0,behavior:"instant"})}
  tabs.forEach((tab,i)=>{tab.addEventListener("click",()=>setTab(i));tab.addEventListener("keydown",e=>{if(!["ArrowRight","ArrowLeft","Home","End"].includes(e.key))return;e.preventDefault();const j=e.key==="Home"?0:e.key==="End"?tabs.length-1:(i+(e.key==="ArrowRight"?1:-1)+tabs.length)%tabs.length;setTab(j);tabs[j].focus()})});
@@ -250,6 +267,13 @@ search.addEventListener("input",render);document.getElementById("random").addEve
  function update(){preview.textContent=buildText();status.textContent=""}
  [...checks,...document.querySelectorAll(".noise-source"),...inputs].forEach(el=>el.addEventListener("input",update));update();
  document.getElementById("copy-worksheet").addEventListener("click",async()=>{const value=buildText();try{await navigator.clipboard.writeText(value);status.textContent="내용을 복사했습니다. 활동지에 붙여 넣으세요."}catch(e){const ta=document.createElement("textarea");ta.value=value;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");status.textContent="내용을 복사했습니다."}catch(err){status.textContent="자동 복사가 되지 않습니다. 위 내용을 직접 옮겨 적어 주세요."}ta.remove()}});
+ const riskChecks=[...document.querySelectorAll(".risk-check")],riskInputs=["risk-extra","risk-place","risk-people","risk-question"].map(id=>document.getElementById(id)),riskPreview=document.getElementById("risk-preview"),riskStatus=document.getElementById("risk-status");
+ function riskText(){const selected=riskChecks.filter(c=>c.checked).map(c=>"• "+c.value+" ("+c.closest(".noise-choice").querySelector("select").value+")");
+ return ["[보행 안전 문제 탐구 활동지]","1. 내가 알게 된 위험 상황",selected.length?selected.join("\\n"):"(아직 선택하지 않음)",riskInputs[0].value.trim()?"그 밖의 위험 상황: "+riskInputs[0].value.trim():"","2. 장소와 구체적인 상황",riskInputs[1].value.trim()||"(직접 적기)","3. 위험을 겪는 사람과 까닭",riskInputs[2].value.trim()||"(직접 적기)","4. 인터뷰 또는 자료로 더 알아볼 점",riskInputs[3].value.trim()||"(직접 적기)"].filter(Boolean).join("\\n").replaceAll("\\n","\n")}
+ function renderRisk(){riskPreview.textContent=riskText();riskStatus.textContent=""}
+ [...riskChecks,...document.querySelectorAll(".risk-source"),...riskInputs].forEach(el=>el.addEventListener("input",renderRisk));renderRisk();
+ document.getElementById("risk-copy").addEventListener("click",async()=>{try{await navigator.clipboard.writeText(riskText());riskStatus.textContent="활동지 내용을 복사했습니다."}catch(e){riskStatus.textContent="복사할 수 없습니다. 아래 정리 내용을 직접 옮겨 적어 주세요."}});
+ document.getElementById("risk-clear").addEventListener("click",()=>{riskChecks.forEach(c=>c.checked=false);document.querySelectorAll(".risk-source").forEach(x=>x.selectedIndex=0);riskInputs.forEach(x=>x.value="");renderRisk()});
  document.getElementById("clear-worksheet").addEventListener("click",()=>{checks.forEach(c=>c.checked=false);document.querySelectorAll(".noise-source").forEach(sel=>sel.selectedIndex=0);inputs.forEach(el=>el.value="");update()});
 })();;;
 </script>
