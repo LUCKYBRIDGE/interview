@@ -58,13 +58,35 @@
 .study-link:hover,.study-link:focus-visible{filter:brightness(.96);outline:2px solid currentColor;outline-offset:2px}
 .study-note{font-size:12px;line-height:1.7;color:#67758a;margin:15px 0 0}
 @media(max-width:800px){.study-steps{grid-template-columns:1fr}.study{padding:19px}.study-head h2{font-size:21px}}
+
+/* 주제별 학습 탭 */
+.tabbar{display:flex;gap:10px;margin:24px 0 8px;border-bottom:1px solid #dfe5f0;padding-bottom:12px}
+.tab-button{border:1px solid #d9e0ee;background:#fff;color:#58677f;border-radius:13px;padding:14px 22px;font-weight:850;font-size:15px}
+.tab-button[aria-selected="true"]{background:#5363dd;border-color:#5363dd;color:white}
+.tab-button:focus-visible{outline:3px solid #a1afff;outline-offset:3px}
+.tab-panel[hidden]{display:none}
+.resource-intro{margin:36px 0 23px}.resource-intro h1{font-size:clamp(28px,4vw,40px);letter-spacing:-.05em;margin:0 0 12px}.resource-intro p{font-size:15px;line-height:1.75;color:#627188;margin:0}
+.fact-card{margin:12px 0 58px;padding:26px;border:1px solid #cce5dc;border-radius:20px;background:#effaf6;display:flex;gap:20px;align-items:center;justify-content:space-between}
+.fact-card h2{font-size:23px;letter-spacing:-.045em;margin:8px 0}.fact-card p{color:#576d67;font-size:14px;line-height:1.75;margin:0;word-break:keep-all}
+.fact-kicker{font-size:12px;color:#27836a;font-weight:900}
+.fact-button{flex:none;text-decoration:none;font-size:15px;font-weight:850;color:#fff;background:#23846b;border-radius:12px;padding:15px 22px}
+.fact-button:hover,.fact-button:focus-visible{background:#166a54}
+@media(max-width:640px){.tabbar{gap:8px}.tab-button{flex:1;padding:13px 8px;font-size:13px}.fact-card{display:block;padding:20px}.fact-button{display:block;text-align:center;margin-top:18px}.resource-intro{margin-top:27px}}
 </style>
 </head>
 <body>
 <header class="top"><div class="wrap nav"><div class="brand">생각을 여는 <span>인터뷰</span></div><span class="tag">5학년 국어 · 토의 준비</span></div></header>
 <main class="wrap">
+<nav class="tabbar" role="tablist" aria-label="학습 영역 선택"><button class="tab-button" type="button" id="tab-interview" role="tab" aria-controls="panel-interview" aria-selected="true" tabindex="0">시민 인터뷰 (32명)</button><button class="tab-button" type="button" id="tab-resources" role="tab" aria-controls="panel-resources" aria-selected="false" tabindex="-1">토의 학습 자료</button></nav>
+<div id="panel-interview" class="tab-panel" role="tabpanel" aria-labelledby="tab-interview">
 <section class="hero"><span class="eyebrow">강릉 시민 32명과 인터뷰</span><h1>우리 동네 밤의 소음,<br><em>사람들의 이야기를 들어 볼까요?</em></h1><p>인터뷰할 사람을 선택해 궁금한 점을 직접 물어보세요.<br>직업과 주거 형태를 참고해 시민을 선택하고, 답변에서 알게 된 내용을 바탕으로 나의 생각을 정리해 보세요.</p></section>
 
+<section class="how" aria-label="활동 안내"><article><strong><span class="number">1</span> 인터뷰 상대 고르기</strong><p>아래 32명의 시민 중 하나를 선택합니다.</p></article><article><strong><span class="number">2</span> 질문하고 더 묻기</strong><p>상대의 답변에 따라 궁금한 내용을 이어서 질문합니다.</p></article><article><strong><span class="number">3</span> 검토하고 기록하기</strong><p>알게 된 사실과 의견을 구분하고, 토의에 필요한 내용을 정리합니다.</p></article></section>
+<div class="notice">이곳의 인물은 모두 학습을 위해 만든 가상 시민입니다. 인터뷰 답변에 나온 사실은 다른 자료와 비교해 확인하세요. Gem 링크가 준비된 시민의 인터뷰는 Google Gemini에서 열립니다. 32명 모두 Gem 인터뷰 링크가 연결되어 있습니다.</div>
+<section aria-label="인터뷰 목록"><div class="panel"><div class="panel-left"><input id="search" class="search" type="search" placeholder="이름·나이·직업·특징 검색" aria-label="인터뷰 인물 검색"><span id="counter" class="counter" aria-live="polite"></span></div><div class="actions"><button class="secondary" id="random" type="button">🎲 무작위 선택</button><button class="secondary" id="reset" type="button">방문 기록 초기화</button></div></div><div id="cards" class="cards"></div></section>
+</div>
+<div id="panel-resources" class="tab-panel" role="tabpanel" aria-labelledby="tab-resources" hidden>
+<section class="resource-intro"><h1>토의 학습 자료</h1><p>토의의 절차와 방법을 공부하고, 시민 인터뷰를 마친 뒤에는 사실조사 도우미를 활용해 보세요.</p></section>
 <section class="study" aria-labelledby="study-title">
  <div class="study-head"><div><h2 id="study-title">토의 절차·방법 공부하기</h2><p>인터뷰와 토의를 준비하며 단계별 플래시카드로 익히고, 퀴즈로 확인해 보세요.</p></div><span class="study-tag">NotebookLM 학습 자료</span></div>
  <div class="study-steps">
@@ -74,9 +96,14 @@
  </div>
  <p class="study-note">※ 버튼을 누르면 새 탭에서 NotebookLM 학습 자료가 열립니다. Google 계정 또는 공유 권한에 따라 접근이 제한될 수 있습니다.</p>
 </section>
-<section class="how" aria-label="활동 안내"><article><strong><span class="number">1</span> 인터뷰 상대 고르기</strong><p>아래 32명의 시민 중 하나를 선택합니다.</p></article><article><strong><span class="number">2</span> 질문하고 더 묻기</strong><p>상대의 답변에 따라 궁금한 내용을 이어서 질문합니다.</p></article><article><strong><span class="number">3</span> 검토하고 기록하기</strong><p>알게 된 사실과 의견을 구분하고, 토의에 필요한 내용을 정리합니다.</p></article></section>
-<div class="notice">이곳의 인물은 모두 학습을 위해 만든 가상 시민입니다. 인터뷰 답변에 나온 사실은 다른 자료와 비교해 확인하세요. Gem 링크가 준비된 시민의 인터뷰는 Google Gemini에서 열립니다. 32명 모두 Gem 인터뷰 링크가 연결되어 있습니다.</div>
-<section aria-label="인터뷰 목록"><div class="panel"><div class="panel-left"><input id="search" class="search" type="search" placeholder="이름·나이·직업·특징 검색" aria-label="인터뷰 인물 검색"><span id="counter" class="counter" aria-live="polite"></span></div><div class="actions"><button class="secondary" id="random" type="button">🎲 무작위 선택</button><button class="secondary" id="reset" type="button">방문 기록 초기화</button></div></div><div id="cards" class="cards"></div></section>
+
+
+<section class="fact-card" aria-labelledby="fact-title">
+ <div><span class="fact-kicker">인터뷰 후 · 사실 확인</span><h2 id="fact-title">강릉 소음 문제 사실조사 도우미</h2>
+ <p>시민 인터뷰에서 들은 경험과 의견을 바탕으로, 궁금한 사실을 확인해 보세요.<br>AI의 답변이 곧 검증된 사실은 아닙니다. 제시된 출처와 실제 자료를 다시 확인하세요.</p></div>
+ <a class="fact-button" href="https://gemini.google.com/gem/1CseIBfK-cRRxVuSHKazUAMg3Iflq6n-S?usp=sharing" target="_blank" rel="noopener noreferrer">사실조사 도우미 열기 ↗</a>
+</section>
+</div>
 </main><footer class="foot">생각을 여는 인터뷰 · 5학년 국어 토의 활동<br>방문 표시는 이 기기의 브라우저에만 저장됩니다.</footer>
 <script>
 const links=["https://gemini.google.com/gem/1cn_Gxn3kgyrSoc-jeCmyoFYBppcX2gQh?usp=sharing","https://gemini.google.com/gem/1F9p4GrUr8fHR1Jq7NAMZIm1ZQtWw1VRF?usp=sharing","https://gemini.google.com/gem/1vby9qDGjTIOWfjBDAwjRSOhPNJC-Zhtx?usp=sharing","https://gemini.google.com/gem/1tVpsqcRptHQb2jbww2PN5eJq2nSooAA4?usp=sharing","https://gemini.google.com/gem/1BJp1EIXAKw_0HMfXZNcKx2oK0yeSLRDj?usp=sharing","https://gemini.google.com/gem/1bYP7xbWjrHzDsH-EmacqlGxUfq7zxltC?usp=sharing","https://gemini.google.com/gem/1r_6iO63PgKLnxPPitxTc_ESAf0mY1gMz?usp=sharing","https://gemini.google.com/gem/1jtpSogrl48TmEKXWUXaJ2neLjR_p2POn?usp=sharing","https://gemini.google.com/gem/17FvtC1m6ALNhEYD8S0ECm_NqOVoPkqaj?usp=sharing","https://gemini.google.com/gem/1w9gHHfUcOIRhMqnx_wkBwid4TZuG0hJt?usp=sharing","https://gemini.google.com/gem/1s25zGceTVRwAZOkfwEz7oE0E11mwl_d6?usp=sharing","https://gemini.google.com/gem/1NtxiCNROwVjyY6iwK2r_pYofrawhgpJI?usp=sharing","https://gemini.google.com/gem/1hM4m0DdXB7tHwo2wieEzD_bglUTnE6FX?usp=sharing","https://gemini.google.com/gem/1iTFJP2Nwt55FoXY_Phr4qGMDb74KimV_?usp=sharing","https://gemini.google.com/gem/1tbLz0gRNHc5CrVqjZcK7-IDSEI1qWOcB?usp=sharing","https://gemini.google.com/gem/1FVJW5G85ARseaV5juCquuonEC3_i5abf?usp=sharing","https://gemini.google.com/gem/1hsygVLJStlRM8o202XwWpAOYtT4EEvWB?usp=sharing","https://gemini.google.com/gem/1yVU8h6kDZu3MaJvZg8jHM5PrcufsKyIn?usp=sharing","https://gemini.google.com/gem/1t_WY2sNhX29WhunH0FYzeR5GJe-c78br?usp=sharing","https://gemini.google.com/gem/140oaMIkIGfjOFzAfYxTB0Zdi9f8Xj5CS?usp=sharing","https://gemini.google.com/gem/1uG9C2_gc-pwY73bKOXQSkWOFUBOZ0cNB?usp=sharing","https://gemini.google.com/gem/1LJV3q57KuX7roK0L1kKiRVTkxt73e6GS?usp=sharing","https://gemini.google.com/gem/1GNZB_-ZCFg-BRNXAU1GmZu6ePlV5va-Q?usp=sharing","https://gemini.google.com/gem/12qnH5Z7WlkvbjOJiojz3IC3Cs_vIX8VV?usp=sharing","https://gemini.google.com/gem/1I_SjSwl-WapnsizTOdS7-E_nUlzFbbgc?usp=sharing","https://gemini.google.com/gem/1GdrT4omzYWeJ67eKQwJUVCimWoJXmh7D?usp=sharing","https://gemini.google.com/gem/1RcXk870tTe1DSnOy6tvBZn4nP24ju4Fo?usp=sharing","https://gemini.google.com/gem/1dNmOUpIcn1EthR2-3skBHshDi2siH9Yx?usp=sharing","https://gemini.google.com/gem/1miLnVys_hUwcyQ8uQgD5MnWWwH25ji99?usp=sharing","https://gemini.google.com/gem/1yYr7rkzVFDNyHO5ScnGFlq6NA2hc-ZgK?usp=sharing","https://gemini.google.com/gem/1yBfH9All6h4kf_DLPoRWhuSWsMahM0bf?usp=sharing","https://gemini.google.com/gem/1vk_Cp4bjXWL8v2wmHyUB2bWeiLX2JZLK?usp=sharing"];
@@ -117,5 +144,13 @@ function render(){
  }
 }
 search.addEventListener("input",render);document.getElementById("random").addEventListener("click",()=>{const available=links.map((url,i)=>url?i+1:null).filter(Boolean);const pool=available.filter(n=>!visited.has(n));const candidates=pool.length?pool:available;const target=candidates[Math.floor(Math.random()*candidates.length)];search.value=String(target);render();document.getElementById("cards").scrollIntoView({behavior:"smooth",block:"center"})});document.getElementById("reset").addEventListener("click",()=>{if(!confirm("이 기기에 저장된 방문 기록을 초기화할까요?"))return;visited.clear();try{localStorage.removeItem(storeKey)}catch(e){}render()});render();
+
+(function(){
+ const tabs=[document.getElementById("tab-interview"),document.getElementById("tab-resources")];
+ const panels=[document.getElementById("panel-interview"),document.getElementById("panel-resources")];
+ function setTab(index,updateHash=true){tabs.forEach((tab,i)=>{const chosen=i===index;tab.setAttribute("aria-selected",String(chosen));tab.tabIndex=chosen?0:-1;panels[i].hidden=!chosen});if(updateHash)history.replaceState(null,"",index===1?"#study":"#interview")}
+ tabs.forEach((tab,i)=>{tab.addEventListener("click",()=>setTab(i));tab.addEventListener("keydown",event=>{if(!["ArrowRight","ArrowLeft","Home","End"].includes(event.key))return;event.preventDefault();const j=event.key==="Home"?0:event.key==="End"?1:(i+(event.key==="ArrowRight"?1:-1)+2)%2;setTab(j);tabs[j].focus()})});
+ function fromHash(){setTab(location.hash==="#study"?1:0,false)}window.addEventListener("hashchange",fromHash);fromHash();
+})();
 </script>
 </body></html>
