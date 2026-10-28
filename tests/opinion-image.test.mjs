@@ -51,11 +51,13 @@ test('PNG drawing contains only opinion and grounds, never identity or research 
  }finally{globalThis.document=previous;}
 });
 
-test('image filenames include group and personal name and reject incomplete identity',()=>{
+test('image filenames accept an omitted group and retain personal name validation',()=>{
  assert.equal(opinionImageFilename('personal',{groupNumber:'3',label:'김학생'}),'3모둠_김학생_개인의견-근거.png');
  assert.equal(opinionImageFilename('group',{groupNumber:'6',label:'옛 이름'}),'6모둠_모둠의견-근거.png');
  assert.equal(opinionImageFilename('personal',{groupNumber:'1',label:' 가/나:다? '}),'1모둠_가_나_다__개인의견-근거.png');
- assert.throws(()=>opinionImageFilename('personal',{groupNumber:'',label:'이름'}),/모둠/);
+ assert.equal(opinionImageFilename('personal',{groupNumber:'',label:'이름'}),'이름_개인의견-근거.png');
+ assert.equal(opinionImageFilename('group',{groupNumber:''}),'모둠의견-근거.png');
+ assert.equal(opinionImageFilename('group',{}),'모둠의견-근거.png');
  assert.throws(()=>opinionImageFilename('personal',{groupNumber:'1',label:'   '}),/이름/);
  assert.throws(()=>opinionImageFilename('group',{groupNumber:'9'}),/모둠/);
 });

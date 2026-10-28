@@ -1,5 +1,5 @@
 import {MAX_RECORD_BYTES,createData,blankMember,makeRecord,parseRecord,updateActivity,updateCriteria,importPersonalToMember,formatText,loadRecord,saveRecord,storageKey} from './workroom-state.mjs?v=20261028-13';
-import {exportOpinionImage,opinionImageFilename} from './opinion-image.mjs?v=20261028-9';
+import {exportOpinionImage,opinionImageFilename} from './opinion-image.mjs?v=20261028-15';
 
 const PADLET_GROUPS=[
     ['1모둠','https://padlet.com/lucky20220528/1-s024wztgp5vbe1kgd9pi'],
@@ -211,12 +211,12 @@ function render(){
   if(opinionImageUrl){URL.revokeObjectURL(opinionImageUrl);opinionImageUrl=null;}
   $('activity-fields').replaceChildren();$('step-nav').replaceChildren();
   const identity=el('div',undefined,'identity');
-  field(identity,'groupNumber','우리 모둠',{type:'select',options:[['','모둠을 선택하세요'],...Array.from({length:6},(_,i)=>[String(i+1),`${i+1}모둠`])]});
+  field(identity,'groupNumber','우리 모둠 (선택 사항)',{type:'select',hint:'선택하지 않아도 이미지를 저장하고 제출할 수 있어요.',options:[['','모둠 선택 안 함'],...Array.from({length:6},(_,i)=>[String(i+1),`${i+1}모둠`])]});
   if(kind==='personal'){
-    const name=field(identity,'label','이름',{type:'text',hint:'모둠과 이름은 저장할 이미지 파일명에 들어갑니다.'});
+    const name=field(identity,'label','이름',{type:'text',hint:'선택한 모둠과 이름은 저장할 이미지 파일명에 들어갑니다.'});
     name.maxLength=40;name.autocomplete='off';
   }else{
-    identity.append(el('p','우리 모둠의 최종 의견과 근거를 적어 주세요. 모둠 번호가 이미지 파일명에 들어갑니다.','subtle'));
+    identity.append(el('p','우리 모둠의 최종 의견과 근거를 적어 주세요. 모둠을 선택하면 이미지 파일명에도 표시합니다.','subtle'));
     if(data.label)identity.append(el('p','이전 모둠 기록 이름: '+data.label,'subtle'));
   }
   $('activity-fields').append(identity);
