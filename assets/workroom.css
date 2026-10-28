@@ -11,3 +11,6 @@
 .reference-all{margin:12px 0}.reference-all summary{cursor:pointer;font-size:13px;font-weight:750;padding:8px 0}.reference-all pre{font:inherit;font-size:14px;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.65}
 /* Keep the reference open without covering the field being edited. */
 .personal-reference{top:100px;max-height:32vh;overflow:auto;scroll-margin-top:110px}.personal-reference .reference-content{max-height:20vh}.activity-section{scroll-margin-top:110px}@media(max-width:640px){.personal-reference{max-height:none;overflow:visible}.personal-reference .reference-content{max-height:32vh}}
+
+/* Guidance is informational, not another form field. */
+.solution-guidance{margin:14px 0 18px;padding:15px 17px;border:1px solid #c2dacb;border-left:4px solid #2c8364;border-radius:12px;background:#f0f8f2}.solution-guidance strong{font-size:15px;color:#205c43}.solution-guidance p{font-size:13px;line-height:1.75;margin:8px 0 0;color:#3f5f4f}.solution-guidance .subtle{color:#617165}
