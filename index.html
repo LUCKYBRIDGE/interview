@@ -412,8 +412,9 @@ const riskChecks=[...document.querySelectorAll(".risk-check")],riskInputs=["risk
 const KEY="openclass-student-inputs-v1",root=document.querySelector("main");
 if(!root)return;
 const fields=[...root.querySelectorAll("input,textarea,select")].filter(el=>!["button","submit","reset","file","hidden"].includes(el.type)&&!el.closest(".share-qr-overlay,.risk-modal")&&!(el.id||"").startsWith("share-"));
-const storageKey=el=>el.id?"id:"+el.id:el.classList.contains("risk-check")?"risk:"+el.dataset.group+":"+el.value:el.name?"name:"+el.name+":"+el.value:null;
+const storageKey=el=>{if(el.id)return "id:"+el.id;if(el.classList.contains("risk-check"))return "risk:"+el.dataset.group+":"+el.value;if(el.classList.contains("noise-check"))return "noise:"+el.value;if(el.classList.contains("noise-source")){const parent=el.closest(".noise-choice");return parent?"noise-source:"+parent.querySelector(".noise-check")?.value:null}if(el.classList.contains("stage-eval"))return "stage-eval:"+[...document.querySelectorAll(".stage-eval")].indexOf(el);return el.name?"name:"+el.name+":"+el.value:null};
 const persistent=fields.map(el=>({el,key:storageKey(el)})).filter(x=>x.key);
+// Keep existing id: and risk: keys unchanged so older student work survives updates.
 let restoring=true;
 try{const saved=JSON.parse(localStorage.getItem(KEY)||"{}");for(const {el,key} of persistent){if(!Object.prototype.hasOwnProperty.call(saved,key))continue;const v=saved[key];if(el.type==="checkbox"||el.type==="radio")el.checked=v===true;else if(typeof v==="string")el.value=v;}}catch(e){}
 restoring=false;
