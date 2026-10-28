@@ -39,6 +39,7 @@ function extra(parent,paths,title='더 기록하기') {
   root.append(el('summary',title+(hasRecord?' · 저장된 기록 있음':'')));
   parent.append(root);return root;
 }
+function preventionNotice(parent){const box=el('aside',undefined,'solution-guidance');box.setAttribute('aria-label','해결 방법을 생각할 때 주의할 점');box.append(el('strong','처벌을 강화하는 방법만 떠올리고 있나요?'));box.append(el('p','벌금이나 처벌도 검토할 수 있지만, 금액이나 형량을 높이는 것만으로 문제가 해결된다고 단정하지 마세요. 문제가 생기는 까닭, 사고를 미리 막는 방법, 안전시설·교육·안내·관리 등 다른 방법도 함께 살펴보세요.'));box.append(el('p','어떤 방법이 실제로 도움이 될지, 실천할 수 있을지, 여러 사람에게 어떤 영향을 줄지 근거를 들어 이야기해 보세요.','subtle'));parent.append(box);}
 function renderPersonal(){
   const a=section('personal-perspectives','9~10차시','1 듣고, 찾고, 알고 있던 것','짧게 적어도 좋아요. 가상 인물의 말은 실제 사실과 구분하고, 알고 있던 내용도 확인해 보세요.');
   field(a,'perspectives.0.difficulty',data.perspectives[0].kind==='real'?'실제 주변 사람에게 들은 내용':'가상 인터뷰에서 들은 내용',{rows:2});
@@ -53,7 +54,7 @@ function renderPersonal(){
   const moreSource=entry(more,'추가 자료');field(moreSource,'sources.1.title','자료 제목',{type:'text'});field(moreSource,'sources.1.url','출처 또는 주소',{type:'text'});field(moreSource,'sources.1.date','확인 날짜',{type:'date'});field(moreSource,'sources.1.scope','지역·대상·시기',{type:'text'});field(moreSource,'sources.1.claim','알게 된 점',{rows:2});field(moreSource,'sources.1.relevance','내 문제와의 관련',{rows:2});
   const b=section('personal-problem','9~10차시','2 집중할 문제','누가, 어떤 곳에서, 어떤 어려움을 겪나요?');field(b,'problem','내가 집중할 문제',{rows:2});
   const problemMore=extra(b,['who','where','difficulty']);field(problemMore,'who','누가',{type:'text'});field(problemMore,'where','어떤 곳에서',{type:'text'});field(problemMore,'difficulty','어떤 어려움',{rows:2});
-  const c=section('personal-ideas','10차시','3 아이디어','여러 방법을 짧게 적어 보세요. 아직 하나를 고르지 않아도 돼요.');field(c,'ideas.0','떠오른 아이디어',{rows:3});const ideasMore=extra(c,['ideas.1','ideas.2']);field(ideasMore,'ideas.1','다른 아이디어',{rows:2});field(ideasMore,'ideas.2','더 떠오른 아이디어',{rows:2});
+  const c=section('personal-ideas','10차시','3 아이디어','여러 방법을 짧게 적어 보세요. 아직 하나를 고르지 않아도 돼요.');preventionNotice(c);field(c,'ideas.0','떠오른 아이디어',{rows:3});const ideasMore=extra(c,['ideas.1','ideas.2']);field(ideasMore,'ideas.1','다른 아이디어',{rows:2});field(ideasMore,'ideas.2','더 떠오른 아이디어',{rows:2});
   const d=section('personal-proposal','10차시','4 내 의견과 근거');field(d,'proposal','내가 제안하는 의견',{rows:2});field(d,'reason','이유와 근거',{rows:3,hint:'듣고 찾은 내용이나 알고 있던 사실과 연결해 적어요.'});const finalMore=extra(d,['evidence','uncertainties','handoff']);field(finalMore,'evidence','근거와 출처 보충',{rows:2});field(finalMore,'uncertainties','걱정되거나 더 확인할 점',{rows:2});field(finalMore,'handoff','모둠에서 함께 의논할 점',{rows:2});
   renderOpinionImage(d);
 }
@@ -139,7 +140,7 @@ function renderGroup(){
     const more=extra(box,[`members.${i}.problem`,`members.${i}.source`],'개인 기록 불러오기 · 더 기록하기');memberImport(more,i);field(more,`members.${i}.problem`,'해결하려는 문제',{rows:2});field(more,`members.${i}.source`,'근거와 출처',{rows:2});
   });
   const focus=el('div');focus.id='group-focus';a.append(focus);field(focus,'focus','함께 집중할 문제',{rows:2});const focusMore=extra(focus,['focusReason']);field(focusMore,'focusReason','이 문제를 정한 까닭',{rows:2});
-  const b=section('group-gathering','11~12차시','2 의견 모으기','검토 기준으로 좋은 점과 걱정되는 점을 이야기해요. 기준은 모둠에 맞게 고치거나 더하고 지울 수 있어요.');
+  const b=section('group-gathering','11~12차시','2 의견 모으기','검토 기준으로 좋은 점과 걱정되는 점을 이야기해요. 기준은 모둠에 맞게 고치거나 더하고 지울 수 있어요.');preventionNotice(b);
   renderCriteria(b);field(b,'discussion','함께 살펴본 좋은 점과 걱정',{rows:4});
   const reviewPaths=data.members.flatMap((_,i)=>['strength','concern','question','revision'].map(key=>`members.${i}.${key}`));const reviews=extra(b,reviewPaths,'의견별로 더 기록하기');
   data.members.forEach((m,i)=>{const box=entry(reviews,`${i+1}번 의견`);const note=el('p',`${m.name||`모둠원 ${i+1}`}의 제안: ${m.proposal||'앞에서 적어 주세요.'}`,'subtle');note.dataset.proposalFor=i;box.append(note);field(box,`members.${i}.strength`,'좋은 점과 이유',{rows:2});field(box,`members.${i}.concern`,'걱정과 이유',{rows:2});field(box,`members.${i}.question`,'확인할 점',{rows:2});field(box,`members.${i}.revision`,'고치거나 더할 점',{rows:2});});
