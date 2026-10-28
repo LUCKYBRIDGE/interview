@@ -60,8 +60,9 @@ function renderPersonal(){
   }
 }
 function renderOpinionImage(parent){
-  const panel=el('div',undefined,'opinion-image-tools');panel.append(el('h3','의견과 근거 공유하기'));
-  panel.append(el('p','의견과 근거를 한 장에 들어가는 큰 글씨로 담아요. 단어 사이에서 줄을 바꾸고, 긴 단어만 나누어 표시해요. 긴 글은 핵심만 정리해 주세요.','subtle'));
+  const panel=el('div',undefined,'opinion-image-tools');
+  panel.append(el('span','다 썼다면 다음은 여기!','image-create-badge'),el('h3','의견·근거를 이미지로 만들어 제출해요'));
+  const hint=el('p','아래 초록색 버튼을 누르세요. 이미지가 나오면 저장한 뒤 패들렛에 올려요.','image-create-hint');hint.id='image-create-hint';panel.append(hint);
   const steps=el('ol',undefined,'image-submit-steps');
   steps.append(el('li','이미지를 만든 뒤 아래의 ‘① 이미지 저장하기’를 눌러요.'));
   if(kind==='personal'){
@@ -69,8 +70,11 @@ function renderOpinionImage(parent){
   }else{
     steps.append(el('li','‘② 모둠별 의견 제출하기’를 눌러 학급 패들렛을 열어요.'),el('li','글쓰기(+)를 눌러 모둠의 의견·근거 PNG 이미지를 첨부하고, 모둠 번호를 적어 게시해요.'));
   }
-  panel.append(steps,el('p','게시판에 이미지가 올라왔는지 확인하세요. 패들렛을 여는 것만으로 제출되지는 않아요.','subtle'));
-  const button=el('button','16:9 이미지 만들기');button.type='button';button.id='make-opinion-image';
+  const instructions=el('details',undefined,'image-submit-help');
+  instructions.append(el('summary','이미지 저장·제출 방법 보기'),steps,el('p','게시판에 이미지가 올라왔는지 확인하세요. 패들렛을 여는 것만으로 제출되지는 않아요.','subtle'));
+  const button=el('button',undefined,'image-create-button');button.type='button';button.id='make-opinion-image';
+  button.append(el('strong','여기를 눌러 이미지 만들기'),el('span','내 의견과 근거를 큰 글씨로 · 16:9'));
+  button.setAttribute('aria-describedby',hint.id);
   const status=el('p',undefined,'subtle');status.id='opinion-image-status';status.setAttribute('role','status');status.setAttribute('aria-live','polite');
   const preview=el('div',undefined,'opinion-image-preview');preview.hidden=true;
   button.addEventListener('click',async()=>{
@@ -112,7 +116,7 @@ function renderOpinionImage(parent){
     }catch(error){status.textContent=error.message||'이미지를 만들지 못했습니다. 다시 시도해 주세요.';}
     finally{button.disabled=false;}
   });
-  panel.append(button,status,preview);parent.append(panel);
+  panel.append(button,status,preview,instructions);parent.append(panel);
 }
 function referenceValues(parent,record){
   parent.replaceChildren();const personal=record.data;
