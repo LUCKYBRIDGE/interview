@@ -60,15 +60,37 @@ function renderPersonal(){
   }
 }
 function renderOpinionImage(parent){
+  const direct=el('section',undefined,'padlet-direct-panel');
+  direct.append(el('h3',kind==='personal'?'자기 모둠 패들렛 바로 가기':'모둠 의견 제출 패들렛 바로 가기'),el('p','이미지를 만들거나 저장하기 전에도 게시판을 열 수 있어요.','subtle'));
+  const submission=el('nav',undefined,'image-submission-links');
+  submission.setAttribute('aria-label',kind==='personal'?'개인 의견 제출: 자기 모둠 선택':'모둠별 의견 제출');
+  const targets=kind==='personal'?[
+    ['1모둠','https://padlet.com/lucky20220528/1-s024wztgp5vbe1kgd9pi'],
+    ['2모둠','https://padlet.com/lucky20220528/2-s024wzv0vfeff65n0w69'],
+    ['3모둠','https://padlet.com/lucky20220528/3-s024wzvmzt8jqbdewmdp'],
+    ['4모둠','https://padlet.com/lucky20220528/4-s024wzv4gir3z6uxq0uw'],
+    ['5모둠','https://padlet.com/lucky20220528/5-s024wzwnxp0xp85x6frx'],
+    ['6모둠','https://padlet.com/lucky20220528/6-s024wzwcz8a6lwh7gjka']
+  ]:[['모둠별 의견 제출하기','https://padlet.com/lucky20220528/5-s024ikj17bfqgkw776wh']];
+  targets.forEach(([name,url])=>{
+    const selected=kind==='personal'&&name===data.groupNumber+'모둠';
+    const padlet=el('a',name+(selected?' · 내 모둠 ↗':' ↗'),'image-download');
+    if(kind==='personal')padlet.dataset.padletGroup=name.slice(0,1);
+    if(selected)padlet.setAttribute('aria-current','true');
+    padlet.href=url;padlet.target='_blank';padlet.rel='noopener noreferrer';
+    padlet.setAttribute('aria-label',kind==='personal'?`개인 의견: ${name} 패들렛에 제출하기 (새 탭)`:'모둠별 의견 제출 패들렛 열기 (새 탭)');
+    submission.append(padlet);
+  });
+  direct.append(submission);parent.append(direct);
   const panel=el('div',undefined,'opinion-image-tools');
   panel.append(el('span','다 썼다면 다음은 여기!','image-create-badge'),el('h3','의견·근거를 이미지로 만들어 제출해요'));
   const hint=el('p','아래 초록색 버튼을 누르세요. 이미지가 나오면 저장한 뒤 패들렛에 올려요.','image-create-hint');hint.id='image-create-hint';panel.append(hint);
   const steps=el('ol',undefined,'image-submit-steps');
   steps.append(el('li','이미지를 만든 뒤 아래의 ‘① 이미지 저장하기’를 눌러요.'));
   if(kind==='personal'){
-    steps.append(el('li','아래에서 자기 모둠의 패들렛을 선택해 열어요.'),el('li','자기 모둠 게시판에서 글쓰기(+)를 누르고, 저장한 의견·근거 PNG 이미지를 첨부한 뒤 게시해요.'));
+    steps.append(el('li','패들렛 바로 가기에서 자기 모둠을 선택해 열어요.'),el('li','자기 모둠 게시판에서 글쓰기(+)를 누르고, 저장한 의견·근거 PNG 이미지를 첨부한 뒤 게시해요.'));
   }else{
-    steps.append(el('li','‘② 모둠별 의견 제출하기’를 눌러 학급 패들렛을 열어요.'),el('li','글쓰기(+)를 눌러 모둠의 의견·근거 PNG 이미지를 첨부하고, 모둠 번호를 적어 게시해요.'));
+    steps.append(el('li','‘모둠별 의견 제출하기’를 눌러 학급 패들렛을 열어요.'),el('li','글쓰기(+)를 눌러 모둠의 의견·근거 PNG 이미지를 첨부하고, 모둠 번호를 적어 게시해요.'));
   }
   const instructions=el('details',undefined,'image-submit-help');
   instructions.append(el('summary','이미지 저장·제출 방법 보기'),steps,el('p','게시판에 이미지가 올라왔는지 확인하세요. 패들렛을 여는 것만으로 제출되지는 않아요.','subtle'));
@@ -87,32 +109,13 @@ function renderOpinionImage(parent){
       const image=el('img');image.src=opinionImageUrl;image.alt='의견과 근거 16:9 이미지 미리보기';image.width=result.width;image.height=result.height;
       const link=el('a','① 이미지 저장하기','image-download');link.href=opinionImageUrl;link.download=filename;
       const actions=el('div',undefined,'image-submit-actions');actions.append(link);
-      const submission=el('nav',undefined,'image-submission-links');
-      submission.setAttribute('aria-label',startedKind==='personal'?'개인 의견 제출: 자기 모둠 선택':'모둠별 의견 제출');
-      const targets=startedKind==='personal'?[
-        ['1모둠','https://padlet.com/lucky20220528/1-s024wztgp5vbe1kgd9pi'],
-        ['2모둠','https://padlet.com/lucky20220528/2-s024wzv0vfeff65n0w69'],
-        ['3모둠','https://padlet.com/lucky20220528/3-s024wzvmzt8jqbdewmdp'],
-        ['4모둠','https://padlet.com/lucky20220528/4-s024wzv4gir3z6uxq0uw'],
-        ['5모둠','https://padlet.com/lucky20220528/5-s024wzwnxp0xp85x6frx'],
-        ['6모둠','https://padlet.com/lucky20220528/6-s024wzwcz8a6lwh7gjka']
-      ]:[['② 모둠별 의견 제출하기','https://padlet.com/lucky20220528/5-s024ikj17bfqgkw776wh']];
-      targets.forEach(([name,url])=>{
-        const selected=startedKind==='personal'&&name===snapshot.groupNumber+'모둠';
-        const padlet=el('a',name+(selected?' · 내 모둠 ↗':' ↗'),'image-download');
-        if(selected)padlet.setAttribute('aria-current','true');
-        padlet.href=url;padlet.target='_blank';padlet.rel='noopener noreferrer';
-        padlet.setAttribute('aria-label',startedKind==='personal'?`개인 의견: ${name} 패들렛에 제출하기 (새 탭)`:'모둠별 의견 제출 패들렛 열기 (새 탭)');
-        submission.append(padlet);
-      });
-      const heading=el('h4',startedKind==='personal'?'② 자기 모둠에 개인 의견 제출하기':'② 모둠별 의견 제출');
       const folder=el('a','Google Drive 제출 폴더 ↗','image-download');
       folder.id='open-personal-submission-folder';
       folder.href='https://drive.google.com/drive/folders/1gLw1YDJKoILpqh-shaFMWwuCsNfNYW3X?usp=drive_link';
       folder.target='_blank';folder.rel='noopener noreferrer';
       const alternative=el('details',undefined,'submission-alternative');
       alternative.append(el('summary','다른 제출 방법 · Google Drive'),el('p','선생님 안내에 따라 이미지 파일을 제출 폴더에 업로드하세요.','subtle'),folder);
-      preview.replaceChildren(image,actions,heading,submission,alternative);preview.hidden=false;status.textContent=`${result.width} × ${result.height} PNG입니다. 내용을 확인한 뒤 저장하세요.`;
+      preview.replaceChildren(image,actions,alternative);preview.hidden=false;status.textContent=`${result.width} × ${result.height} PNG입니다. 내용을 확인한 뒤 저장하세요.`;
     }catch(error){status.textContent=error.message||'이미지를 만들지 못했습니다. 다시 시도해 주세요.';}
     finally{button.disabled=false;}
   });
@@ -223,6 +226,11 @@ function save(){
   warning(result.message);return false;
 }
 function updatePrint(){
+  document.querySelectorAll('[data-padlet-group]').forEach(link=>{
+    const group=link.dataset.padletGroup,selected=group===data.groupNumber;
+    link.textContent=group+'모둠'+(selected?' · 내 모둠 ↗':' ↗');
+    if(selected)link.setAttribute('aria-current','true');else link.removeAttribute('aria-current');
+  });
   if(kind==='personal'){const label=document.querySelector('label[for="field-perspectives-0-difficulty"]');if(label)label.textContent=data.perspectives[0].kind==='real'?'실제 주변 사람에게 들은 내용':'가상 인터뷰에서 들은 내용';}
   document.querySelectorAll('input[type=checkbox][data-field]').forEach(input=>{input.checked=at(input.dataset.field);});
   document.querySelectorAll('[data-confirmation-for]').forEach(node=>{const i=Number(node.dataset.confirmationFor);node.textContent=`${data.members[i].name||`모둠원 ${i+1}`} 최종 내용 확인`;});
