@@ -59,6 +59,8 @@ pdfmetrics.registerFont(TTFont('MalgunBold', 'C:/Windows/Fonts/malgunbd.ttf'))
 width, height = float(page.mediabox.width), float(page.mediabox.height)
 overlay = BytesIO()
 c = canvas.Canvas(overlay, pagesize=(width, height))
+c.drawImage(str(ROOT / 'assets/worksheet/site-qr.png'), 468, height-120, width=82, height=82, mask='auto')
+c.linkURL('https://luckybridge.github.io/interview/', (468, height-120, 550, height-38), relative=0)
 # Erase the two old final-writing boxes, then replace them with one larger box.
 c.setFillColorRGB(1, 1, 1)
 c.rect(44.5, 69, 506.5, 120, stroke=0, fill=1)

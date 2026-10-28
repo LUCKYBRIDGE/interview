@@ -21,6 +21,23 @@ REPLACE = {
 }
 
 doc = Document(BASE / 'group-11-12.docx')
+# Anchor the website QR to the front page, without changing body flow.
+picture = doc.paragraphs[0].add_run().add_picture(str(ROOT / 'assets/worksheet/site-qr.png'), width=Pt(82), height=Pt(82))
+inline = picture._inline
+anchor = OxmlElement('wp:anchor')
+for key, value in {'distT':'0','distB':'0','distL':'0','distR':'0','simplePos':'0','relativeHeight':'251659264','behindDoc':'0','locked':'0','layoutInCell':'1','allowOverlap':'0'}.items():
+    anchor.set(key, value)
+simple = OxmlElement('wp:simplePos');simple.set('x','0');simple.set('y','0');anchor.append(simple)
+for direction, offset in [('H',468),('V',38)]:
+    pos = OxmlElement('wp:position'+direction);pos.set('relativeFrom','page')
+    coordinate = OxmlElement('wp:posOffset');coordinate.text = str(int(offset*12700));pos.append(coordinate);anchor.append(pos)
+for child in list(inline):
+    if child.tag == qn('wp:docPr'):
+        child.set('descr', '우리 웹사이트 QR https://luckybridge.github.io/interview/')
+    if child.tag == qn('wp:docPr'):
+        anchor.append(OxmlElement('wp:wrapNone'))
+    anchor.append(child)
+inline.getparent().replace(inline, anchor)
 for paragraph in list(doc.paragraphs):
     if paragraph.text.startswith('함께 집중할 문제:'):
         paragraph._p.getparent().remove(paragraph._p)
@@ -165,6 +182,21 @@ for p in memo_table.findall('.//hp:p', hp):
 for t in memo_table.findall('.//hp:t', hp):
     t.text = None
 section.append(memo_paragraph)
+# Picture component structure follows Hancom's OWPML PictureType model.
+# https://github.com/hancom-io/hwpx-owpml-model/blob/main/OWPML/Class/Para/PictureType.cpp
+from PIL import Image
+image_path = ROOT / 'assets/worksheet/site-qr.png'
+image_width = Image.open(image_path).width * 75
+scale = 8200 / image_width
+hc = 'http://www.hancom.co.kr/hwpml/2011/core'
+picture_xml = f'''<hp:pic xmlns:hp="{hp['hp']}" xmlns:hc="{hc}" id="7" zOrder="1" numberingType="PICTURE" textWrap="IN_FRONT_OF_TEXT" textFlow="BOTH_SIDES" lock="0" dropcapstyle="None" href="" groupLevel="0" instid="70001" reverse="0">
+<hp:offset x="0" y="0"/><hp:orgSz width="{image_width}" height="{image_width}"/><hp:curSz width="8200" height="8200"/><hp:flip horizontal="0" vertical="0"/><hp:rotationInfo angle="0" centerX="4100" centerY="4100" rotateimage="1"/>
+<hp:renderingInfo><hc:transMatrix e1="1" e2="0" e3="0" e4="0" e5="1" e6="0"/><hc:scaMatrix e1="{scale}" e2="0" e3="0" e4="0" e5="{scale}" e6="0"/><hc:rotMatrix e1="1" e2="0" e3="0" e4="0" e5="1" e6="0"/></hp:renderingInfo>
+<hp:imgRect><hc:pt0 x="0" y="0"/><hc:pt1 x="{image_width}" y="0"/><hc:pt2 x="{image_width}" y="{image_width}"/><hc:pt3 x="0" y="{image_width}"/></hp:imgRect><hp:imgClip left="0" right="{image_width}" top="0" bottom="{image_width}"/><hp:inMargin left="0" right="0" top="0" bottom="0"/><hp:imgDim dimwidth="{image_width}" dimheight="{image_width}"/>
+<hc:img binaryItemIDRef="worksheetSiteQr" bright="0" contrast="0" effect="REAL_PIC" alpha="0"/><hp:effects/>
+<hp:sz width="8200" widthRelTo="ABSOLUTE" height="8200" heightRelTo="ABSOLUTE" protect="0"/><hp:pos treatAsChar="0" affectLSpacing="0" flowWithText="0" allowOverlap="1" holdAnchorAndSO="0" vertRelTo="PAGE" horzRelTo="PAGE" vertAlign="TOP" horzAlign="LEFT" vertOffset="3800" horzOffset="46800"/><hp:outMargin left="0" right="0" top="0" bottom="0"/><hp:shapeComment>우리 웹사이트 QR https://luckybridge.github.io/interview/</hp:shapeComment></hp:pic>'''
+run = etree.SubElement(section.find('hp:p', hp), '{'+hp['hp']+'}run', charPrIDRef='0')
+run.append(etree.fromstring(picture_xml.encode('utf-8')))
 section_bytes = etree.tostring(section, xml_declaration=True, encoding='UTF-8', standalone=True)
 preview = subprocess.run(['pdftoppm', '-scale-to', '700', '-singlefile', '-png', str(DEST / 'group-11-12.pdf')], capture_output=True, check=True).stdout
 with ZipFile(DEST / 'group-11-12.hwpx', 'w') as out:
@@ -175,7 +207,14 @@ with ZipFile(DEST / 'group-11-12.hwpx', 'w') as out:
             data = '\n'.join(t.text for t in section.findall('.//hp:t', hp) if t.text).encode('utf-8')
         elif info.filename == 'Preview/PrvImage.png':
             data = preview
+        elif info.filename == 'Contents/content.hpf':
+            package = etree.fromstring(data)
+            opf = 'http://www.idpf.org/2007/opf/'
+            manifest = package.find('{'+opf+'}manifest')
+            etree.SubElement(manifest, '{'+opf+'}item', id='worksheetSiteQr', href='BinData/site-qr.png', **{'media-type':'image/png'})
+            data = etree.tostring(package, xml_declaration=True, encoding='UTF-8', standalone=True)
         out.writestr(info, data)
+    out.writestr('BinData/site-qr.png', image_path.read_bytes())
 with ZipFile(DEST / 'group-11-12.hwpx') as check:
     assert check.testzip() is None
     text = check.read('Contents/section0.xml').decode('utf-8')

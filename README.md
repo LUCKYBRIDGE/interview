@@ -86,3 +86,5 @@ GitHub Pages는 `main` 브랜치의 루트 폴더를 배포 대상으로 사용�
 재생성 원본은 `scripts/templates/`에 보존합니다. `scripts/revise_group_worksheet.py`로 PDF를 만든 뒤 `materials/group-11-12.pdf`로 복사하고, `scripts/sync_group_editables.py`로 편집본을 갱신합니다. Python 의존성은 pypdf·reportlab·python-docx·lxml이며 HWPX 미리보기 생성에 Poppler의 pdftoppm을 사용합니다.
 
 모둠활동지 뒷면에는 다섯 가지 토의 약속과 선 없는 큰 자유 메모 칸이 있습니다. PDF 인쇄는 A4 양면·긴 쪽으로 넘기기를 사용합니다. 웹 모둠활동에도 토의 약속을 접어서 확인할 수 있도록 제공합니다.
+
+모둠활동 탭을 열면 가장 위에서 1~6모둠 패들렛과 전체 의견 패들렛으로 이동할 수 있습니다. 모둠활동지 앞면 우측 상단의 QR도 이 웹사이트로 연결됩니다.

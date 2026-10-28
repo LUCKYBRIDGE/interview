@@ -1,6 +1,15 @@
 import {MAX_RECORD_BYTES,createData,blankMember,makeRecord,parseRecord,updateActivity,updateCriteria,importPersonalToMember,formatText,loadRecord,saveRecord,storageKey} from './workroom-state.mjs?v=20261028-13';
 import {exportOpinionImage,opinionImageFilename} from './opinion-image.mjs?v=20261028-9';
 
+const PADLET_GROUPS=[
+    ['1모둠','https://padlet.com/lucky20220528/1-s024wztgp5vbe1kgd9pi'],
+    ['2모둠','https://padlet.com/lucky20220528/2-s024wzv0vfeff65n0w69'],
+    ['3모둠','https://padlet.com/lucky20220528/3-s024wzvmzt8jqbdewmdp'],
+    ['4모둠','https://padlet.com/lucky20220528/4-s024wzv4gir3z6uxq0uw'],
+    ['5모둠','https://padlet.com/lucky20220528/5-s024wzwnxp0xp85x6frx'],
+    ['6모둠','https://padlet.com/lucky20220528/6-s024wzwcz8a6lwh7gjka']
+  ];
+const CLASS_PADLET='https://padlet.com/lucky20220528/5-s024ikj17bfqgkw776wh';
 const $ = id => document.getElementById(id);
 const form=$('activity');
 let kind=location.hash==='#group'?'group':'personal';
@@ -59,19 +68,21 @@ function renderPersonal(){
     $('activity-fields').append(archive);
   }
 }
+function renderGroupPadletTop(){
+  const top=$('group-padlet-top');top.hidden=kind!=='group';
+  if(kind!=='group')return;
+  const title=el('h2','모둠별·전체 의견 패들렛');title.id='group-padlet-title';title.tabIndex=-1;
+  const links=el('nav',undefined,'image-submission-links group-padlet-links');links.setAttribute('aria-label','1~6모둠 패들렛');
+  PADLET_GROUPS.forEach(([name,url],i)=>{const link=el('a',name+' ↗','image-download');link.href=url;link.target='_blank';link.rel='noopener noreferrer';link.dataset.padletGroup=String(i+1);links.append(link);});
+  const whole=el('a','전체 의견 패들렛 · 모둠 최종 의견 제출 ↗','image-download whole-class-padlet');whole.id='whole-class-padlet-top';whole.href=CLASS_PADLET;whole.target='_blank';whole.rel='noopener noreferrer';
+  top.replaceChildren(title,el('p','모둠별 게시판에서 개인 의견을 보고, 최종 모둠 의견은 전체 의견 게시판에 올려요.','subtle'),links,whole);
+}
 function renderOpinionImage(parent){
   const direct=el('section',undefined,'padlet-direct-panel');
   direct.append(el('h3',kind==='personal'?'자기 모둠 패들렛 바로 가기':'모둠 의견 제출 패들렛 바로 가기'),el('p','이미지를 만들거나 저장하기 전에도 게시판을 열 수 있어요.','subtle'));
   const submission=el('nav',undefined,'image-submission-links');
   submission.setAttribute('aria-label',kind==='personal'?'개인 의견 제출: 자기 모둠 선택':'모둠별 의견 제출');
-  const targets=kind==='personal'?[
-    ['1모둠','https://padlet.com/lucky20220528/1-s024wztgp5vbe1kgd9pi'],
-    ['2모둠','https://padlet.com/lucky20220528/2-s024wzv0vfeff65n0w69'],
-    ['3모둠','https://padlet.com/lucky20220528/3-s024wzvmzt8jqbdewmdp'],
-    ['4모둠','https://padlet.com/lucky20220528/4-s024wzv4gir3z6uxq0uw'],
-    ['5모둠','https://padlet.com/lucky20220528/5-s024wzwnxp0xp85x6frx'],
-    ['6모둠','https://padlet.com/lucky20220528/6-s024wzwcz8a6lwh7gjka']
-  ]:[['모둠별 의견 제출하기','https://padlet.com/lucky20220528/5-s024ikj17bfqgkw776wh']];
+  const targets=kind==='personal'?PADLET_GROUPS:[['모둠별 의견 제출하기',CLASS_PADLET]];
   targets.forEach(([name,url])=>{
     const selected=kind==='personal'&&name===data.groupNumber+'모둠';
     const padlet=el('a',name+(selected?' · 내 모둠 ↗':' ↗'),'image-download');
@@ -194,6 +205,7 @@ function renderGroup(){
   renderOpinionImage(c);
 }
 function render(){
+  renderGroupPadletTop();
   $('mode-personal').setAttribute('aria-pressed',String(kind==='personal'));$('mode-group').setAttribute('aria-pressed',String(kind==='group'));
   $('activity-title').textContent=kind==='personal'?'의견 마련하기':'모둠 토의하기';
   if(opinionImageUrl){URL.revokeObjectURL(opinionImageUrl);opinionImageUrl=null;}
@@ -244,7 +256,7 @@ form.addEventListener('input',event=>{
   const hadConfirmation=kind==='group'&&data.members.some(member=>member.checked);try{data=updateActivity(kind,data,target.dataset.field,target.type==='checkbox'?target.checked:target.value);}catch(error){$('tool-status').textContent=error.message;return;}if(hadConfirmation&&kind==='group'&&!data.members.some(member=>member.checked))$('tool-status').textContent='내용이 바뀌어 최종 확인 표시를 해제했습니다. 모둠원들이 다시 확인하세요.';cache.set(kind,data);updatePrint();
   if(!blocked){$('save-status').textContent='기록을 저장하고 있습니다…';clearTimeout(timer);timer=setTimeout(save,350);}
 });
-function switchMode(next){if(next===kind)return;activityRevision+=1;save();kind=next;load();render();$('tool-status').textContent='';$('copy-fallback').hidden=true;history.replaceState(null,'',`#${kind}`);$('activity-title').focus();}
+function switchMode(next){if(next===kind){if(next==='group')$('group-padlet-top').scrollIntoView({block:'start',behavior:'auto'});return;}activityRevision+=1;save();kind=next;load();render();$('tool-status').textContent='';$('copy-fallback').hidden=true;history.replaceState(null,'',`#${kind}`);if(kind==='group'){$('group-padlet-top').scrollIntoView({block:'start',behavior:'auto'});$('group-padlet-title').focus({preventScroll:true});}else $('activity-title').focus();}
 $('mode-personal').addEventListener('click',()=>switchMode('personal'));$('mode-group').addEventListener('click',()=>switchMode('group'));
 window.addEventListener('hashchange',()=>{if(['#personal','#group'].includes(location.hash))switchMode(location.hash.slice(1));});
 $('save-now').addEventListener('click',()=>{if(blocked){$('storage-warning').scrollIntoView({block:'center'});$('resume-saving').focus();}else save();});
