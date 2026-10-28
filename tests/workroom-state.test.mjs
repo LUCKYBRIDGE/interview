@@ -194,3 +194,14 @@ test('group selection and name survive a record roundtrip and invalid groups are
  assert.throws(()=>makeRecord('personal',{...data,groupNumber:'7'}),/모둠/);
  assert.match(formatText('personal',data),/5모둠/);
 });
+
+test('group text follows worksheet terminology and preserves prior adjustment notes only when present',()=>{
+ const data=createData('group');data.members[0].strength='실천하기 쉽다';data.members[0].concern='비용이 든다';
+ data.proposal='최종 의견';data.reason='최종 근거';
+ const text=formatText('group',data);
+ assert.match(text,/장점과 이유: 실천하기 쉽다/);assert.match(text,/단점과 이유: 비용이 든다/);
+ assert.match(text,/우리 모둠의 최종 의견: 최종 의견/);assert.match(text,/최종 의견의 근거: 최종 근거/);
+ assert.doesNotMatch(text,/이전에 기록한 의견 조정 내용/);
+ data.changes='기존에 적었던 내용';
+ assert.match(formatText('group',data),/이전에 기록한 의견 조정 내용: 기존에 적었던 내용/);
+});

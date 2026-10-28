@@ -1,5 +1,5 @@
-import {MAX_RECORD_BYTES,createData,blankMember,makeRecord,parseRecord,updateActivity,updateCriteria,importPersonalToMember,formatText,loadRecord,saveRecord,storageKey} from './workroom-state.mjs?v=20261028-8';
-import {exportOpinionImage,opinionImageFilename} from './opinion-image.mjs?v=20261028-8';
+import {MAX_RECORD_BYTES,createData,blankMember,makeRecord,parseRecord,updateActivity,updateCriteria,importPersonalToMember,formatText,loadRecord,saveRecord,storageKey} from './workroom-state.mjs?v=20261028-9';
+import {exportOpinionImage,opinionImageFilename} from './opinion-image.mjs?v=20261028-9';
 
 const $ = id => document.getElementById(id);
 const form=$('activity');
@@ -170,18 +170,18 @@ function renderMemberCount(parent){
   select.addEventListener('change',()=>{const next=Number(select.value);if(next<data.members.length&&!confirm('마지막 모둠원 기록이 삭제됩니다. 기록 파일을 보관했나요? 모둠원 수를 줄일까요?')){select.value=data.members.length;return;}const members=next<data.members.length?data.members.slice(0,next):[...data.members,...Array.from({length:next-data.members.length},blankMember)];data={...data,members:members.map(member=>({...member,checked:false}))};cache.set(kind,data);render();save();});count.append(label,select);parent.append(count);
 }
 function renderGroup(){
-  const a=section('group-sharing','11차시','1 의견 나누기','한 사람씩 설명하고 이름·의견·이유만 짧게 남겨요.');renderMemberCount(a);
+  const a=section('group-sharing','11차시','1 의견 나누기','한 사람씩 의견을 설명하고, 각 의견의 장점과 단점을 함께 검토해 적어요.');renderMemberCount(a);
   data.members.forEach((_,i)=>{
-    const box=entry(a,`모둠원 ${i+1}`);const row=grid(box);row.classList.add('sharing-grid');field(row,`members.${i}.name`,'이름·별칭',{type:'text'});field(row,`members.${i}.proposal`,'의견',{rows:2});field(row,`members.${i}.reason`,'이유',{rows:2});
-    const more=extra(box,[`members.${i}.problem`,`members.${i}.source`],'개인 기록 불러오기 · 더 기록하기');memberImport(more,i);field(more,`members.${i}.problem`,'해결하려는 문제',{rows:2});field(more,`members.${i}.source`,'근거와 출처',{rows:2});
+    const box=entry(a,`모둠원 ${i+1}`);const row=grid(box);row.classList.add('sharing-grid');field(row,`members.${i}.name`,'이름·별칭',{type:'text'});field(row,`members.${i}.proposal`,'제안하는 의견',{rows:3});const prosCons=grid(box);field(prosCons,`members.${i}.strength`,'장점 · 좋은 점과 그 이유',{rows:3});field(prosCons,`members.${i}.concern`,'단점 · 걱정되는 점과 그 이유',{rows:3});
+    const more=extra(box,[`members.${i}.problem`,`members.${i}.source`,`members.${i}.reason`],'개인 기록 불러오기 · 더 기록하기');memberImport(more,i);field(more,`members.${i}.reason`,'개인 의견의 이유·근거 (참고)',{rows:2});field(more,`members.${i}.problem`,'해결하려는 문제',{rows:2});field(more,`members.${i}.source`,'근거와 출처',{rows:2});
   });
   const focus=el('div');focus.id='group-focus';a.append(focus);field(focus,'focus','함께 집중할 문제',{rows:2});const focusMore=extra(focus,['focusReason']);field(focusMore,'focusReason','이 문제를 정한 까닭',{rows:2});
-  const b=section('group-gathering','11~12차시','2 의견 모으기','검토 기준으로 좋은 점과 걱정되는 점을 이야기해요. 기준은 모둠에 맞게 고치거나 더하고 지울 수 있어요.');preventionNotice(b);
-  renderCriteria(b);field(b,'discussion','함께 살펴본 좋은 점과 걱정',{rows:4});
-  const reviewPaths=data.members.flatMap((_,i)=>['strength','concern','question','revision'].map(key=>`members.${i}.${key}`));const reviews=extra(b,reviewPaths,'의견별로 더 기록하기');
-  data.members.forEach((m,i)=>{const box=entry(reviews,`${i+1}번 의견`);const note=el('p',`${m.name||`모둠원 ${i+1}`}의 제안: ${m.proposal||'앞에서 적어 주세요.'}`,'subtle');note.dataset.proposalFor=i;box.append(note);field(box,`members.${i}.strength`,'좋은 점과 이유',{rows:2});field(box,`members.${i}.concern`,'걱정과 이유',{rows:2});field(box,`members.${i}.question`,'확인할 점',{rows:2});field(box,`members.${i}.revision`,'고치거나 더할 점',{rows:2});});
-  const c=section('group-decision','12차시','3 의견 결정하기','충분히 이야기한 뒤 공동 제안을 정해요.');field(c,'proposal','우리 모둠의 최종 제안',{rows:2});field(c,'reason','선택한 이유와 근거',{rows:3});field(c,'changes','친구 의견을 반영해 바뀐 점',{rows:2});field(c,'remaining','남은 걱정이나 확인할 점',{rows:2});
-  const ready=extra(c,['evidence','method','clarity','next'],'발표 전에 더 살펴보기');ready.id='group-share-ready';field(ready,'evidence','근거와 출처 보충',{rows:2});field(ready,'method','결정 방법',{rows:2});field(ready,'clarity','설명을 더 분명히 할 부분',{rows:2});field(ready,'next','13차시 전에 더 알아볼 점',{rows:2});
+  const b=section('group-gathering','11~12차시','2 의견 모으기 · 장단점 검토하기','검토 기준으로 의견별 장점과 단점을 비교해요. 기준은 모둠에 맞게 고치거나 더하고 지울 수 있어요.');preventionNotice(b);
+  renderCriteria(b);field(b,'discussion','함께 비교한 장단점과 그 이유',{rows:6});
+  const reviewPaths=data.members.flatMap((_,i)=>['question','revision'].map(key=>`members.${i}.${key}`));const reviews=extra(b,reviewPaths,'의견별로 더 기록하기');
+  data.members.forEach((m,i)=>{const box=entry(reviews,`${i+1}번 의견`);const note=el('p',`${m.name||`모둠원 ${i+1}`}의 제안: ${m.proposal||'앞에서 적어 주세요.'}`,'subtle');note.dataset.proposalFor=i;box.append(note);field(box,`members.${i}.question`,'확인할 점',{rows:2});field(box,`members.${i}.revision`,'고치거나 더할 점',{rows:2});});
+  const c=section('group-decision','12차시','3 의견 결정하기','장단점을 검토한 뒤 우리 모둠의 최종 의견과 근거를 정해요.');field(c,'proposal','우리 모둠의 최종 의견',{rows:6});field(c,'reason','최종 의견의 근거',{rows:8});field(c,'remaining','남은 걱정이나 확인할 점',{rows:2});
+  const ready=extra(c,['evidence','method','clarity','next'],'발표 전에 더 살펴보기');ready.id='group-share-ready';if(data.changes)ready.append(el('p','이전에 기록한 의견 조정 내용','subtle'),el('pre',data.changes));field(ready,'evidence','근거와 출처 보충',{rows:2});field(ready,'method','결정 방법',{rows:2});field(ready,'clarity','설명을 더 분명히 할 부분',{rows:2});field(ready,'next','13차시 전에 더 알아볼 점',{rows:2});
   const conf=el('div',undefined,'confirmations');data.members.forEach((m,i)=>check(conf,`members.${i}.checked`,`${m.name||`모둠원 ${i+1}`} 최종 내용 확인`));ready.append(conf);
   renderOpinionImage(c);
 }
