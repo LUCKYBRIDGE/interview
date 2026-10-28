@@ -6,10 +6,10 @@
 <meta name="theme-color" content="#f5f8f6">
 <meta name="description" content="보행 안전 문제를 탐구하고 개인 의견을 마련한 뒤 모둠에서 비교하고 조정하는 토의 활동 공간">
 <title>보행 안전 활동 기록 · 우리 동네 토의 탐구실</title>
-<link rel="stylesheet" href="assets/workroom.css">
-<script type="module" src="assets/workroom.mjs"></script>
-<link rel="stylesheet" href="assets/explore-pane.css">
-<script type="module" src="assets/explore-pane.mjs"></script>
+<link rel="stylesheet" href="assets/workroom.css?v=20261028-2">
+<script type="module" src="assets/workroom.mjs?v=20261028-2"></script>
+<link rel="stylesheet" href="assets/explore-pane.css?v=20261028-2">
+<script type="module" src="assets/explore-pane.mjs?v=20261028-2"></script>
 <style>.activity-top-nav{margin:10px 0 14px}.activity-top-nav button{font-size:18px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}.activity-top-nav button small{font-size:12px;font-weight:500;opacity:.83}@media(max-width:650px){.activity-top-nav button{font-size:16px}.activity-top-nav button small{display:block;width:100%}}</style></head>
 <body>
 <a class="skip-link" href="#activity">활동 기록으로 바로가기</a>
@@ -19,7 +19,7 @@
 <nav class="mode-nav activity-top-nav" aria-label="활동 유형"><button id="mode-personal" type="button" aria-pressed="true">개인활동 <small>의견 마련하기</small></button><button id="mode-group" type="button" aria-pressed="false">모둠활동 <small>의견 나누기·모으기·결정하기</small></button></nav>
 <nav class="pane-switch workbench-nav" aria-label="탐구와 기록"><button id="show-writing" type="button" aria-pressed="false">기록만</button><button id="show-explore" type="button" aria-pressed="false">탐구만</button><button id="show-both" type="button" aria-pressed="true">함께 보기</button><p id="workspace-hint"></p></nav>
 <div class="workbench">
-<aside id="explore-pane" hidden aria-label="탐구 자료"><div class="explore-toolbar"><a href="index.html#home" data-explore-route="home">탐구</a><a href="index.html#walking" data-explore-route="walking">인물 인터뷰</a><a href="index.html#study" data-explore-route="study">학습 자료</a><button id="open-explore-window" type="button">별도 창에서 보기</button><button id="close-explore" type="button">탐구 닫기</button></div><iframe id="explore-frame" title="보행 안전 탐구 자료" loading="lazy"></iframe></aside>
+<aside id="explore-pane" hidden aria-label="탐구 자료"><div class="explore-toolbar"><a href="index.html#home" data-explore-route="home">탐구</a><a href="index.html#walking" data-explore-route="walking">인물 인터뷰</a><a href="index.html#study" data-explore-route="study">학습 자료</a><a href="index.html#discussion" data-explore-route="discussion">모둠토의 도우미</a><button id="open-explore-window" type="button">별도 창에서 보기</button><button id="close-explore" type="button">탐구 닫기</button></div><iframe id="explore-frame" title="보행 안전 탐구 자료" loading="lazy"></iframe></aside>
 <div id="writing-pane">
 
 <aside class="save-panel" aria-label="기록 보관"><div><p id="save-status" role="status" aria-live="polite">기록을 준비하고 있습니다.</p><p>이 기기의 이 브라우저에만 저장됩니다. 친구의 기기와 자동으로 공유되지 않습니다. 공용 기기에서는 이름 대신 번호나 별칭을 쓰고, 마친 뒤 기록 파일을 보관하세요.</p></div><button id="save-now" type="button">지금 저장</button></aside>
