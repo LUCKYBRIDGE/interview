@@ -1,4 +1,13 @@
 const WIDTH=1920, HEIGHT=1080;
+export function opinionImageFilename(kind,data){
+ if(!['personal','group'].includes(kind))throw new Error('활동 종류를 확인하세요.');
+ if(!['1','2','3','4','5','6'].includes(data.groupNumber))throw new Error('이미지를 만들기 전에 우리 모둠을 선택하세요.');
+ const prefix=`${data.groupNumber}모둠`;
+ if(kind==='group')return `${prefix}_모둠의견-근거.png`;
+ const name=Array.from((data.label||'').trim().replace(/[<>:"/\\|?*\u0000-\u001f]/g,'_').replace(/[. ]+$/g,'')).slice(0,60).join('');
+ if(!name)throw new Error('이미지를 만들기 전에 이름을 적어 주세요.');
+ return `${prefix}_${name}_개인의견-근거.png`;
+}
 function wrap(text,size,width,measure){
  const lines=[];
  for(const paragraph of text.split('\n')){

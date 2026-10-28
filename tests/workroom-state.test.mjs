@@ -72,7 +72,7 @@ test('decision edits invalidate confirmations while confirming one member preser
 });
 test('a maximum-length five-member Korean record can be exported and imported', () => {
   const data=createData('group');data.members.push(structuredClone(data.members[0]));
-  const fill=value=>Object.fromEntries(Object.entries(value).map(([key,v])=>[key,typeof v==='string'?'가'.repeat(8000):Array.isArray(v)?v.map(item=>typeof item==='string'?'가'.repeat(200):fill(item)):typeof v==='object'?fill(v):v]));
+  const fill=value=>Object.fromEntries(Object.entries(value).map(([key,v])=>[key,typeof v==='string'?(key==='groupNumber'?'6':'가'.repeat(8000)):Array.isArray(v)?v.map(item=>typeof item==='string'?'가'.repeat(200):fill(item)):typeof v==='object'?fill(v):v]));
   const maximal=fill(data);const text=JSON.stringify(makeRecord('group',maximal),null,2);
   assert.ok(new TextEncoder().encode(text).byteLength<2000000);
   assert.deepEqual(parseRecord(text,'group').data,maximal);
@@ -97,10 +97,10 @@ test('personal-to-member bridge rejects invalid records, indexes and overlong co
 
 test('version 1 records migrate without losing personal details or member reviews', () => {
   const personal=createData('personal');personal.perspectives[1].value='이전 상세 기록';personal.ideas[2]='세 번째 생각';
-  const oldPersonal={...makeRecord('personal',personal),version:1};
+  const oldPersonal={...makeRecord('personal',personal),version:1};delete oldPersonal.data.groupNumber;
   const migrated=parseRecord(JSON.stringify(oldPersonal),'personal');
-  assert.equal(migrated.version,3);assert.deepEqual(migrated.data,personal);
-  const group=createData('group');delete group.discussion;delete group.criteriaList;group.members[2].question='예전 질문';
+  assert.equal(migrated.version,VERSION);assert.deepEqual(migrated.data,personal);
+  const group=createData('group');delete group.groupNumber;delete group.discussion;delete group.criteriaList;group.members[2].question='예전 질문';
   const oldGroup={app:'interview-workroom',version:1,kind:'group',updatedAt:new Date().toISOString(),data:group};
   const next=parseRecord(JSON.stringify(oldGroup),'group');
   assert.equal(next.data.discussion,'');assert.equal(next.data.members[2].question,'예전 질문');
@@ -108,7 +108,7 @@ test('version 1 records migrate without losing personal details or member review
   assert.throws(()=>parseRecord(JSON.stringify({...oldGroup,data:{...group,discussion:'invalid v1 field'}}),'group'));
 });
 test('legacy storage is read without deleting it and a corrupt current record stays protected', () => {
-  const data=createData('group');delete data.discussion;delete data.criteriaList;data.members[0].source='옛 출처';
+  const data=createData('group');delete data.groupNumber;delete data.discussion;delete data.criteriaList;data.members[0].source='옛 출처';
   const legacy=JSON.stringify({app:'interview-workroom',version:1,kind:'group',updatedAt:new Date().toISOString(),data});
   const mem=new Map([['interview-workroom-v1-group',legacy]]);const storage={getItem:k=>mem.get(k)??null,setItem:(k,v)=>mem.set(k,v)};
   const loaded=loadRecord(storage,'group');assert.equal(loaded.status,'loaded');assert.equal(loaded.record.data.members[0].source,'옛 출처');
@@ -142,12 +142,12 @@ test('criteria are editable immutable lists with bounded draft values', () => {
 
 test('version 2 migration keeps changed criteria, legacy content and member records', () => {
   const current=createData('group');
-  const {criteriaList,...data}=current;
+  const {criteriaList,groupNumber,...data}=current;
   data.criteria={feasible:false,effective:true,shared:false,extra:'다른 관점도 반영하는가?'};
   data.members[0].question='보존할 질문';
   const old={app:'interview-workroom',version:2,kind:'group',updatedAt:new Date().toISOString(),data};
   const next=parseRecord(JSON.stringify(old),'group');
-  assert.equal(next.version,3);
+  assert.equal(next.version,VERSION);
   assert.deepEqual(next.data.criteriaList,['문제 해결에 효과적인가?','다른 관점도 반영하는가?']);
   assert.deepEqual(next.data.criteria,data.criteria);
   assert.equal(next.data.members[0].question,'보존할 질문');
@@ -159,7 +159,7 @@ test('version 2 migration keeps changed criteria, legacy content and member reco
 });
 
 test('storage prefers v3 then v2 then v1, preserving corrupt latest records', () => {
-  const {criteriaList,...data}=createData('group');data.discussion='v2 토의';
+  const {criteriaList,groupNumber,...data}=createData('group');data.discussion='v2 토의';
   const v2=JSON.stringify({app:'interview-workroom',version:2,kind:'group',updatedAt:new Date().toISOString(),data});
   const mem=new Map([[storageKey('group',2),v2]]), storage={getItem:k=>mem.get(k)??null};
   assert.equal(loadRecord(storage,'group').record.data.discussion,'v2 토의');
@@ -167,4 +167,30 @@ test('storage prefers v3 then v2 then v1, preserving corrupt latest records', ()
   assert.equal(loadRecord(storage,'group').status,'error');
   mem.delete(storageKey('group',3));mem.set(storageKey('group',2),'{broken');
   assert.equal(loadRecord(storage,'group').status,'error');
+});
+
+test('v3 records migrate to v4 with identity and latest corrupt storage is protected',()=>{
+ for(const kind of ['personal','group']){
+  const oldData=createData(kind);delete oldData.groupNumber;
+  oldData.label=kind==='personal'?'이전 이름':'3모둠';oldData.proposal='보존할 의견';
+  const old={app:'interview-workroom',version:3,kind,updatedAt:new Date().toISOString(),data:oldData};
+  const raw=JSON.stringify(old),mem=new Map([[storageKey(kind,3),raw]]);
+  const storage={getItem:k=>mem.get(k)??null,setItem:(k,v)=>mem.set(k,v)};
+  const loaded=loadRecord(storage,kind);
+  assert.equal(loaded.status,'loaded');assert.equal(loaded.record.version,4);
+  assert.equal(loaded.record.data.label,oldData.label);
+  assert.equal(loaded.record.data.groupNumber,kind==='personal'?'':'3');
+  assert.equal(loaded.record.data.proposal,'보존할 의견');
+  assert.equal(saveRecord(storage,loaded.record).ok,true);
+  assert.equal(mem.get(storageKey(kind,3)),raw);
+  mem.set(storageKey(kind,4),'{broken');
+  assert.equal(loadRecord(storage,kind).status,'error');
+ }
+});
+
+test('group selection and name survive a record roundtrip and invalid groups are rejected',()=>{
+ const data=createData('personal');data.groupNumber='5';data.label='예시 이름';
+ assert.deepEqual(parseRecord(JSON.stringify(makeRecord('personal',data)),'personal').data,data);
+ assert.throws(()=>makeRecord('personal',{...data,groupNumber:'7'}),/모둠/);
+ assert.match(formatText('personal',data),/5모둠/);
 });

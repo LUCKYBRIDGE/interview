@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {layoutOpinion,exportOpinionImage} from '../assets/opinion-image.mjs';
+import {layoutOpinion,exportOpinionImage,opinionImageFilename} from '../assets/opinion-image.mjs';
 const measure=(text,size)=>Array.from(text).length*size;
 test('opinion card is 1920 by 1080 and keeps large text within both regions',()=>{
  const result=layoutOpinion({proposal:'학교 앞 통로를 확보하자',reason:'학생과 주민이 안전하게 지나다닐 수 있기 때문이다.'},measure);
@@ -49,4 +49,13 @@ test('PNG drawing contains only opinion and grounds, never identity or research 
   canvas.getContext=()=>context;canvas.toBlob=callback=>callback(null);
   await assert.rejects(exportOpinionImage({proposal:'의견',reason:'근거'}),/만들지 못했습니다/);
  }finally{globalThis.document=previous;}
+});
+
+test('image filenames include group and personal name and reject incomplete identity',()=>{
+ assert.equal(opinionImageFilename('personal',{groupNumber:'3',label:'김학생'}),'3모둠_김학생_개인의견-근거.png');
+ assert.equal(opinionImageFilename('group',{groupNumber:'6',label:'옛 이름'}),'6모둠_모둠의견-근거.png');
+ assert.equal(opinionImageFilename('personal',{groupNumber:'1',label:' 가/나:다? '}),'1모둠_가_나_다__개인의견-근거.png');
+ assert.throws(()=>opinionImageFilename('personal',{groupNumber:'',label:'이름'}),/모둠/);
+ assert.throws(()=>opinionImageFilename('personal',{groupNumber:'1',label:'   '}),/이름/);
+ assert.throws(()=>opinionImageFilename('group',{groupNumber:'9'}),/모둠/);
 });

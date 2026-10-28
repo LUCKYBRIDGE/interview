@@ -1,5 +1,5 @@
-import {MAX_RECORD_BYTES,createData,blankMember,makeRecord,parseRecord,updateActivity,updateCriteria,importPersonalToMember,formatText,loadRecord,saveRecord,storageKey} from './workroom-state.mjs';
-import {exportOpinionImage} from './opinion-image.mjs?v=20261028-7';
+import {MAX_RECORD_BYTES,createData,blankMember,makeRecord,parseRecord,updateActivity,updateCriteria,importPersonalToMember,formatText,loadRecord,saveRecord,storageKey} from './workroom-state.mjs?v=20261028-8';
+import {exportOpinionImage,opinionImageFilename} from './opinion-image.mjs?v=20261028-8';
 
 const $ = id => document.getElementById(id);
 const form=$('activity');
@@ -76,11 +76,12 @@ function renderOpinionImage(parent){
   button.addEventListener('click',async()=>{
     const snapshot=structuredClone(data),revision=activityRevision,startedKind=kind;button.disabled=true;status.textContent='이미지를 만들고 있습니다…';preview.hidden=true;
     try{
+      const filename=opinionImageFilename(startedKind,snapshot);
       const result=await exportOpinionImage(snapshot);
       if(kind!==startedKind||revision!==activityRevision||JSON.stringify(snapshot)!==JSON.stringify(data))throw new Error('기록이 바뀌었습니다. 현재 의견으로 다시 만들어 주세요.');
       if(opinionImageUrl)URL.revokeObjectURL(opinionImageUrl);opinionImageUrl=URL.createObjectURL(result.blob);
       const image=el('img');image.src=opinionImageUrl;image.alt='의견과 근거 16:9 이미지 미리보기';image.width=result.width;image.height=result.height;
-      const link=el('a','① 이미지 저장하기','image-download');link.href=opinionImageUrl;link.download=startedKind==='personal'?'개인-의견과-근거-16대9.png':'모둠-의견과-근거-16대9.png';
+      const link=el('a','① 이미지 저장하기','image-download');link.href=opinionImageUrl;link.download=filename;
       const actions=el('div',undefined,'image-submit-actions');actions.append(link);
       const submission=el('nav',undefined,'image-submission-links');
       submission.setAttribute('aria-label',startedKind==='personal'?'개인 의견 제출: 자기 모둠 선택':'모둠별 의견 제출');
@@ -93,7 +94,9 @@ function renderOpinionImage(parent){
         ['6모둠','https://padlet.com/lucky20220528/6-s024wzwcz8a6lwh7gjka']
       ]:[['② 모둠별 의견 제출하기','https://padlet.com/lucky20220528/5-s024ikj17bfqgkw776wh']];
       targets.forEach(([name,url])=>{
-        const padlet=el('a',name+' ↗','image-download');
+        const selected=startedKind==='personal'&&name===snapshot.groupNumber+'모둠';
+        const padlet=el('a',name+(selected?' · 내 모둠 ↗':' ↗'),'image-download');
+        if(selected)padlet.setAttribute('aria-current','true');
         padlet.href=url;padlet.target='_blank';padlet.rel='noopener noreferrer';
         padlet.setAttribute('aria-label',startedKind==='personal'?`개인 의견: ${name} 패들렛에 제출하기 (새 탭)`:'모둠별 의견 제출 패들렛 열기 (새 탭)');
         submission.append(padlet);
@@ -187,7 +190,16 @@ function render(){
   $('activity-title').textContent=kind==='personal'?'의견 마련하기':'모둠 토의하기';
   if(opinionImageUrl){URL.revokeObjectURL(opinionImageUrl);opinionImageUrl=null;}
   $('activity-fields').replaceChildren();$('step-nav').replaceChildren();
-  const identity=el('div',undefined,'identity');field(identity,'label',kind==='personal'?'기록 이름 또는 번호':'모둠 이름 또는 번호',{type:'text'});$('activity-fields').append(identity);
+  const identity=el('div',undefined,'identity');
+  field(identity,'groupNumber','우리 모둠',{type:'select',options:[['','모둠을 선택하세요'],...Array.from({length:6},(_,i)=>[String(i+1),`${i+1}모둠`])]});
+  if(kind==='personal'){
+    const name=field(identity,'label','이름',{type:'text',hint:'모둠과 이름은 저장할 이미지 파일명에 들어갑니다.'});
+    name.maxLength=40;name.autocomplete='off';
+  }else{
+    identity.append(el('p','우리 모둠의 최종 의견과 근거를 적어 주세요. 모둠 번호가 이미지 파일명에 들어갑니다.','subtle'));
+    if(data.label)identity.append(el('p','이전 모둠 기록 이름: '+data.label,'subtle'));
+  }
+  $('activity-fields').append(identity);
   if(kind==='personal')renderPersonal();else {renderPersonalReference();renderGroup();}
   updatePrint();
 }
@@ -228,7 +240,7 @@ $('reload-record').addEventListener('click',()=>{if(!confirm('현재 화면의 �
 window.addEventListener('storage',event=>{
   const message='다른 창에서 이 활동의 저장 기록이 바뀌었습니다. 이 창의 내용으로 자동 덮어쓰지 않습니다. 파일로 보관하거나 저장된 기록을 다시 읽으세요.';
   for(const targetKind of ['personal','group']) {
-    if(event.key!==null&&event.key!==storageKey(targetKind)&&event.key!==storageKey(targetKind,1)&&event.key!==storageKey(targetKind,2))continue;
+    if(event.key!==null&&![4,3,2,1].some(version=>event.key===storageKey(targetKind,version)))continue;
     if(targetKind===kind){clearTimeout(timer);warning(message);}
     else if(cache.has(targetKind))blockedKinds.set(targetKind,message);
   }

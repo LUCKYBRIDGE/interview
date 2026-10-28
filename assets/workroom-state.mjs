@@ -1,4 +1,4 @@
-export const VERSION = 3;
+export const VERSION = 4;
 export const MAX_RECORD_BYTES = 2000000;
 const APP = 'interview-workroom';
 const MAX_TEXT = 8000;
@@ -10,8 +10,8 @@ const blankSource = () => ({title:'',url:'',date:'',claim:'',relevance:'',scope:
 export const blankMember = () => ({name:'',problem:'',proposal:'',reason:'',source:'',strength:'',concern:'',question:'',revision:'',checked:false});
 
 export function createData(kind) {
-  if (kind === 'personal') return {label:'',perspectives:[blankPerspective(),blankPerspective()],experience:'',sources:[blankSource(),blankSource()],who:'',where:'',difficulty:'',problem:'',ideas:['','',''],proposal:'',reason:'',evidence:'',uncertainties:'',handoff:''};
-  if (kind === 'group') return {label:'',focus:'',focusReason:'',discussion:'',members:Array.from({length:4},blankMember),criteria:{feasible:true,effective:true,shared:true,extra:''},criteriaList:[...DEFAULT_CRITERIA],proposal:'',reason:'',evidence:'',changes:'',remaining:'',method:'',clarity:'',next:''};
+  if (kind === 'personal') return {label:'',groupNumber:'',perspectives:[blankPerspective(),blankPerspective()],experience:'',sources:[blankSource(),blankSource()],who:'',where:'',difficulty:'',problem:'',ideas:['','',''],proposal:'',reason:'',evidence:'',uncertainties:'',handoff:''};
+  if (kind === 'group') return {label:'',groupNumber:'',focus:'',focusReason:'',discussion:'',members:Array.from({length:4},blankMember),criteria:{feasible:true,effective:true,shared:true,extra:''},criteriaList:[...DEFAULT_CRITERIA],proposal:'',reason:'',evidence:'',changes:'',remaining:'',method:'',clarity:'',next:''};
   throw new Error('알 수 없는 활동 종류입니다.');
 }
 export function storageKey(kind,version=VERSION) { createData(kind); return `${APP}-v${version}-${kind}`; }
@@ -27,6 +27,7 @@ function checkObject(value, template) {
 }
 function validateData(kind,data) {
   const template=createData(kind); checkObject(data,template);
+  if(!['','1','2','3','4','5','6'].includes(data.groupNumber))throw new Error('모둠은 1~6모둠 중에서 선택하세요.');
   if(kind==='personal') {
     if(!Array.isArray(data.perspectives)||data.perspectives.length!==2||!Array.isArray(data.sources)||data.sources.length!==2||!Array.isArray(data.ideas)||data.ideas.length!==3) throw new Error('개인 활동의 기록 수가 맞지 않습니다.');
     data.perspectives.forEach(p=>{checkObject(p,blankPerspective());if(!['fictional','real'].includes(p.kind))throw new Error('인터뷰 출처 구분이 올바르지 않습니다.');});
@@ -58,12 +59,21 @@ export function makeRecord(kind,data,updatedAt=new Date().toISOString()) {
 export function parseRecord(text,kind) {
   if(typeof text!=='string'||new TextEncoder().encode(text).byteLength>MAX_RECORD_BYTES)throw new Error('파일 크기가 너무 큽니다. 2MB 이하의 활동 기록을 선택하세요.');
   const record=JSON.parse(text);
-  if(!plain(record)||Object.keys(record).sort().join('|')!=='app|data|kind|updatedAt|version'||record.app!==APP||![1,2,VERSION].includes(record.version)||record.kind!==kind)throw new Error('현재 활동과 맞는 버전의 기록 파일이 아닙니다. 개인과 모둠 파일을 확인하세요.');
-  if(record.version<3&&kind==='group'){
-    const {criteriaList:unusedCriteria,...versionTwo}=createData('group');
-    const {discussion:unusedDiscussion,...versionOne}=versionTwo;
-    checkObject(record.data,record.version===1?versionOne:versionTwo);
-    return makeRecord(kind,{...record.data,discussion:record.version===1?'':record.data.discussion,criteriaList:migrateCriteria(record.data.criteria)},record.updatedAt);
+  if(!plain(record)||Object.keys(record).sort().join('|')!=='app|data|kind|updatedAt|version'||record.app!==APP||![1,2,3,VERSION].includes(record.version)||record.kind!==kind)throw new Error('현재 활동과 맞는 버전의 기록 파일이 아닙니다. 개인과 모둠 파일을 확인하세요.');
+  if(record.version<VERSION){
+    const {groupNumber:unusedGroup,...legacyTemplate}=createData(kind);
+    if(kind==='group'&&record.version<3){
+      delete legacyTemplate.criteriaList;
+      if(record.version===1)delete legacyTemplate.discussion;
+    }
+    checkObject(record.data,legacyTemplate);
+    const labelMatch=kind==='group'?/^([1-6])(?:모둠)?$/.exec(record.data.label.trim()):null;
+    const migrated={...record.data,groupNumber:labelMatch?.[1]||''};
+    if(kind==='group'&&record.version<3){
+      migrated.discussion=record.version===1?'':record.data.discussion;
+      migrated.criteriaList=migrateCriteria(record.data.criteria);
+    }
+    return makeRecord(kind,migrated,record.updatedAt);
   }
   return makeRecord(kind,record.data,record.updatedAt);
 }
@@ -80,7 +90,7 @@ export function updateValue(data,path,value) {
 export function updateActivity(kind,data,path,value) {
   const next=updateValue(data,path,value);
   if(kind==='group'&&path.startsWith('criteriaList.'))validateCriteria(next.criteriaList);
-  if(kind!=='group'||path==='label'||/^members\.\d+\.checked$/.test(path))return next;
+  if(kind!=='group'||path==='label'||path==='groupNumber'||/^members\.\d+\.checked$/.test(path))return next;
   return {...next,members:next.members.map(member=>({...member,checked:false}))};
 }
 export function importPersonalToMember(group,index,record) {
@@ -98,7 +108,7 @@ export function importPersonalToMember(group,index,record) {
 }
 export function loadRecord(storage,kind) {
   try {
-    for(const version of [VERSION,2,1]) {
+    for(const version of [VERSION,3,2,1]) {
       const text=storage.getItem(storageKey(kind,version));
       if(text!==null)return {status:'loaded',record:parseRecord(text,kind)};
     }
@@ -114,7 +124,7 @@ const line=(label,value)=>`${label}: ${value||'(아직 기록하지 않음)'}`;
 export function formatText(kind,data) {
   validateData(kind,data);
   if(kind==='personal')return [
-    '개인 의견 마련하기 | 9~10차시',line('기록 이름',data.label),'',
+    '개인 의견 마련하기 | 9~10차시',line('모둠',data.groupNumber?data.groupNumber+'모둠':''),line('이름',data.label),'',
     '1 다양한 입장 알아보기',...data.perspectives.flatMap((p,i)=>[`${i+1}. ${p.kind==='fictional'?'수업용 가상 인물':'실제 주변 사람'} · ${p.person||'인물 미기록'}`,line('어려움',p.difficulty),line('중요하게 여기는 것',p.value)]),line('듣고, 찾고, 알고 있던 것',data.experience),'',
     '2 자료로 확인하기',...data.sources.flatMap((s,i)=>[`${i+1}. ${s.title||'자료 제목 미기록'}`,line('주소 또는 발행 기관',s.url),line('확인 날짜',s.date),line('대상과 지역 및 시기',s.scope),line('확인한 내용',s.claim),line('내 문제와의 관련',s.relevance)]),'',
     '3 해결할 문제',line('누가',data.who),line('어디에서',data.where),line('어떤 어려움',data.difficulty),line('내가 집중할 문제',data.problem),'',
@@ -122,7 +132,7 @@ export function formatText(kind,data) {
     '5 내 의견과 이유',line('제안',data.proposal),line('이유',data.reason),line('연결한 자료와 근거',data.evidence),line('더 확인할 점',data.uncertainties),line('모둠에서 함께 살펴볼 점',data.handoff),
     '', '가상 인물의 이야기는 실제 지역 현황의 증거가 아닙니다.'
   ].join('\n');
-  return ['모둠 의견 나누기 모으기 결정하기 | 11~12차시',line('모둠',data.label),'',
+  return ['모둠 의견 나누기 모으기 결정하기 | 11~12차시',line('모둠',data.groupNumber?data.groupNumber+'모둠':data.label),'',
     '1 의견 나누기',...data.members.flatMap((m,i)=>[`${i+1}. ${m.name||'모둠원'}`,line('해결하려는 문제',m.problem),line('제안',m.proposal),line('이유',m.reason),line('근거와 출처',m.source)]),'',
     '2 함께 검토할 문제',line('모둠이 집중할 문제',data.focus),line('문제를 정한 까닭',data.focusReason),'',
     '3 의견 모으기',line('함께 살펴본 좋은 점과 걱정',data.discussion),`검토 기준: ${data.criteriaList.filter(value=>value.trim()).join(', ')||'(정한 기준 없음)'}`,
