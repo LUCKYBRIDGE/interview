@@ -12,6 +12,25 @@ test('explicit line breaks and additional evidence are preserved',()=>{
  const r=layoutOpinion({proposal:'첫 줄\n둘째 줄',reason:'이유',evidence:'확인한 근거'},measure);
  assert.deepEqual(r.proposal.lines,['첫 줄','둘째 줄']);assert.match(r.reason.lines.join(''),/이유.*확인한 근거/);
 });
+
+test('short opinions use larger type and words wrap only at spaces when they fit',()=>{
+ const short=layoutOpinion({proposal:'안전한 통학로',reason:'사고를 예방해요'},measure);
+ assert.equal(short.proposal.size,180);assert.equal(short.reason.size,140);
+ const words=['어린이보호구역','불법주정차를','줄이기위하여','안전시설을','설치합시다'];
+ const result=layoutOpinion({proposal:words.join(' '),reason:words.join(' ')},measure);
+ for(const part of [result.proposal,result.reason]){
+  assert.deepEqual(part.lines.flatMap(line=>line.split(' ')),words);
+  assert.ok(part.lines.every(line=>measure(line,part.size)<=part.width));
+ }
+});
+
+test('unbroken long words retain every character and never overflow',()=>{
+ const text='가'.repeat(70);
+ const result=layoutOpinion({proposal:text,reason:'첫 번째 근거\n\n두 번째 근거'},measure);
+ assert.equal(result.proposal.lines.join(''),text);
+ assert.ok(result.proposal.lines.every(line=>measure(line,result.proposal.size)<=result.proposal.width));
+ assert.ok(result.reason.lines.includes(''));
+});
 test('empty or excessive writing is rejected without silently clipping it',()=>{
  assert.throws(()=>layoutOpinion({proposal:'',reason:'이유'},measure),/의견/);
  assert.throws(()=>layoutOpinion({proposal:'의견',reason:''},measure),/근거/);

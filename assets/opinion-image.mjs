@@ -3,9 +3,19 @@ function wrap(text,size,width,measure){
  const lines=[];
  for(const paragraph of text.split('\n')){
   let line='';
-  for(const char of Array.from(paragraph)){
-   if(line&&measure(line+char,size)>width){lines.push(line);line='';}
-   line+=char;
+  // Prefer spaces between words; split only a word wider than the whole card.
+  for(const word of paragraph.match(/\S+/gu)||[]){
+   const candidate=line?`${line} ${word}`:word;
+   if(measure(candidate,size)<=width){line=candidate;continue;}
+   if(line){lines.push(line);line='';}
+   if(measure(word,size)<=width){line=word;continue;}
+   const chars=typeof Intl.Segmenter==='function'
+    ? Array.from(new Intl.Segmenter('ko',{granularity:'grapheme'}).segment(word),part=>part.segment)
+    : Array.from(word);
+   for(const char of chars){
+    if(line&&measure(line+char,size)>width){lines.push(line);line='';}
+    line+=char;
+   }
   }
   lines.push(line);
  }
@@ -13,7 +23,7 @@ function wrap(text,size,width,measure){
 }
 function fit(text,region,measure,min,max){
  for(let size=max;size>=min;size-=2){
-  const lines=wrap(text,size,region.width,measure),lineHeight=Math.ceil(size*1.38);
+  const lines=wrap(text,size,region.width,measure),lineHeight=Math.ceil(size*1.28);
   if(lines.length*lineHeight<=region.height)return {...region,size,lines,lineHeight};
  }
  throw new Error('큰 글씨로 한 장에 담기에는 내용이 많아요. 의견이나 이유·근거를 짧게 줄여 주세요. 원래 기록은 그대로 있습니다.');
@@ -23,8 +33,8 @@ export function layoutOpinion(data,measure){
  if(!proposal)throw new Error('이미지로 저장할 의견을 먼저 적어 주세요.');
  if(!reason)throw new Error('이유와 근거를 먼저 적어 주세요.');
  return {width:WIDTH,height:HEIGHT,
-  proposal:fit(proposal,{x:112,y:150,width:1696,height:310},measure,44,72),
-  reason:fit(reason,{x:112,y:600,width:1696,height:360},measure,36,52)};
+  proposal:fit(proposal,{x:112,y:150,width:1696,height:310},measure,44,180),
+  reason:fit(reason,{x:112,y:600,width:1696,height:360},measure,40,140)};
 }
 export async function exportOpinionImage(data){
  await document.fonts.ready;
@@ -39,7 +49,7 @@ export async function exportOpinionImage(data){
  ctx.font=`bold 28px ${family}`;ctx.fillText('의견',112,92);ctx.fillText('근거',112,550);
  ctx.fillStyle='#172431';
  for(const part of [layout.proposal,layout.reason]){
-  ctx.font=`${part===layout.proposal?'bold ':''}${part.size}px ${family}`;
+  ctx.font=`bold ${part.size}px ${family}`;
   part.lines.forEach((line,i)=>ctx.fillText(line,part.x,part.y+i*part.lineHeight));
  }
  const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));
