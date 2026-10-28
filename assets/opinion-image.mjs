@@ -6,8 +6,7 @@ export function opinionImageFilename(kind,data){
  const prefix=group?`${group}모둠_`:'';
  if(kind==='group')return `${prefix}모둠의견-근거.png`;
  const name=Array.from((data.label||'').trim().replace(/[<>:"/\\|?*\u0000-\u001f]/g,'_').replace(/[. ]+$/g,'')).slice(0,60).join('');
- if(!name)throw new Error('이미지를 만들기 전에 이름을 적어 주세요.');
- return `${prefix}${name}_개인의견-근거.png`;
+ return `${prefix}${name?name+'_':''}개인의견-근거.png`;
 }
 function wrap(text,size,width,measure){
  const lines=[];

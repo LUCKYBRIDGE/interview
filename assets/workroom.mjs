@@ -1,5 +1,5 @@
 import {MAX_RECORD_BYTES,createData,blankMember,makeRecord,parseRecord,updateActivity,updateCriteria,importPersonalToMember,formatText,loadRecord,saveRecord,storageKey} from './workroom-state.mjs?v=20261028-13';
-import {exportOpinionImage,opinionImageFilename} from './opinion-image.mjs?v=20261028-15';
+import {exportOpinionImage,opinionImageFilename} from './opinion-image.mjs?v=20261028-16';
 
 const PADLET_GROUPS=[
     ['1모둠','https://padlet.com/lucky20220528/1-s024wztgp5vbe1kgd9pi'],
@@ -50,13 +50,13 @@ function extra(parent,paths,title='더 기록하기') {
 }
 function preventionNotice(parent){const box=el('aside',undefined,'solution-guidance');box.setAttribute('aria-label','해결 방법을 생각할 때 주의할 점');box.append(el('strong','처벌을 강화하는 방법만 떠올리고 있나요?'));box.append(el('p','벌금이나 처벌도 검토할 수 있지만, 금액이나 형량을 높이는 것만으로 문제가 해결된다고 단정하지 마세요. 문제가 생기는 까닭, 사고를 미리 막는 방법, 안전시설·교육·안내·관리 등 다른 방법도 함께 살펴보세요.'));box.append(el('p','어떤 방법이 실제로 도움이 될지, 실천할 수 있을지, 여러 사람에게 어떤 영향을 줄지 근거를 들어 이야기해 보세요.','subtle'));parent.append(box);}
 function renderPersonal(){
-  const a=section('personal-perspectives','9~10차시','1 듣고, 찾고, 알고 있던 것');
+  const a=section('personal-perspectives','9~10차시','1 듣고, 찾고, 알고 있던 것','인터뷰에서 들은 이야기, 자료에서 찾은 사실, 직접 겪은 일을 자유롭게 적어요. 실제 사실인지 더 확인할 내용도 표시해 보세요.');
   field(a,'experience','듣고, 찾고, 알고 있던 것',{rows:10});
-  const b=section('personal-problem','9~10차시','2 집중할 문제');
+  const b=section('personal-problem','9~10차시','2 집중할 문제','앞에서 살펴본 내용 중 해결하고 싶은 문제 하나를 골라요. 누가, 어디에서, 어떤 어려움을 겪는지 적으면 좋아요.');
   field(b,'problem','내가 집중할 문제',{rows:10});
-  const c=section('personal-ideas','10차시','3 아이디어');
+  const c=section('personal-ideas','10차시','3 아이디어','문제를 해결할 방법을 떠오르는 대로 적어요. 아직 하나로 정하지 않아도 괜찮아요.');
   field(c,'ideas.0','아이디어',{rows:10});
-  const d=section('personal-proposal','10차시','4 내 의견 정하기');
+  const d=section('personal-proposal','10차시','4 내 의견 정하기','가장 알맞다고 생각하는 방법을 의견으로 정하고, 왜 도움이 되는지 이유나 근거를 적어요. 공유할 때는 이 두 칸만 이미지에 담겨요.');
   field(d,'proposal','내 의견',{rows:8});
   field(d,'reason','이유나 근거',{rows:10});
   renderOpinionImage(d);
@@ -79,7 +79,8 @@ function renderGroupPadletTop(){
 }
 function renderOpinionImage(parent){
   const direct=el('section',undefined,'padlet-direct-panel');
-  direct.append(el('h3',kind==='personal'?'자기 모둠 패들렛 바로 가기':'모둠 의견 제출 패들렛 바로 가기'),el('p','이미지를 만들거나 저장하기 전에도 게시판을 열 수 있어요.','subtle'));
+  direct.id='opinion-submission';
+  direct.append(el('h3',kind==='personal'?'③ 자기 모둠 패들렛에 올리기':'③ 전체 의견 패들렛에 올리기'),el('p','게시판에서 +를 누르고 저장한 이미지를 첨부해 게시해요. 친구 의견을 보거나 글로 적으려면 지금 바로 열어도 좋아요.','subtle'));
   const submission=el('nav',undefined,'image-submission-links');
   submission.setAttribute('aria-label',kind==='personal'?'개인 의견 제출: 자기 모둠 선택':'모둠별 의견 제출');
   const targets=kind==='personal'?PADLET_GROUPS:[['모둠별 의견 제출하기',CLASS_PADLET]];
@@ -92,12 +93,12 @@ function renderOpinionImage(parent){
     padlet.setAttribute('aria-label',kind==='personal'?`개인 의견: ${name} 패들렛에 제출하기 (새 탭)`:'모둠별 의견 제출 패들렛 열기 (새 탭)');
     submission.append(padlet);
   });
-  direct.append(submission);parent.append(direct);
+  direct.append(submission);
   const panel=el('div',undefined,'opinion-image-tools');
   panel.append(el('span','다 썼다면 다음은 여기!','image-create-badge'),el('h3','의견·근거를 이미지로 만들어 제출해요'));
-  const hint=el('p','아래 초록색 버튼을 누르세요. 이미지가 나오면 저장한 뒤 패들렛에 올려요.','image-create-hint');hint.id='image-create-hint';panel.append(hint);
+  const hint=el('p','① 이미지 만들기 → ② 이미지 저장하기 → ③ 아래 패들렛에 올리기. 이름·모둠과 앞 단계 기록은 비워 두어도 돼요.','image-create-hint');hint.id='image-create-hint';panel.append(hint);
   const steps=el('ol',undefined,'image-submit-steps');
-  steps.append(el('li','이미지를 만든 뒤 아래의 ‘① 이미지 저장하기’를 눌러요.'));
+  steps.append(el('li','이미지를 만든 뒤 아래의 ‘② 이미지 저장하기’를 눌러요.'));
   if(kind==='personal'){
     steps.append(el('li','패들렛 바로 가기에서 자기 모둠을 선택해 열어요.'),el('li','자기 모둠 게시판에서 글쓰기(+)를 누르고, 저장한 의견·근거 PNG 이미지를 첨부한 뒤 게시해요.'));
   }else{
@@ -106,7 +107,7 @@ function renderOpinionImage(parent){
   const instructions=el('details',undefined,'image-submit-help');
   instructions.append(el('summary','이미지 저장·제출 방법 보기'),steps,el('p','게시판에 이미지가 올라왔는지 확인하세요. 패들렛을 여는 것만으로 제출되지는 않아요.','subtle'));
   const button=el('button',undefined,'image-create-button');button.type='button';button.id='make-opinion-image';
-  button.append(el('strong','여기를 눌러 이미지 만들기'),el('span','내 의견과 근거를 큰 글씨로 · 16:9'));
+  button.append(el('strong','① 여기를 눌러 이미지 만들기'),el('span','의견 + 이유·근거 두 칸만 있으면 돼요 · 16:9'));
   button.setAttribute('aria-describedby',hint.id);
   const status=el('p',undefined,'subtle');status.id='opinion-image-status';status.setAttribute('role','status');status.setAttribute('aria-live','polite');
   const preview=el('div',undefined,'opinion-image-preview');preview.hidden=true;
@@ -118,7 +119,7 @@ function renderOpinionImage(parent){
       if(kind!==startedKind||revision!==activityRevision||JSON.stringify(snapshot)!==JSON.stringify(data))throw new Error('기록이 바뀌었습니다. 현재 의견으로 다시 만들어 주세요.');
       if(opinionImageUrl)URL.revokeObjectURL(opinionImageUrl);opinionImageUrl=URL.createObjectURL(result.blob);
       const image=el('img');image.src=opinionImageUrl;image.alt='의견과 근거 16:9 이미지 미리보기';image.width=result.width;image.height=result.height;
-      const link=el('a','① 이미지 저장하기','image-download');link.href=opinionImageUrl;link.download=filename;
+      const link=el('a','② 이미지 저장하기','image-download');link.href=opinionImageUrl;link.download=filename;
       const actions=el('div',undefined,'image-submit-actions');actions.append(link);
       const folder=el('a','Google Drive 제출 폴더 ↗','image-download');
       folder.id='open-personal-submission-folder';
@@ -126,11 +127,15 @@ function renderOpinionImage(parent){
       folder.target='_blank';folder.rel='noopener noreferrer';
       const alternative=el('details',undefined,'submission-alternative');
       alternative.append(el('summary','다른 제출 방법 · Google Drive'),el('p','선생님 안내에 따라 이미지 파일을 제출 폴더에 업로드하세요.','subtle'),folder);
-      preview.replaceChildren(image,actions,alternative);preview.hidden=false;status.textContent=`${result.width} × ${result.height} PNG입니다. 내용을 확인한 뒤 저장하세요.`;
-    }catch(error){status.textContent=error.message||'이미지를 만들지 못했습니다. 다시 시도해 주세요.';}
+      preview.replaceChildren(image,actions,alternative);preview.hidden=false;status.textContent='이미지가 준비됐어요. ② 저장하기를 누른 뒤 ③ 패들렛에 첨부해 주세요.';
+      link.focus();
+    }catch(error){status.textContent=error.message||'이미지를 만들지 못했습니다. 다시 시도해 주세요.';
+      if(!snapshot.proposal.trim())$('field-proposal').focus();
+      else if(![snapshot.reason,snapshot.evidence].some(value=>value?.trim()))$('field-reason').focus();
+    }
     finally{button.disabled=false;}
   });
-  panel.append(button,status,preview,instructions);parent.append(panel);
+  panel.append(button,status,preview,instructions);parent.append(panel,direct);
 }
 function referenceValues(parent,record){
   parent.replaceChildren();const personal=record.data;
@@ -206,6 +211,9 @@ function renderGroup(){
 }
 function render(){
   renderGroupPadletTop();
+  $('activity-guide').textContent=kind==='personal'
+    ?'자료 살펴보기 → 문제 고르기 → 방법 떠올리기 → 내 의견과 근거 정하기 → 공유하기'
+    :'친구 의견 듣기 → 기준에 따라 장단점 비교하기 → 모둠 의견과 근거 정하기 → 전체 공유하기';
   $('mode-personal').setAttribute('aria-pressed',String(kind==='personal'));$('mode-group').setAttribute('aria-pressed',String(kind==='group'));
   $('activity-title').textContent=kind==='personal'?'의견 마련하기':'모둠 토의하기';
   if(opinionImageUrl){URL.revokeObjectURL(opinionImageUrl);opinionImageUrl=null;}
@@ -213,7 +221,7 @@ function render(){
   const identity=el('div',undefined,'identity');
   field(identity,'groupNumber','우리 모둠 (선택 사항)',{type:'select',hint:'선택하지 않아도 이미지를 저장하고 제출할 수 있어요.',options:[['','모둠 선택 안 함'],...Array.from({length:6},(_,i)=>[String(i+1),`${i+1}모둠`])]});
   if(kind==='personal'){
-    const name=field(identity,'label','이름',{type:'text',hint:'선택한 모둠과 이름은 저장할 이미지 파일명에 들어갑니다.'});
+    const name=field(identity,'label','이름·별칭 (선택 사항)',{type:'text',hint:'적으면 이미지 파일명에 넣어요. 비워 두어도 이미지를 저장할 수 있어요.'});
     name.maxLength=40;name.autocomplete='off';
   }else{
     identity.append(el('p','우리 모둠의 최종 의견과 근거를 적어 주세요. 모둠을 선택하면 이미지 파일명에도 표시합니다.','subtle'));
@@ -221,6 +229,12 @@ function render(){
   }
   $('activity-fields').append(identity);
   if(kind==='personal')renderPersonal();else {renderPersonalReference();renderGroup();}
+  const sections=[...document.querySelectorAll('#activity-fields > .activity-section')];
+  sections.slice(0,-1).forEach((current,i)=>{
+    const next=sections[i+1],button=el('button','다음: '+next.querySelector('h2').textContent+' →','next-activity');button.type='button';
+    button.addEventListener('click',()=>{next.scrollIntoView({block:'start'});const title=next.querySelector('h2');title.tabIndex=-1;title.focus({preventScroll:true});});
+    current.append(button);
+  });
   updatePrint();
 }
 function warning(message){blockedKinds.set(kind,message);blocked=true;$('storage-warning').hidden=false;$('storage-warning-text').textContent=message;$('save-status').textContent='자동 저장을 멈췄습니다. 기록 파일을 먼저 보관하세요.';}
@@ -258,6 +272,7 @@ form.addEventListener('input',event=>{
 });
 function switchMode(next){if(next===kind){if(next==='group')$('group-padlet-top').scrollIntoView({block:'start',behavior:'auto'});return;}activityRevision+=1;save();kind=next;load();render();$('tool-status').textContent='';$('copy-fallback').hidden=true;history.replaceState(null,'',`#${kind}`);if(kind==='group'){$('group-padlet-top').scrollIntoView({block:'start',behavior:'auto'});$('group-padlet-title').focus({preventScroll:true});}else $('activity-title').focus();}
 $('mode-personal').addEventListener('click',()=>switchMode('personal'));$('mode-group').addEventListener('click',()=>switchMode('group'));
+$('start-writing').addEventListener('click',()=>{if($('writing-pane').hidden)$('show-writing').click();$('step-nav').scrollIntoView({block:'start'});$('step-nav').querySelector('a')?.focus({preventScroll:true});});
 window.addEventListener('hashchange',()=>{if(['#personal','#group'].includes(location.hash))switchMode(location.hash.slice(1));});
 $('save-now').addEventListener('click',()=>{if(blocked){$('storage-warning').scrollIntoView({block:'center'});$('resume-saving').focus();}else save();});
 $('resume-saving').addEventListener('click',()=>{if(!confirm('현재 화면의 내용으로 이 활동의 저장 기록을 바꿀까요? 다른 기록이 있다면 먼저 파일로 보관하세요.'))return;blockedKinds.delete(kind);blocked=false;$('storage-warning').hidden=true;save();});
