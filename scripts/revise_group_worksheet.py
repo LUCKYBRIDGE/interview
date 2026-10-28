@@ -30,7 +30,7 @@ for operands, operator in stream.operations:
         if operator == b'ET':
             target = any(
                 op == b'Td' and (
-                    any(abs(float(args[-1])-y) < 0.01 for y in (401.989, 263.339, 167.889, 101.689))
+                    any(abs(float(args[-1])-y) < 0.01 for y in (430.089, 401.989, 263.339, 167.889, 101.689))
                     or (abs(float(args[0])-427.3) < 0.01 and abs(float(args[-1])-609.789) < 0.01)
                 )
                 for args, op in block
@@ -42,7 +42,16 @@ for operands, operator in stream.operations:
             block = None
     else:
         result.append((operands, operator))
-assert removed == 6, f'Unexpected source layout: {removed}'
+assert removed == 8, f'Unexpected source layout: {removed}'
+# Reuse the removed line's space as extra writing room in all four member rows.
+row_edges = {561.589:557.339, 524.489:515.989, 487.389:474.639, 450.289:433.289, 449.989:432.989, 450.589:433.589}
+for operands, operator in result:
+    if operator in (b'm', b'l') and len(operands) == 2:
+        for old_y, new_y in row_edges.items():
+            if abs(float(operands[1])-old_y) < 0.001:
+                from pypdf.generic import FloatObject
+                operands[1] = FloatObject(new_y)
+                break
 stream.operations = result
 page.replace_contents(stream)
 
@@ -104,7 +113,7 @@ assert len(check.pages) == 2
 text = check.pages[0].extract_text()
 for phrase in ['제안하는 의견', '장단점', '장단점 검토하기', '장점: 좋은 점과 그 이유', '단점: 걱정되는 점과 그 이유', '03', '의견 결정하기', '우리 모둠의 최종 의견과 근거']:
     assert phrase in text, phrase
-for phrase in ['의견을 비교하며 나온 좋은 점과 걱정되는 점', '중요한 이유', '친구 의견을 반영해 고치거나 더한 점', '우리 모둠의 최종 제안과 선택한 이유']:
+for phrase in ['함께 집중할 문제', '의견을 비교하며 나온 좋은 점과 걱정되는 점', '중요한 이유', '친구 의견을 반영해 고치거나 더한 점', '우리 모둠의 최종 제안과 선택한 이유']:
     assert phrase not in text, phrase
 for phrase in [*agreements, '자유 메모']:
     assert phrase in check.pages[1].extract_text(), phrase

@@ -21,6 +21,11 @@ REPLACE = {
 }
 
 doc = Document(BASE / 'group-11-12.docx')
+for paragraph in list(doc.paragraphs):
+    if paragraph.text.startswith('함께 집중할 문제:'):
+        paragraph._p.getparent().remove(paragraph._p)
+for row in doc.tables[0].rows[1:]:
+    row.height = Pt(row.height.pt + 4.25)
 for paragraph in [*doc.paragraphs, *(p for t in doc.tables for row in t.rows for cell in row.cells for p in cell.paragraphs)]:
     if paragraph.text in REPLACE:
         text = REPLACE[paragraph.text]
@@ -92,6 +97,15 @@ for text in section.findall('.//hp:t', hp):
     if text.text in REPLACE:
         text.text = REPLACE[text.text]
 tables = section.findall('.//hp:tbl', hp)
+for paragraph in list(section.findall('hp:p', hp)):
+    if '함께 집중할 문제:' in ''.join(paragraph.itertext()):
+        section.remove(paragraph)
+member_table = tables[0]
+size = member_table.find('hp:sz', hp)
+size.set('height', str(int(size.get('height')) + 1700))
+for row in member_table.findall('hp:tr', hp)[1:]:
+    for size in row.findall('.//hp:cellSz', hp):
+        size.set('height', str(int(size.get('height')) + 425))
 review, final, removed = tables[2:5]
 review.set('colCnt', '2')
 row = review.find('hp:tr', hp)
@@ -166,5 +180,6 @@ with ZipFile(DEST / 'group-11-12.hwpx') as check:
     assert check.testzip() is None
     text = check.read('Contents/section0.xml').decode('utf-8')
     assert '친구 의견을 반영해 고치거나 더한 점' not in text
+    assert '함께 집중할 문제' not in text
     assert '우리 모둠의 최종 의견과 근거' in text
 print('Group DOCX and HWPX updated.')
