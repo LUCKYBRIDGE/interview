@@ -405,4 +405,23 @@ const riskChecks=[...document.querySelectorAll(".risk-check")],riskInputs=["risk
  document.querySelectorAll('#risk-modal-close,#share-qr-close').forEach(button=>{button.type='button';button.style.pointerEvents='auto';});
 })();
 </script>
+<script>
+/* Local-only autosave for student worksheet controls. */
+(()=>{"use strict";
+const KEY="openclass-student-inputs-v1",root=document.querySelector("main");
+if(!root)return;
+const fields=[...root.querySelectorAll("input,textarea,select")].filter(el=>!["button","submit","reset","file","hidden"].includes(el.type)&&!el.closest(".share-qr-overlay,.risk-modal")&&!(el.id||"").startsWith("share-"));
+const storageKey=el=>el.id?"id:"+el.id:el.classList.contains("risk-check")?"risk:"+el.dataset.group+":"+el.value:el.name?"name:"+el.name+":"+el.value:null;
+const persistent=fields.map(el=>({el,key:storageKey(el)})).filter(x=>x.key);
+let restoring=true;
+try{const saved=JSON.parse(localStorage.getItem(KEY)||"{}");for(const {el,key} of persistent){if(!Object.prototype.hasOwnProperty.call(saved,key))continue;const v=saved[key];if(el.type==="checkbox"||el.type==="radio")el.checked=v===true;else if(typeof v==="string")el.value=v;}}catch(e){}
+restoring=false;
+function save(){if(restoring)return;const data={};for(const {el,key} of persistent){data[key]=el.type==="checkbox"||el.type==="radio"?el.checked:el.value;}try{localStorage.setItem(KEY,JSON.stringify(data));}catch(e){}}
+root.addEventListener("input",save);
+root.addEventListener("change",save);
+window.addEventListener("pagehide",save);
+["risk-clear","clear-worksheet","reset","case-clear"].forEach(id=>{const btn=document.getElementById(id);if(btn)btn.addEventListener("click",()=>{queueMicrotask(save);},false);});
+for(const {el} of persistent){el.dispatchEvent(new Event("input",{bubbles:true}));el.dispatchEvent(new Event("change",{bubbles:true}));}
+})();
+</script>
 </body></html>
