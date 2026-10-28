@@ -1,4 +1,4 @@
-import {MAX_RECORD_BYTES,createData,blankMember,makeRecord,parseRecord,updateActivity,updateCriteria,importPersonalToMember,formatText,loadRecord,saveRecord,storageKey} from './workroom-state.mjs?v=20261028-9';
+import {MAX_RECORD_BYTES,createData,blankMember,makeRecord,parseRecord,updateActivity,updateCriteria,importPersonalToMember,formatText,loadRecord,saveRecord,storageKey} from './workroom-state.mjs?v=20261028-13';
 import {exportOpinionImage,opinionImageFilename} from './opinion-image.mjs?v=20261028-9';
 
 const $ = id => document.getElementById(id);
@@ -183,7 +183,7 @@ function renderGroup(){
     const box=entry(a,`모둠원 ${i+1}`);const row=grid(box);row.classList.add('sharing-grid');field(row,`members.${i}.name`,'이름·별칭',{type:'text'});field(row,`members.${i}.proposal`,'제안하는 의견',{rows:3});const prosCons=grid(box);field(prosCons,`members.${i}.strength`,'장점 · 좋은 점과 그 이유',{rows:3});field(prosCons,`members.${i}.concern`,'단점 · 걱정되는 점과 그 이유',{rows:3});
     const more=extra(box,[`members.${i}.problem`,`members.${i}.source`,`members.${i}.reason`],'개인 기록 불러오기 · 더 기록하기');memberImport(more,i);field(more,`members.${i}.reason`,'개인 의견의 이유·근거 (참고)',{rows:2});field(more,`members.${i}.problem`,'해결하려는 문제',{rows:2});field(more,`members.${i}.source`,'근거와 출처',{rows:2});
   });
-  const focus=el('div');focus.id='group-focus';a.append(focus);field(focus,'focus','함께 집중할 문제',{rows:2});const focusMore=extra(focus,['focusReason']);field(focusMore,'focusReason','이 문제를 정한 까닭',{rows:2});
+  if(data.focus||data.focusReason){const archive=el('details',undefined,'extra-fields');archive.append(el('summary','이전에 정리한 문제 기록'),el('pre',[data.focus,data.focusReason].filter(Boolean).join('\n')));a.append(archive);}
   const b=section('group-gathering','11~12차시','2 의견 모으기 · 장단점 검토하기','검토 기준으로 의견별 장점과 단점을 비교해요. 기준은 모둠에 맞게 고치거나 더하고 지울 수 있어요.');preventionNotice(b);
   renderCriteria(b);field(b,'discussion','함께 비교한 장단점과 그 이유',{rows:6});
   const reviewPaths=data.members.flatMap((_,i)=>['question','revision'].map(key=>`members.${i}.${key}`));const reviews=extra(b,reviewPaths,'의견별로 더 기록하기');

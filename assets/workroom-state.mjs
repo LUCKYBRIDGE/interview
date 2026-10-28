@@ -134,7 +134,7 @@ export function formatText(kind,data) {
   ].join('\n');
   return ['모둠 의견 나누기 모으기 결정하기 | 11~12차시',line('모둠',data.groupNumber?data.groupNumber+'모둠':data.label),'',
     '1 의견 나누기',...data.members.flatMap((m,i)=>[`${i+1}. ${m.name||'모둠원'}`,line('해결하려는 문제',m.problem),line('제안하는 의견',m.proposal),line('장점과 이유',m.strength),line('단점과 이유',m.concern),line('개인 의견의 이유·근거 (참고)',m.reason),line('근거와 출처',m.source)]),'',
-    '2 함께 검토할 문제',line('모둠이 집중할 문제',data.focus),line('문제를 정한 까닭',data.focusReason),'',
+    ...(data.focus||data.focusReason?['이전에 정리한 문제 기록',data.focus,data.focusReason,'']:[]),
     '3 의견 모으기 · 장단점 검토하기',line('함께 비교한 장단점과 그 이유',data.discussion),`검토 기준: ${data.criteriaList.filter(value=>value.trim()).join(', ')||'(정한 기준 없음)'}`,
     ...data.members.flatMap((m,i)=>[`${i+1}. ${m.name||'모둠원'}의 의견 검토`,line('장점과 이유',m.strength),line('단점과 이유',m.concern),line('더 물어보거나 확인할 점',m.question),line('고치거나 더할 점',m.revision)]),'',
     '4 의견 결정하기',line('우리 모둠의 최종 의견',data.proposal),line('최종 의견의 근거',data.reason),line('핵심 근거와 출처',data.evidence),...(data.changes?[line('이전에 기록한 의견 조정 내용',data.changes)]:[]),line('남은 걱정과 다른 의견',data.remaining),line('결정 방법과 협의 과정',data.method),line('전달을 위해 보완할 부분',data.clarity),line('다음에 확인하거나 할 일',data.next),
