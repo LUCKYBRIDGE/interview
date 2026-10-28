@@ -170,7 +170,8 @@ function renderMemberCount(parent){
   select.addEventListener('change',()=>{const next=Number(select.value);if(next<data.members.length&&!confirm('마지막 모둠원 기록이 삭제됩니다. 기록 파일을 보관했나요? 모둠원 수를 줄일까요?')){select.value=data.members.length;return;}const members=next<data.members.length?data.members.slice(0,next):[...data.members,...Array.from({length:next-data.members.length},blankMember)];data={...data,members:members.map(member=>({...member,checked:false}))};cache.set(kind,data);render();save();});count.append(label,select);parent.append(count);
 }
 function renderGroup(){
-  const a=section('group-sharing','11차시','1 의견 나누기','한 사람씩 의견을 설명하고, 각 의견의 장점과 단점을 함께 검토해 적어요.');renderMemberCount(a);
+  const a=section('group-sharing','11차시','1 의견 나누기','한 사람씩 의견을 설명하고, 각 의견의 장점과 단점을 함께 검토해 적어요.');
+  const agreements=el('details',undefined,'extra-fields');agreements.append(el('summary','우리 모둠의 토의 약속'));const promises=el('ul');['발언권 얻고 말하기','의견을 끝까지 듣기','이유와 근거를 들어 말하기','서로 다른 의견을 존중하기','충분히 협의하여 결정하기'].forEach(text=>promises.append(el('li',text)));agreements.append(promises);a.append(agreements);renderMemberCount(a);
   data.members.forEach((_,i)=>{
     const box=entry(a,`모둠원 ${i+1}`);const row=grid(box);row.classList.add('sharing-grid');field(row,`members.${i}.name`,'이름·별칭',{type:'text'});field(row,`members.${i}.proposal`,'제안하는 의견',{rows:3});const prosCons=grid(box);field(prosCons,`members.${i}.strength`,'장점 · 좋은 점과 그 이유',{rows:3});field(prosCons,`members.${i}.concern`,'단점 · 걱정되는 점과 그 이유',{rows:3});
     const more=extra(box,[`members.${i}.problem`,`members.${i}.source`,`members.${i}.reason`],'개인 기록 불러오기 · 더 기록하기');memberImport(more,i);field(more,`members.${i}.reason`,'개인 의견의 이유·근거 (참고)',{rows:2});field(more,`members.${i}.problem`,'해결하려는 문제',{rows:2});field(more,`members.${i}.source`,'근거와 출처',{rows:2});

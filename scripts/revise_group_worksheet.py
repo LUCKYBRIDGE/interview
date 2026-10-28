@@ -70,15 +70,42 @@ c.rect(45.4, 70.389, 504.6, 117.5, stroke=1, fill=0)
 c.save()
 overlay.seek(0)
 page.merge_page(PdfReader(overlay).pages[0])
-writer.add_metadata({'/Title': '모둠 토의하기 - 장단점 검토 수정본'})
+# Back side: discussion agreements and a large unruled memo box.
+pdfmetrics.registerFont(TTFont('Malgun', 'C:/Windows/Fonts/malgun.ttf'))
+back = BytesIO()
+c = canvas.Canvas(back, pagesize=(width, height))
+c.setFillColorRGB(0, 0, 0)
+c.setFont('MalgunBold', 9)
+c.drawString(45.45, 792.889, '우리 지역 보행 안전 토의   /   11~12차시')
+c.setFont('MalgunBold', 22)
+c.drawString(45.45, 752.189, '우리 모둠의 토의 약속')
+c.setFont('Malgun', 13)
+agreements = ['발언권 얻고 말하기', '의견을 끝까지 듣기', '이유와 근거를 들어 말하기', '서로 다른 의견을 존중하기', '충분히 협의하여 결정하기']
+for i, text in enumerate(agreements):
+    c.drawString(50.95, 704-i*28, '• '+text)
+c.setFont('MalgunBold', 12.5)
+c.drawString(45.45, 550, '자유 메모')
+c.setStrokeColorRGB(0.7411764706, 0.7764705882, 0.8039215686)
+c.setLineWidth(0.6)
+c.rect(45.4, 70.389, 504.6, 460, stroke=1, fill=0)
+c.setFont('Malgun', 9)
+c.drawRightString(550, 20.789, '우리 지역 보행 안전 토의  |  2')
+c.save()
+back.seek(0)
+writer.add_page(PdfReader(back).pages[0])
+from pypdf.generic import DictionaryObject, NameObject
+writer._root_object[NameObject('/ViewerPreferences')] = DictionaryObject({NameObject('/Duplex'): NameObject('/DuplexFlipLongEdge')})
+writer.add_metadata({'/Title': '모둠 토의하기 - 양면 활동지'})
 OUTPUT.parent.mkdir(parents=True, exist_ok=True)
 with OUTPUT.open('wb') as f:
     writer.write(f)
 check = PdfReader(OUTPUT)
-assert len(check.pages) == 1
+assert len(check.pages) == 2
 text = check.pages[0].extract_text()
 for phrase in ['제안하는 의견', '장단점', '장단점 검토하기', '장점: 좋은 점과 그 이유', '단점: 걱정되는 점과 그 이유', '03', '의견 결정하기', '우리 모둠의 최종 의견과 근거']:
     assert phrase in text, phrase
 for phrase in ['의견을 비교하며 나온 좋은 점과 걱정되는 점', '중요한 이유', '친구 의견을 반영해 고치거나 더한 점', '우리 모둠의 최종 제안과 선택한 이유']:
     assert phrase not in text, phrase
+for phrase in [*agreements, '자유 메모']:
+    assert phrase in check.pages[1].extract_text(), phrase
 print(OUTPUT)
