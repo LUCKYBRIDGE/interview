@@ -1,5 +1,5 @@
 export const PANE_KEY = 'interview-explore-pane-v1';
-export const ROUTES = ['home', 'walking', 'study', 'noise', 'interview'];
+export const ROUTES = ['home', 'walking', 'study', 'discussion', 'noise', 'interview'];
 export const MODES = ['writing', 'explore', 'both'];
 
 export function paneState(value) {
