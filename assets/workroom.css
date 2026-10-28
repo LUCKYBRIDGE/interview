@@ -14,3 +14,6 @@
 
 /* Guidance is informational, not another form field. */
 .solution-guidance{margin:14px 0 18px;padding:15px 17px;border:1px solid #c2dacb;border-left:4px solid #2c8364;border-radius:12px;background:#f0f8f2}.solution-guidance strong{font-size:15px;color:#205c43}.solution-guidance p{font-size:13px;line-height:1.75;margin:8px 0 0;color:#3f5f4f}.solution-guidance .subtle{color:#617165}
+
+#activity-fields:has(#personal-perspectives) .activity-section textarea{min-height:240px;resize:vertical;line-height:1.8}#activity-fields:has(#personal-perspectives) .extra-fields pre{white-space:pre-wrap;overflow-wrap:anywhere}
+.image-submit-steps{padding-left:22px;color:var(--muted);font-size:14px;line-height:1.8}.image-submit-steps li+li{margin-top:6px}.image-submit-actions{display:flex;flex-wrap:wrap;gap:10px}.image-submit-actions .image-download{justify-content:center}#open-personal-submission-folder{background:var(--tint);color:var(--accent);border:1px solid var(--line)}

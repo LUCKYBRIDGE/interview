@@ -115,7 +115,7 @@ export function formatText(kind,data) {
   validateData(kind,data);
   if(kind==='personal')return [
     '개인 의견 마련하기 | 9~10차시',line('기록 이름',data.label),'',
-    '1 다양한 입장 알아보기',...data.perspectives.flatMap((p,i)=>[`${i+1}. ${p.kind==='fictional'?'수업용 가상 인물':'실제 주변 사람'} · ${p.person||'인물 미기록'}`,line('어려움',p.difficulty),line('중요하게 여기는 것',p.value)]),line('나의 경험',data.experience),'',
+    '1 다양한 입장 알아보기',...data.perspectives.flatMap((p,i)=>[`${i+1}. ${p.kind==='fictional'?'수업용 가상 인물':'실제 주변 사람'} · ${p.person||'인물 미기록'}`,line('어려움',p.difficulty),line('중요하게 여기는 것',p.value)]),line('듣고, 찾고, 알고 있던 것',data.experience),'',
     '2 자료로 확인하기',...data.sources.flatMap((s,i)=>[`${i+1}. ${s.title||'자료 제목 미기록'}`,line('주소 또는 발행 기관',s.url),line('확인 날짜',s.date),line('대상과 지역 및 시기',s.scope),line('확인한 내용',s.claim),line('내 문제와의 관련',s.relevance)]),'',
     '3 해결할 문제',line('누가',data.who),line('어디에서',data.where),line('어떤 어려움',data.difficulty),line('내가 집중할 문제',data.problem),'',
     '4 아이디어 자유롭게 적기',...data.ideas.map((s,i)=>line(String(i+1),s)),'',

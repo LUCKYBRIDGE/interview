@@ -2,6 +2,15 @@ import {ROUTES} from './explore-state.mjs';
 
 if (new URLSearchParams(location.search).get('embed') === '1' && window.parent !== window) {
   document.documentElement.classList.add('embedded-explore');
+  document.addEventListener('click', event => {
+    const link = event.target.closest('a[href]');
+    if (!link) return;
+    const url = new URL(link.href, location.href);
+    if (url.origin !== location.origin || !url.pathname.endsWith('/workroom.html')) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    parent.postMessage({type:'discussion-activity', kind:url.hash === '#group' ? 'group' : 'personal'}, location.origin);
+  }, true);
   const note = document.createElement('p');
   note.className = 'embedded-note';
   note.textContent = '이곳은 탐구 자료입니다. 기록은 옆의 활동지에 적어요. Gemini는 새 탭이나 별도 창에서 열립니다.';

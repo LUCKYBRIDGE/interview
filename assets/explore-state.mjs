@@ -14,12 +14,6 @@ export function paneState(value) {
 export function readPane(storage) {
   try {
     const previous = paneState(JSON.parse(storage.getItem(PANE_KEY)));
-    // On this update, show both panes once. Keep the existing route and scroll position.
-    const migrationKey = PANE_KEY + '-default-both-v2';
-    if (!storage.getItem(migrationKey)) {
-      storage.setItem(migrationKey, '1');
-      return {...previous, mode:'both'};
-    }
     return previous;
   } catch { return paneState(); }
 }

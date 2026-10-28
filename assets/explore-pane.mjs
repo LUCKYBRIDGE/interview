@@ -7,6 +7,7 @@ const pane = $('explore-pane');
 let storage;
 try { storage = window.sessionStorage; } catch { storage = null; }
 let state = readPane(storage);
+if (new URLSearchParams(location.search).get('view') === 'both') state = {...state, mode:'both', route:'home', y:0};
 let loaded = false;
 let restoring = false;
 let writingY = 0;
@@ -83,12 +84,17 @@ document.querySelectorAll('[data-explore-route]').forEach(link => {
 });
 
 $('open-explore-window').addEventListener('click', () => {
-  window.open(`index.html#${state.route}`, '_blank', 'noopener,noreferrer');
+  window.open(`index.html?explore=1#${state.route}`, '_blank', 'noopener,noreferrer');
 });
 
 window.addEventListener('message', event => {
   if (event.origin !== location.origin || event.source !== frame.contentWindow) return;
   const value = event.data;
+  if (value?.type === 'discussion-activity' && ['personal','group'].includes(value.kind)) {
+    location.hash = value.kind;
+    show('both');
+    return;
+  }
   if (!value || value.type !== 'discussion-explore-position' || !ROUTES.includes(value.route)) return;
   if (pane.hidden || (restoring && value.restored !== true)) return;
   restoring = false;

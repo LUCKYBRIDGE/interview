@@ -41,26 +41,33 @@ function extra(parent,paths,title='더 기록하기') {
 }
 function preventionNotice(parent){const box=el('aside',undefined,'solution-guidance');box.setAttribute('aria-label','해결 방법을 생각할 때 주의할 점');box.append(el('strong','처벌을 강화하는 방법만 떠올리고 있나요?'));box.append(el('p','벌금이나 처벌도 검토할 수 있지만, 금액이나 형량을 높이는 것만으로 문제가 해결된다고 단정하지 마세요. 문제가 생기는 까닭, 사고를 미리 막는 방법, 안전시설·교육·안내·관리 등 다른 방법도 함께 살펴보세요.'));box.append(el('p','어떤 방법이 실제로 도움이 될지, 실천할 수 있을지, 여러 사람에게 어떤 영향을 줄지 근거를 들어 이야기해 보세요.','subtle'));parent.append(box);}
 function renderPersonal(){
-  const a=section('personal-perspectives','9~10차시','1 듣고, 찾고, 알고 있던 것','짧게 적어도 좋아요. 가상 인물의 말은 실제 사실과 구분하고, 알고 있던 내용도 확인해 보세요.');
-  field(a,'perspectives.0.difficulty',data.perspectives[0].kind==='real'?'실제 주변 사람에게 들은 내용':'가상 인터뷰에서 들은 내용',{rows:2});
-  if(data.perspectives[0].person||data.perspectives[0].kind==='real'){const legacy=extra(a,['perspectives.0.person'],'이전에 적은 인터뷰 정보');field(legacy,'perspectives.0.kind','이야기 구분',{type:'select',options:[['fictional','가상 인물'],['real','실제 주변 사람']]});if(data.perspectives[0].person)field(legacy,'perspectives.0.person','이전에 기록한 인물 정보',{type:'text'});}
-  const source=el('div');source.id='personal-research';a.append(source);const row=grid(source);
-  field(row,'sources.0.title','자료 제목',{type:'text'});field(row,'sources.0.url','출처 또는 주소',{type:'text'});field(source,'sources.0.claim','조사한 자료에서 찾은 내용',{rows:2});
-  field(a,'experience','내가 알고 있던 사실',{rows:2,hint:'내 경험, 관찰한 모습, 전에 들은 내용 등을 적어요.'});
-  const more=extra(a,['perspectives.0.value','perspectives.1.person','perspectives.1.difficulty','perspectives.1.value','sources.0.date','sources.0.scope','sources.0.relevance','sources.1.title','sources.1.url','sources.1.date','sources.1.claim','sources.1.relevance','sources.1.scope']);
-  field(more,'perspectives.0.value','그 사람이 중요하게 여기는 것',{rows:2});
-  const another=entry(more,'다른 인물');const anotherRow=grid(another);field(anotherRow,'perspectives.1.kind','이야기 구분',{type:'select',options:[['fictional','가상 인물'],['real','실제 주변 사람']]});if(data.perspectives[1].person)field(anotherRow,'perspectives.1.person','이전에 기록한 인물 정보',{type:'text'});field(another,'perspectives.1.difficulty','어려움',{rows:2});field(another,'perspectives.1.value','중요하게 여기는 것',{rows:2});
-  field(more,'sources.0.date','자료를 확인한 날짜',{type:'date'});field(more,'sources.0.scope','자료의 지역·대상·시기',{type:'text'});field(more,'sources.0.relevance','내 문제와의 관련',{rows:2});
-  const moreSource=entry(more,'추가 자료');field(moreSource,'sources.1.title','자료 제목',{type:'text'});field(moreSource,'sources.1.url','출처 또는 주소',{type:'text'});field(moreSource,'sources.1.date','확인 날짜',{type:'date'});field(moreSource,'sources.1.scope','지역·대상·시기',{type:'text'});field(moreSource,'sources.1.claim','알게 된 점',{rows:2});field(moreSource,'sources.1.relevance','내 문제와의 관련',{rows:2});
-  const b=section('personal-problem','9~10차시','2 집중할 문제','누가, 어떤 곳에서, 어떤 어려움을 겪나요?');field(b,'problem','내가 집중할 문제',{rows:2});
-  const problemMore=extra(b,['who','where','difficulty']);field(problemMore,'who','누가',{type:'text'});field(problemMore,'where','어떤 곳에서',{type:'text'});field(problemMore,'difficulty','어떤 어려움',{rows:2});
-  const c=section('personal-ideas','10차시','3 아이디어','여러 방법을 짧게 적어 보세요. 아직 하나를 고르지 않아도 돼요.');preventionNotice(c);field(c,'ideas.0','떠오른 아이디어',{rows:3});const ideasMore=extra(c,['ideas.1','ideas.2']);field(ideasMore,'ideas.1','다른 아이디어',{rows:2});field(ideasMore,'ideas.2','더 떠오른 아이디어',{rows:2});
-  const d=section('personal-proposal','10차시','4 내 의견과 근거');field(d,'proposal','내가 제안하는 의견',{rows:2});field(d,'reason','이유와 근거',{rows:3,hint:'듣고 찾은 내용이나 알고 있던 사실과 연결해 적어요.'});const finalMore=extra(d,['evidence','uncertainties','handoff']);field(finalMore,'evidence','근거와 출처 보충',{rows:2});field(finalMore,'uncertainties','걱정되거나 더 확인할 점',{rows:2});field(finalMore,'handoff','모둠에서 함께 의논할 점',{rows:2});
+  const a=section('personal-perspectives','9~10차시','1 듣고, 찾고, 알고 있던 것');
+  field(a,'experience','듣고, 찾고, 알고 있던 것',{rows:10});
+  const b=section('personal-problem','9~10차시','2 집중할 문제');
+  field(b,'problem','내가 집중할 문제',{rows:10});
+  const c=section('personal-ideas','10차시','3 아이디어');
+  field(c,'ideas.0','아이디어',{rows:10});
+  const d=section('personal-proposal','10차시','4 내 의견 정하기');
+  field(d,'proposal','내 의견',{rows:8});
+  field(d,'reason','이유나 근거',{rows:10});
   renderOpinionImage(d);
+  // Keep earlier structured records intact and available without extra input boxes.
+  const previous=[...data.perspectives.flatMap(p=>[p.person,p.difficulty,p.value]),...data.sources.flatMap(s=>Object.values(s)),data.who,data.where,data.difficulty,...data.ideas.slice(1),data.evidence,data.uncertainties,data.handoff];
+  if(previous.some(value=>value.trim())){
+    const archive=el('details',undefined,'extra-fields');
+    archive.append(el('summary','이전에 작성한 상세 기록 보기'),el('pre',formatText('personal',data)));
+    $('activity-fields').append(archive);
+  }
 }
 function renderOpinionImage(parent){
   const panel=el('div',undefined,'opinion-image-tools');panel.append(el('h3','의견과 근거 공유하기'));
   panel.append(el('p','의견과 근거만 큰 글씨의 16:9 이미지로 저장해요. 긴 글은 핵심만 정리해 주세요.','subtle'));
+  if(kind==='personal'){
+    const steps=el('ol',undefined,'image-submit-steps');
+    steps.append(el('li','이미지를 만든 뒤 아래의 ‘① 이미지 저장하기’를 눌러요.'),el('li','‘② 패들렛에 제출하기’를 눌러 학급 게시판을 열어요.'),el('li','패들렛에서 글쓰기(+)를 누르고 저장한 PNG 이미지를 첨부한 뒤 게시해요. 선생님 안내에 따라 Google Drive 제출 폴더를 이용해도 돼요.'));
+    panel.append(steps);
+    panel.append(el('p','패들렛에 내 이미지가 게시되었는지 확인하세요. 게시판이나 폴더를 여는 것만으로 제출되지는 않아요.','subtle'));
+  }
   const button=el('button','16:9 이미지 만들기');button.type='button';button.id='make-opinion-image';
   const status=el('p',undefined,'subtle');status.id='opinion-image-status';status.setAttribute('role','status');status.setAttribute('aria-live','polite');
   const preview=el('div',undefined,'opinion-image-preview');preview.hidden=true;
@@ -71,8 +78,22 @@ function renderOpinionImage(parent){
       if(kind!==startedKind||revision!==activityRevision||JSON.stringify(snapshot)!==JSON.stringify(data))throw new Error('기록이 바뀌었습니다. 현재 의견으로 다시 만들어 주세요.');
       if(opinionImageUrl)URL.revokeObjectURL(opinionImageUrl);opinionImageUrl=URL.createObjectURL(result.blob);
       const image=el('img');image.src=opinionImageUrl;image.alt='의견과 근거 16:9 이미지 미리보기';image.width=result.width;image.height=result.height;
-      const link=el('a','이미지 파일 저장하기','image-download');link.href=opinionImageUrl;link.download=startedKind==='personal'?'개인-의견과-근거-16대9.png':'모둠-의견과-근거-16대9.png';
-      preview.replaceChildren(image,link);preview.hidden=false;status.textContent=`${result.width} × ${result.height} PNG입니다. 내용을 확인한 뒤 저장하세요.`;
+      const link=el('a',startedKind==='personal'?'① 이미지 저장하기':'이미지 파일 저장하기','image-download');link.href=opinionImageUrl;link.download=startedKind==='personal'?'개인-의견과-근거-16대9.png':'모둠-의견과-근거-16대9.png';
+      const actions=el('div',undefined,'image-submit-actions');actions.append(link);
+      if(startedKind==='personal'){
+        const padlet=el('a','② 패들렛에 제출하기 ↗','image-download');
+        padlet.id='open-personal-submission-padlet';
+        padlet.href='https://padlet.com/lucky20220528/5-s024ikj17bfqgkw776wh';
+        padlet.target='_blank';padlet.rel='noopener noreferrer';
+        padlet.setAttribute('aria-label','② 패들렛에 제출하기 (새 탭)');
+        const folder=el('a','Google Drive 제출 폴더 ↗','image-download');
+        folder.id='open-personal-submission-folder';
+        folder.href='https://drive.google.com/drive/folders/1gLw1YDJKoILpqh-shaFMWwuCsNfNYW3X?usp=drive_link';
+        folder.target='_blank';folder.rel='noopener noreferrer';
+        folder.setAttribute('aria-label','5난초 공개수업 Google Drive 제출 폴더 열기 (새 탭)');
+        actions.append(padlet,folder);
+      }
+      preview.replaceChildren(image,actions);preview.hidden=false;status.textContent=`${result.width} × ${result.height} PNG입니다. 내용을 확인한 뒤 저장하세요.`;
     }catch(error){status.textContent=error.message||'이미지를 만들지 못했습니다. 다시 시도해 주세요.';}
     finally{button.disabled=false;}
   });
@@ -80,7 +101,7 @@ function renderOpinionImage(parent){
 }
 function referenceValues(parent,record){
   parent.replaceChildren();const personal=record.data;
-  const values=[['집중할 문제',personal.problem||[personal.who,personal.where,personal.difficulty].filter(Boolean).join(' · ')],['의견',personal.proposal],['이유와 근거',[personal.reason,personal.evidence].filter(Boolean).join('\n')],[personal.perspectives[0].kind==='real'?'실제 주변 사람에게 들은 내용':'가상 인터뷰에서 들은 내용',personal.perspectives[0].difficulty],['내가 알고 있던 사실',personal.experience],['아이디어',personal.ideas.filter(Boolean).join('\n')],['남은 질문',personal.uncertainties],...personal.sources.flatMap((source,i)=>[[`조사 자료 ${i+1}`,[source.title,source.url,source.claim].filter(Boolean).join('\n')]])];
+  const values=[['집중할 문제',personal.problem||[personal.who,personal.where,personal.difficulty].filter(Boolean).join(' · ')],['의견',personal.proposal],['이유와 근거',[personal.reason,personal.evidence].filter(Boolean).join('\n')],[personal.perspectives[0].kind==='real'?'실제 주변 사람에게 들은 내용':'가상 인터뷰에서 들은 내용',personal.perspectives[0].difficulty],['듣고, 찾고, 알고 있던 것',personal.experience],['아이디어',personal.ideas.filter(Boolean).join('\n')],['남은 질문',personal.uncertainties],...personal.sources.flatMap((source,i)=>[[`조사 자료 ${i+1}`,[source.title,source.url,source.claim].filter(Boolean).join('\n')]])];
   const list=el('dl');values.forEach(([title,value])=>{if(!value?.trim())return;list.append(el('dt',title),el('dd',value));});
   if(!list.children.length)parent.append(el('p','아직 개인 활동에 적은 내용이 없습니다.','subtle'));else parent.append(list);
   const all=el('details',undefined,'reference-all');all.append(el('summary','개인 기록 전체 보기'),el('pre',formatText('personal',personal)));parent.append(all);
