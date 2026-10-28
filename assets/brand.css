@@ -1,0 +1,22 @@
+/* Shared KNOL silhouette, with a mint identity for discussion. */
+:root{--knol-mint:#a8dfc3;--knol-ink:#182632;--knol-deep:#294e3d;--knol-muted:#597467;--knol-accent:#21664b;--knol-line:#bdd8ca;--knol-tint:#dff2e7;--knol-soft:#edf8f2;--knol-wash:#f4faf6;accent-color:var(--knol-accent)}
+@media screen{
+  html,body{background:var(--knol-wash);color:var(--knol-ink)}
+  ::selection{background:var(--knol-mint);color:var(--knol-ink)}
+  a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible{outline-color:var(--knol-accent)}
+  .mode-nav button[aria-pressed=true],.tab-button[aria-selected=true],.tab-group-ped .tab-button[aria-selected=true],.tab-group-noise .tab-button[aria-selected=true],.data-filter[aria-pressed=true],.workbench-nav button[aria-pressed=true]{background:var(--knol-mint);border-color:var(--knol-accent);color:var(--knol-ink)}
+  .mode-nav button[aria-pressed=true]:hover,.workbench-nav button[aria-pressed=true]:hover{background:var(--knol-tint);color:var(--knol-ink)}
+  .topic-choice[aria-pressed=true]{background:var(--knol-soft);border-color:var(--knol-accent)}
+  .stage-mark,.eyebrow,.number,.activity-guide,.image-create-badge{background:var(--knol-tint);color:var(--knol-deep)}
+  .opinion-image-tools{background:var(--knol-soft);border-color:var(--knol-accent)}
+  .padlet-direct-panel [aria-current=true]{outline-color:var(--knol-accent)}
+  .field input:focus,.field textarea:focus,.field select:focus{border-color:var(--knol-accent)}
+}
+.brand.knol-brand{display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:#182632;flex-shrink:0;letter-spacing:-.04em}
+.knol-brand .knol-brand-icon{width:48px;height:48px;display:block;flex:none;object-fit:contain}
+.knol-brand .knol-brand-copy{display:flex;flex-direction:column;gap:3px;line-height:1.2;color:#182632}
+.knol-brand .knol-brand-name{font-size:25px;font-weight:900;color:#182632}
+.knol-brand .knol-brand-tagline{font-size:11px;font-weight:600;letter-spacing:-.02em;color:#50705f}
+.top .nav,.header-inner{padding-top:10px;padding-bottom:10px}
+@media(max-width:700px){.brand.knol-brand{width:100%;gap:9px}.knol-brand .knol-brand-icon{width:42px;height:42px}.knol-brand .knol-brand-name{font-size:23px}.knol-brand .knol-brand-tagline{font-size:11px}}
+@media print{.knol-brand .knol-brand-icon{width:32px;height:32px}}

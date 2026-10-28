@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 254 100" fill="none" role="img" aria-labelledby="title">
+<title id="title">놀토의 로고</title>
+  <rect x="4" y="4" width="92" height="92" rx="26" fill="#A8DFC3" stroke="#182632" stroke-width="3.5"/>
+  <g stroke="#182632" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M18 45C18 30 28 22 42 22C57 22 67 31 67 45C67 59 57 66 43 66H33L20 75L23 60C20 56 18 51 18 45Z" fill="white"/>
+    <path d="M42 64C42 52 51 45 64 45C77 45 85 53 85 65C85 72 82 77 78 80L82 88L69 84H64C51 84 42 77 42 64Z" fill="white"/>
+    <path d="M76 24L79 19M84 31L89 29"/>
+  </g>
+  <g fill="#182632">
+    <ellipse cx="34" cy="43" rx="3.2" ry="4.4"/>
+    <ellipse cx="47" cy="42" rx="3.2" ry="4.4"/>
+    <ellipse cx="59" cy="63" rx="3" ry="4.1"/>
+    <ellipse cx="72" cy="64" rx="3" ry="4.1"/>
+  </g>
+
+<g transform="translate(112 65) scale(0.021484375 -0.021484375)" fill="#182632"><path transform="translate(0 0)" d="M129 791V995H897V1145H401V1729H653V1358H1673V1145H1149V995H1919V791ZM391 -147V365H1405V475H391V680H1655V168H641V57H1702V-147Z"/><path transform="translate(2048 0)" d="M129 78V287H897V602H393V1579H1663V1372H645V1198H1608V991H645V809H1694V602H1149V287H1919V78Z"/><path transform="translate(4096 0)" d="M1536 -180V1749H1784V-180ZM745 659Q518 659 364.5 793.5Q211 928 211 1143Q211 1360 368.0 1495.0Q525 1630 756 1630Q985 1630 1134.5 1495.0Q1284 1360 1284 1143Q1284 929 1129.0 794.0Q974 659 745 659ZM748 1419Q621 1419 544.0 1341.0Q467 1263 467 1143Q467 1025 546.0 947.5Q625 870 748 870Q873 870 950.5 948.5Q1028 1027 1028 1143Q1028 1260 949.5 1339.5Q871 1419 748 1419ZM102 139 76 350Q992 350 1448 379L1462 172Q827 139 102 139Z"/></g>
+</svg>

@@ -52,11 +52,11 @@ export async function exportOpinionImage(data){
  const family='"Apple SD Gothic Neo", "Malgun Gothic", sans-serif';
  const measure=(text,size)=>{ctx.font=`bold ${size}px ${family}`;return ctx.measureText(text).width;};
  const layout=layoutOpinion(data,measure);
- ctx.fillStyle='#f4f6f8';ctx.fillRect(0,0,WIDTH,HEIGHT);
+ ctx.fillStyle='#edf8f2';ctx.fillRect(0,0,WIDTH,HEIGHT);
  ctx.fillStyle='#ffffff';ctx.fillRect(64,64,1792,432);ctx.fillRect(64,528,1792,488);
- ctx.textBaseline='top';ctx.fillStyle='#263f50';ctx.font=`bold 30px ${family}`;
+ ctx.textBaseline='top';ctx.fillStyle='#21664b';ctx.font=`bold 30px ${family}`;
  ctx.font=`bold 28px ${family}`;ctx.fillText('의견',112,92);ctx.fillText('근거',112,550);
- ctx.fillStyle='#172431';
+ ctx.fillStyle='#182632';
  for(const part of [layout.proposal,layout.reason]){
   ctx.font=`bold ${part.size}px ${family}`;
   part.lines.forEach((line,i)=>ctx.fillText(line,part.x,part.y+i*part.lineHeight));

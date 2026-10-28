@@ -1,5 +1,5 @@
 import {MAX_RECORD_BYTES,createData,blankMember,makeRecord,parseRecord,updateActivity,updateCriteria,importPersonalToMember,formatText,loadRecord,saveRecord,storageKey} from './workroom-state.mjs?v=20261028-13';
-import {exportOpinionImage,opinionImageFilename} from './opinion-image.mjs?v=20261028-16';
+import {exportOpinionImage,opinionImageFilename} from './opinion-image.mjs?v=20261028-17';
 
 const PADLET_GROUPS=[
     ['1모둠','https://padlet.com/lucky20220528/1-s024wztgp5vbe1kgd9pi'],
