@@ -147,8 +147,9 @@ function renderMode({restoreWriting = false} = {}) {
   document.body.dataset.workspaceView = single ? (leftOnly ? 'explore' : 'writing') : 'both';
   pane.hidden = rightOnly;
   rightPane.hidden = leftOnly;
-  writing.hidden = leftOnly || (!single && rightChoice === 'explore');
-  rightFrame.hidden = leftOnly || (!single && rightChoice !== 'explore');
+  rightSource.closest('.right-source-bar').hidden = single;
+  writing.hidden = leftOnly || (single ? singleChoice === 'explore' : rightChoice === 'explore');
+  rightFrame.hidden = leftOnly || (single ? singleChoice !== 'explore' : rightChoice !== 'explore');
   singleWrap.hidden = !single;
   singleSource.value = singleChoice;
   $('show-writing').setAttribute('aria-pressed',String(single));
