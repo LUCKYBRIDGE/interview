@@ -167,3 +167,11 @@ body[data-workspace-view=both] .workbench{grid-template-columns:minmax(0,var(--s
 @media(max-width:1120px){body[data-workspace-view=both] .workbench{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:650px){#group-sharing .entry .sharing-grid,#group-sharing .entry .field-grid:not(.sharing-grid){grid-template-columns:1fr}#group-sharing .entry .field label{min-height:0;margin-bottom:6px}#group-sharing .entry .field input:not([type=checkbox]){height:48px;min-height:48px}}
 @media print{.left-empty,.right-source-bar,#right-explore-frame{display:none!important}}
+
+/* Compact, consistently named view mode switch */
+.workbench-nav{display:flex;align-items:center;gap:5px;flex-wrap:wrap;padding:6px 0;border-bottom:0;margin:5px 0 10px}
+.view-switch-label{font-size:12px;color:var(--knol-muted);font-weight:750;margin-right:8px}
+.workbench-nav button:not(#reset-split){min-height:38px;padding:8px 13px;border-radius:9px;font-size:13px}
+.workbench-nav p{display:none}
+#reset-split{margin-left:auto}
+@media(max-width:700px){.view-switch-label{flex-basis:100%;margin:0}.workbench-nav button:not(#reset-split){flex:1;min-width:0;padding:8px 5px;font-size:12px}}
