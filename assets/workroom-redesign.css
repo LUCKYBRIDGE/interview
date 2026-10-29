@@ -114,3 +114,13 @@ body[data-workspace-view="both"] #writing-pane{margin-left:0;min-width:0}
  #reset-split{display:none}
 }
 @media print{#split-divider,#reset-split{display:none!important}body[data-workspace-view="both"] .workbench{display:block!important}}
+
+/* Group work: keep references close to evaluation, not in a competing toolbar. */
+.group-padlet-reference{border-top:1px solid var(--line);margin-top:5px}
+.group-padlet-reference>summary,.group-opinion-overview>summary{cursor:pointer;padding:10px 2px;font-size:13px;font-weight:800;color:var(--knol-deep)}
+.group-padlet-reference .group-padlet-links{margin:8px 0;display:grid}
+.group-opinion-overview{margin:8px 0 18px;padding:9px 13px;border:1px solid var(--knol-line);border-radius:12px;background:var(--knol-wash)}
+.group-opinion-summary{padding:12px 13px;margin:8px 0;background:white;border:1px solid var(--knol-line);border-radius:10px}
+.group-opinion-summary strong{font-size:14px;line-height:1.5;overflow-wrap:anywhere}
+.group-opinion-summary p{margin:5px 0 0;font-size:13px;color:var(--knol-muted);white-space:pre-wrap;overflow-wrap:anywhere}
+@media print{.group-padlet-reference,.group-opinion-overview{display:none!important}}
