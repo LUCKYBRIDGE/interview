@@ -19,12 +19,13 @@ if (window.parent !== window) location.replace('index.html?embed=1#home');
 <link rel="icon" type="image/png" sizes="32x32" href="assets/brand/knoltalk-favicon.png">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/brand/knoltalk-touch.png">
 <link rel="stylesheet" href="assets/brand.css?v=20261028-2">
+<link rel="stylesheet" href="assets/workroom-redesign.css?v=20261029-1">
 </head>
 <body>
 <a class="skip-link" href="#activity">활동 기록으로 바로가기</a>
-<header><div class="shell header-inner"><a class="brand knol-brand" href="index.html#home"><img class="knol-brand-icon" src="assets/brand/knoltalk-mark.svg" width="48" height="48" alt=""><span class="knol-brand-copy"><strong class="knol-brand-name">놀토의</strong><small class="knol-brand-tagline">우리 주변의 문제를 토의해요</small></span></a><nav class="workroom-global-nav" aria-label="전체 메뉴"><a href="index.html#home">홈</a><a href="index.html#home">보행자 안전</a><button type="button" id="noise-pending">늦은 시각 소음</button><button type="button" id="back-page">← 뒤로</button></nav></div></header>
+<header><div class="shell header-inner"><a class="brand knol-brand" href="index.html#home"><img class="knol-brand-icon" src="assets/brand/knoltalk-mark.svg" width="48" height="48" alt=""><span class="knol-brand-copy"><strong class="knol-brand-name">놀토의</strong><small class="knol-brand-tagline">우리 주변의 문제를 토의해요</small></span></a><nav class="workroom-global-nav" aria-label="전체 메뉴"><a href="index.html?explore=1#home">보행 안전 탐구</a><button type="button" id="noise-pending" title="준비 중인 활동">소음 탐구 (준비 중)</button></nav></div></header>
 <main class="shell">
-<section class="intro compact-intro"><span class="eyebrow">5학년 국어 · 의견을 조정해요</span><h1>탐구하고, 토의하고, 의견을 나눠요</h1><p>처음에는 아래 순서대로, 이어서 할 때는 필요한 단계부터 시작하세요.</p></section>
+<section class="intro compact-intro"><span class="eyebrow">5학년 국어 · 의견을 조정해요</span><h1>탐구하고, 토의하고, 의견을 나눠요</h1><p>현재 활동의 단계에 따라 기록하고, 필요한 탐구 자료를 함께 살펴보세요.</p></section>
 <nav class="mode-nav activity-top-nav" aria-label="활동 유형"><button id="mode-personal" type="button" aria-pressed="true">개인활동 <small>의견 마련하기</small></button><button id="mode-group" type="button" aria-pressed="false">모둠활동 <small>의견 나누기·모으기·결정하기</small></button></nav>
 <section id="group-padlet-top" class="padlet-direct-panel group-padlet-top" aria-labelledby="group-padlet-title" hidden></section>
 <aside class="activity-guide" aria-label="활동 시작 안내"><strong id="activity-guide"></strong><p>모든 칸을 채울 필요는 없어요. 이미지로 공유할 때는 <b>의견과 이유·근거</b>만 적으면 돼요. 이름과 모둠은 선택 사항이에요.</p><button id="start-writing" type="button">기록할 단계 고르기 ↓</button></aside>
@@ -44,5 +45,5 @@ if (window.parent !== window) location.replace('index.html?embed=1#home');
 </main>
 <footer class="shell"><p>학생의 제안과 결정은 학생에게 있습니다. AI는 인물의 입장을 들려주거나, 결정한 내용의 설명이 명확한지 살피는 데 활용합니다.</p></footer>
 <noscript><p class="shell warning">활동 기록에는 JavaScript가 필요합니다. PDF 활동지를 내려받아 사용하거나 브라우저 설정을 확인하세요.</p></noscript>
-<script>document.getElementById("noise-pending").addEventListener("click",()=>alert("잠시 준비중인 페이지입니다."));document.getElementById("back-page").addEventListener("click",()=>{if(history.length>1)history.back();else location.href="index.html#home"});</script></body>
+<script>document.getElementById("noise-pending").addEventListener("click",()=>alert("잠시 준비 중인 페이지입니다."));</script></body>
 </html>
