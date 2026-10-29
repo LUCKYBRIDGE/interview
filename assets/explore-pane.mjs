@@ -10,6 +10,10 @@ const exploreToolbar = $('explore-toolbar');
 const rightSource = $('right-source');
 const rightFrame = $('right-explore-frame');
 const rightPane = $('right-pane');
+const singleSource = $('single-source');
+const singleWrap = $('single-source-wrap');
+let singleChoice = 'personal';
+try {const saved = sessionStorage.getItem('knoltalk-single-source'); if(['personal','group','explore','personal-reference'].includes(saved))singleChoice=saved;} catch {}
 let storage;
 try { storage = window.sessionStorage; } catch { storage = null; }
 let state = readPane(storage);
@@ -137,25 +141,43 @@ frame.addEventListener('load', restoreFrame);
 
 function renderMode({restoreWriting = false} = {}) {
   const wasHidden = pane.hidden;
-  document.body.dataset.workspaceView = state.mode;
-  pane.hidden = state.mode === 'writing';
-  writing.hidden = state.mode === 'explore' || rightChoice === 'explore';
-  rightPane.hidden = state.mode === 'explore';
-  for (const [id, mode] of [['show-writing','writing'],['show-explore','explore'],['show-both','both']]) {
-    $(id).setAttribute('aria-pressed', String(state.mode === mode));
-  }
+  const single = state.mode !== 'both';
+  const leftOnly = single && ['explore','personal-reference'].includes(singleChoice);
+  const rightOnly = single && !leftOnly;
+  document.body.dataset.workspaceView = single ? (leftOnly ? 'explore' : 'writing') : 'both';
+  pane.hidden = rightOnly;
+  rightPane.hidden = leftOnly;
+  writing.hidden = leftOnly || (!single && rightChoice === 'explore');
+  rightFrame.hidden = leftOnly || (!single && rightChoice !== 'explore');
+  singleWrap.hidden = !single;
+  singleSource.value = singleChoice;
+  $('show-writing').setAttribute('aria-pressed',String(single));
+  $('show-both').setAttribute('aria-pressed',String(!single));
+  $('show-explore').setAttribute('aria-pressed','false');
+  $('reset-split').hidden = single;
   const hint = $('workspace-hint');
-  if (hint) hint.textContent = state.mode === 'both' && !narrow.matches ? '가운데 경계선을 드래그하면 좌우 너비를 조절할 수 있습니다.' : '';
-  if (!pane.hidden) {
-    if (source === 'explore') {
+  if(hint)hint.textContent = '';
+  if(!pane.hidden) {
+    if(source === 'explore') {
       ensureFrame();
-      if (wasHidden) requestAnimationFrame(restoreFrame);
-    } else window.dispatchEvent(new Event('knoltalk-personal-reference-refresh'));
+      if(wasHidden)requestAnimationFrame(restoreFrame);
+    } else if(source === 'personal')window.dispatchEvent(new Event('knoltalk-personal-reference-refresh'));
   }
-  if (restoreWriting) {
-    window.scrollTo({top:writingY, behavior:'instant'});
-    if (lastField?.isConnected) lastField.focus({preventScroll:true});
+  if(restoreWriting && !rightPane.hidden) {
+    window.scrollTo({top:writingY,behavior:'instant'});
+    if(lastField?.isConnected)lastField.focus({preventScroll:true});
   }
+}
+function selectSingle(next) {
+  if(!['personal','group','explore','personal-reference'].includes(next))return;
+  singleChoice = next;
+  if(next === 'explore')selectSource('explore');
+  else if(next === 'personal-reference')selectSource('personal');
+  else selectRight(next);
+  try {sessionStorage.setItem('knoltalk-single-source',singleChoice);} catch {}
+  state = {...state,mode:'writing'};
+  persist();
+  renderMode();
 }
 
 function show(mode) {
@@ -169,10 +191,10 @@ function show(mode) {
   if (mode !== 'writing') pane.scrollIntoView({block:'start', behavior:'instant'});
 }
 
-$('show-writing').addEventListener('click', () => show('writing'));
-$('show-explore').addEventListener('click', () => show('explore'));
-$('show-both').addEventListener('click', () => show('both'));
-$('close-explore').addEventListener('click', () => show('writing'));
+$('show-writing').addEventListener('click',()=>selectSingle(singleChoice));
+$('show-both').addEventListener('click',()=>show('both'));
+singleSource.addEventListener('change',()=>selectSingle(singleSource.value));
+$('close-explore').addEventListener('click',()=>selectSingle(rightChoice === 'explore' ? 'personal' : rightChoice));
 
 document.querySelectorAll('[data-explore-route]').forEach(link => {
   link.addEventListener('click', event => {
@@ -182,7 +204,7 @@ document.querySelectorAll('[data-explore-route]').forEach(link => {
     const changed = route !== state.route;
     state = {...state, route, y:changed ? 0 : state.y}; persist();
     selectSource('explore');
-    show(narrow.matches ? 'explore' : 'both');
+    if(state.mode === 'both')show('both'); else selectSingle('explore');
     ensureFrame();
     if (changed) restoreFrame();
   });
@@ -197,7 +219,7 @@ window.addEventListener('message', event => {
   const value = event.data;
   if (value?.type === 'discussion-activity' && ['personal','group'].includes(value.kind)) {
     location.hash = value.kind;
-    show('both');
+    if(state.mode === 'both')show('both'); else selectSingle(value.kind);
     return;
   }
   if (!value || value.type !== 'discussion-explore-position' || !ROUTES.includes(value.route)) return;
@@ -209,4 +231,5 @@ narrow.addEventListener('change', () => renderMode());
 try {const saved=sessionStorage.getItem('knoltalk-right-source');if(['personal','group','explore'].includes(saved) && !['#personal','#group'].includes(location.hash))rightChoice=saved;} catch {}
 selectSource(source);
 selectRight(rightChoice);
-renderMode();
+if(state.mode !== 'both')selectSingle(singleChoice);
+else renderMode();
