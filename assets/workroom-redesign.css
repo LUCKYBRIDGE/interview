@@ -184,3 +184,11 @@ body[data-workspace-view=both] .workbench{grid-template-columns:minmax(0,var(--s
 body[data-workspace-view=writing] #right-pane{width:100%;min-width:0}
 body[data-workspace-view=explore] #explore-pane{width:100%;max-width:1100px;margin-inline:auto}
 @media(max-width:700px){#single-source-wrap{margin-left:0;flex-basis:100%;justify-content:space-between}#single-source{flex:1;max-width:none;min-width:0}}
+
+/* Both panes can host an editable activity; empty panes remain visible. */
+#left-editor-frame{display:block;width:100%;height:calc(100dvh - 170px);min-height:480px;border:0;background:#fff}
+#left-editor-frame[hidden],#right-empty[hidden]{display:none!important}
+#right-empty{min-height:370px;border:1px solid var(--knol-line);border-radius:14px}
+body[data-workspace-view=both] #explore-pane{min-width:0}
+@media(max-width:1120px){#left-editor-frame{height:65dvh;min-height:380px}}
+@media print{#left-editor-frame,#right-empty{display:none!important}}
