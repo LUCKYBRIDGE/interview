@@ -124,3 +124,23 @@ body[data-workspace-view="both"] #writing-pane{margin-left:0;min-width:0}
 .group-opinion-summary strong{font-size:14px;line-height:1.5;overflow-wrap:anywhere}
 .group-opinion-summary p{margin:5px 0 0;font-size:13px;color:var(--knol-muted);white-space:pre-wrap;overflow-wrap:anywhere}
 @media print{.group-padlet-reference,.group-opinion-overview{display:none!important}}
+
+/* Selectable sources in the left reference pane */
+.reference-source-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 12px;background:var(--knol-wash);border-bottom:1px solid var(--knol-line)}
+.reference-source-bar label{font-weight:800;font-size:13px;white-space:nowrap}
+.reference-source-bar select{font:inherit;font-size:14px;font-weight:750;color:var(--knol-deep);background:white;border:1px solid var(--knol-line);border-radius:9px;min-height:42px;min-width:0;width:min(250px,65%);padding:8px}
+#explore-frame[hidden],#explore-toolbar[hidden],#left-personal[hidden]{display:none!important}
+.left-personal{height:calc(100dvh - 160px);min-height:350px;overflow-y:auto;padding:14px 18px;background:#fff;overscroll-behavior:contain}
+.left-personal-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.left-personal-head strong{font-size:17px}
+.left-personal-head button,.left-personal-file{border:1px solid var(--knol-line);border-radius:10px;padding:9px 12px;font-size:12px;font-weight:750;background:var(--knol-wash);cursor:pointer}
+.left-personal-note{font-size:13px;line-height:1.65;color:var(--knol-muted)}
+.left-personal-file{display:inline-block;position:relative;margin-bottom:9px}
+.left-personal-file input{position:absolute;inset:0;width:100%;opacity:0;cursor:pointer}
+.left-personal-file:focus-within{outline:3px solid var(--knol-accent);outline-offset:2px}
+#left-personal-status{font-size:12px;color:var(--knol-muted);line-height:1.6}
+.left-personal-entry{padding:13px 0;border-bottom:1px solid var(--knol-line)}
+.left-personal-entry h3{font-size:15px;color:var(--knol-deep);margin:0 0 7px}
+.left-personal-entry p{white-space:pre-wrap;overflow-wrap:anywhere;margin:0;font-size:15px;line-height:1.75}
+@media(max-width:1120px){.left-personal{height:55dvh;min-height:300px}}
+@media print{.left-personal,.reference-source-bar{display:none!important}}
