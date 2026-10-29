@@ -18,38 +18,51 @@ let storage;
 try { storage = window.sessionStorage; } catch { storage = null; }
 let state = readPane(storage);
 let source = 'explore';
-try { const saved=sessionStorage.getItem('knoltalk-left-source'); if(['explore','personal','none'].includes(saved))source=saved; } catch {}
+try { const saved=sessionStorage.getItem('knoltalk-left-source'); if(['explore','personal','group','none'].includes(saved))source=saved; } catch {}
 const leftEmpty = $('left-empty');
+const leftEditor = $('left-editor-frame');
 const initialRight = location.hash === '#group' ? 'group' : 'personal';
 let rightChoice = initialRight;
 function syncChoices() {
-  for (const option of leftSource.options) option.disabled = option.value !== 'none' && option.value === rightChoice;
+  for (const option of leftSource.options) option.disabled = false;
   // Right side always accepts a new choice; it takes priority on conflict.
   for (const option of rightSource.options) option.disabled = false;
 }
 function selectSource(next) {
-  source = ['personal','explore'].includes(next) && (next !== rightChoice || (state.mode !== 'both' && singleChoice === 'personal-reference')) ? next : 'none';
-  leftSource.value = source;
-  leftEmpty.hidden = source !== 'none';
-  personalPanel.hidden = source !== 'personal';
-  exploreToolbar.hidden = source !== 'explore';
-  frame.hidden = source !== 'explore';
+  if(!['personal','group','explore','none'].includes(next))next='none';
+  // The most recently selected side wins; the other side becomes unassigned.
+  source=next;
+  if(state.mode==='both' && next!=='none' && rightChoice===next){
+    rightChoice='none';
+    rightSource.value='none';
+    writing.hidden=true;
+    rightFrame.hidden=true;
+  }
+  leftSource.value=source;
+  leftEmpty.hidden=source!=='none';
+  personalPanel.hidden=true;
+  exploreToolbar.hidden=source!=='explore';
+  frame.hidden=source!=='explore';
+  const editing=['personal','group'].includes(source);
+  leftEditor.hidden=!editing;
+  const target=editing ? 'workroom.html?panel=1#'+source : '';
+  if(editing && !leftEditor.src.endsWith(target))leftEditor.src=target;
+  if(!editing)leftEditor.removeAttribute('src');
   syncChoices();
-  try {sessionStorage.setItem('knoltalk-left-source',source);} catch {}
-  if(source === 'personal')window.dispatchEvent(new Event('knoltalk-personal-reference-refresh'));
-  else if(source === 'explore' && !pane.hidden)ensureFrame();
+  try{sessionStorage.setItem('knoltalk-left-source',source);}catch{}
+  if(source==='explore' && !pane.hidden)ensureFrame();
 }
 leftSource.addEventListener('change',()=>selectSource(leftSource.value));
 function selectRight(next) {
-  if(!['personal','group','explore'].includes(next))return;
+  if(!['personal','group','explore','none'].includes(next))return;
   rightChoice = next;
-  if(source === next)selectSource('none');
+  if(source === next && state.mode==='both')selectSource('none');
   rightSource.value = next;
   syncChoices();
   const isExplore = next === 'explore';
   rightFrame.hidden = !isExplore;
   if(isExplore && !rightFrame.src)rightFrame.src = frameURL(state.route);
-  writing.hidden = isExplore || state.mode === 'explore';
+  writing.hidden = next==='none' || isExplore || state.mode === 'explore';
   if(next === 'personal' || next === 'group') {
     const button = $(next === 'personal' ? 'mode-personal' : 'mode-group');
     if(button.getAttribute('aria-pressed') !== 'true')button.click();
@@ -61,6 +74,7 @@ window.addEventListener('hashchange',()=>{const next=location.hash.slice(1);if([
 $('mode-personal').addEventListener('click',()=>selectRight('personal'));
 $('mode-group').addEventListener('click',()=>selectRight('group'));
 
+if (new URLSearchParams(location.search).has('panel')){state={...state,mode:'writing'};singleChoice=location.hash==='#group'?'group':'personal';}
 if (new URLSearchParams(location.search).get('view') === 'both') state = {...state, mode:'both', route:'home', y:0};
 let loaded = false;
 let restoring = false;
@@ -148,7 +162,7 @@ function renderMode({restoreWriting = false} = {}) {
   pane.hidden = rightOnly;
   rightPane.hidden = leftOnly;
   rightSource.closest('.right-source-bar').hidden = single;
-  writing.hidden = leftOnly || (single ? singleChoice === 'explore' : rightChoice === 'explore');
+  writing.hidden = leftOnly || (single ? singleChoice === 'explore' : rightChoice === 'explore' || rightChoice === 'none');
   rightFrame.hidden = leftOnly || (single ? singleChoice !== 'explore' : rightChoice !== 'explore');
   singleWrap.hidden = !single;
   singleSource.value = singleChoice;
@@ -233,7 +247,7 @@ window.addEventListener('message', event => {
 });
 narrow.addEventListener('change', () => renderMode());
 try {const saved=sessionStorage.getItem('knoltalk-right-source');if(['personal','group','explore'].includes(saved) && !['#personal','#group'].includes(location.hash))rightChoice=saved;} catch {}
-selectSource(source);
 selectRight(rightChoice);
+selectSource(source === rightChoice ? 'none' : source);
 if(state.mode !== 'both')selectSingle(singleChoice);
 else renderMode();
