@@ -184,6 +184,7 @@ function selectSingle(next) {
 
 function show(mode) {
   if (state.mode === mode) return;
+  if (mode === 'both' && source === rightChoice) selectSource('none');
   if (state.mode !== 'explore') writingY = window.scrollY;
   if (mode === 'writing' && loaded && !pane.hidden) {
     try { state = {...state, y:frame.contentWindow.scrollY}; } catch {}
