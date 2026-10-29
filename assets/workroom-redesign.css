@@ -175,3 +175,12 @@ body[data-workspace-view=both] .workbench{grid-template-columns:minmax(0,var(--s
 .workbench-nav p{display:none}
 #reset-split{margin-left:auto}
 @media(max-width:700px){.view-switch-label{flex-basis:100%;margin:0}.workbench-nav button:not(#reset-split){flex:1;min-width:0;padding:8px 5px;font-size:12px}}
+
+/* One workspace or split workspace: layout is separate from selected content. */
+#show-explore[hidden],#single-source-wrap[hidden],#reset-split[hidden]{display:none!important}
+#single-source-wrap{display:inline-flex;align-items:center;gap:8px;margin-left:12px;font-size:12px;font-weight:750;color:var(--knol-deep)}
+#single-source{min-width:180px;max-width:280px;min-height:40px;padding:8px 10px;border:1px solid var(--knol-line);border-radius:9px;background:white;font:inherit;font-size:13px}
+.workbench-nav button[aria-pressed=true]{background:var(--knol-deep);color:#fff;border-color:var(--knol-deep)}
+body[data-workspace-view=writing] #right-pane{width:100%;min-width:0}
+body[data-workspace-view=explore] #explore-pane{width:100%;max-width:1100px;margin-inline:auto}
+@media(max-width:700px){#single-source-wrap{margin-left:0;flex-basis:100%;justify-content:space-between}#single-source{flex:1;max-width:none;min-width:0}}
