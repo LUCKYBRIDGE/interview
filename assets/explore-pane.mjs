@@ -28,7 +28,7 @@ function syncChoices() {
   for (const option of rightSource.options) option.disabled = false;
 }
 function selectSource(next) {
-  source = ['personal','explore'].includes(next) && next !== rightChoice ? next : 'none';
+  source = ['personal','explore'].includes(next) && (next !== rightChoice || (state.mode !== 'both' && singleChoice === 'personal-reference')) ? next : 'none';
   leftSource.value = source;
   leftEmpty.hidden = source !== 'none';
   personalPanel.hidden = source !== 'personal';
@@ -171,6 +171,7 @@ function renderMode({restoreWriting = false} = {}) {
 function selectSingle(next) {
   if(!['personal','group','explore','personal-reference'].includes(next))return;
   singleChoice = next;
+  if(next === 'explore' && rightChoice === 'explore')rightChoice = 'personal';
   if(next === 'explore')selectSource('explore');
   else if(next === 'personal-reference')selectSource('personal');
   else selectRight(next);
