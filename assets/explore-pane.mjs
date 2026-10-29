@@ -14,47 +14,46 @@ let storage;
 try { storage = window.sessionStorage; } catch { storage = null; }
 let state = readPane(storage);
 let source = 'explore';
-try { source = sessionStorage.getItem('knoltalk-left-source') === 'personal' ? 'personal' : 'explore'; } catch {}
-leftSource.value = source;
+try { const saved=sessionStorage.getItem('knoltalk-left-source'); if(['explore','personal','none'].includes(saved))source=saved; } catch {}
+const leftEmpty = $('left-empty');
 const initialRight = location.hash === '#group' ? 'group' : 'personal';
-rightSource.value = initialRight;
 let rightChoice = initialRight;
 function syncChoices() {
-  // The same content cannot occupy both sides.
-  for (const option of leftSource.options) option.disabled = option.value === rightChoice;
-  for (const option of rightSource.options) option.disabled = option.value === source;
+  for (const option of leftSource.options) option.disabled = option.value !== 'none' && option.value === rightChoice;
+  // Right side always accepts a new choice; it takes priority on conflict.
+  for (const option of rightSource.options) option.disabled = false;
 }
-
 function selectSource(next) {
-  source = next === 'personal' ? 'personal' : 'explore';
-  if(source === rightChoice) source = source === 'personal' ? 'explore' : 'personal';
+  source = ['personal','explore'].includes(next) && next !== rightChoice ? next : 'none';
   leftSource.value = source;
-  syncChoices();
+  leftEmpty.hidden = source !== 'none';
   personalPanel.hidden = source !== 'personal';
   exploreToolbar.hidden = source !== 'explore';
   frame.hidden = source !== 'explore';
+  syncChoices();
   try {sessionStorage.setItem('knoltalk-left-source',source);} catch {}
-  if(source === 'personal') window.dispatchEvent(new Event('knoltalk-personal-reference-refresh'));
-  else if (!pane.hidden) ensureFrame();
+  if(source === 'personal')window.dispatchEvent(new Event('knoltalk-personal-reference-refresh'));
+  else if(source === 'explore' && !pane.hidden)ensureFrame();
 }
-leftSource.addEventListener('change', () => selectSource(leftSource.value));
+leftSource.addEventListener('change',()=>selectSource(leftSource.value));
 function selectRight(next) {
-  if(next === source) selectSource(next === 'explore' ? 'personal' : 'explore');
+  if(!['personal','group','explore'].includes(next))return;
   rightChoice = next;
+  if(source === next)selectSource('none');
   rightSource.value = next;
   syncChoices();
   const isExplore = next === 'explore';
   rightFrame.hidden = !isExplore;
-  if(isExplore && !rightFrame.src) rightFrame.src = frameURL(state.route);
+  if(isExplore && !rightFrame.src)rightFrame.src = frameURL(state.route);
   writing.hidden = isExplore || state.mode === 'explore';
   if(next === 'personal' || next === 'group') {
-    const modeButton = $(next === 'personal' ? 'mode-personal' : 'mode-group');
-    if(modeButton.getAttribute('aria-pressed') !== 'true') modeButton.click();
+    const button = $(next === 'personal' ? 'mode-personal' : 'mode-group');
+    if(button.getAttribute('aria-pressed') !== 'true')button.click();
   }
   try {sessionStorage.setItem('knoltalk-right-source',next);} catch {}
 }
 rightSource.addEventListener('change',()=>selectRight(rightSource.value));
-window.addEventListener('hashchange',()=>{const next=location.hash.slice(1);if(['personal','group'].includes(next) && next !== rightChoice)selectRight(next);});
+window.addEventListener('hashchange',()=>{const next=location.hash.slice(1);if(['personal','group'].includes(next)&&next!==rightChoice)selectRight(next);});
 $('mode-personal').addEventListener('click',()=>selectRight('personal'));
 $('mode-group').addEventListener('click',()=>selectRight('group'));
 
