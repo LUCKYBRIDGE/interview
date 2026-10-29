@@ -145,9 +145,7 @@ function renderMode({restoreWriting = false} = {}) {
     $(id).setAttribute('aria-pressed', String(state.mode === mode));
   }
   const hint = $('workspace-hint');
-  if (hint) hint.textContent = state.mode === 'both' && narrow.matches
-    ? '좁은 화면에서는 탐구와 기록이 위아래로 표시됩니다. 기록만 또는 탐구만 보기를 이용하세요.'
-    : state.mode === 'both' ? '가운데 분할선을 드래그하거나 방향키로 탐구·기록 너비를 조절하세요.' : '작성 내용과 탐구 위치는 유지됩니다.';
+  if (hint) hint.textContent = state.mode === 'both' && !narrow.matches ? '가운데 경계선을 드래그하면 좌우 너비를 조절할 수 있습니다.' : '';
   if (!pane.hidden) {
     if (source === 'explore') {
       ensureFrame();
