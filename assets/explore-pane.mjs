@@ -4,9 +4,26 @@ const $ = id => document.getElementById(id);
 const frame = $('explore-frame');
 const writing = $('writing-pane');
 const pane = $('explore-pane');
+const leftSource = $('left-source');
+const personalPanel = $('left-personal');
+const exploreToolbar = $('explore-toolbar');
 let storage;
 try { storage = window.sessionStorage; } catch { storage = null; }
 let state = readPane(storage);
+let source = 'explore';
+try { source = sessionStorage.getItem('knoltalk-left-source') === 'personal' ? 'personal' : 'explore'; } catch {}
+leftSource.value = source;
+function selectSource(next) {
+  source = next === 'personal' ? 'personal' : 'explore';
+  leftSource.value = source;
+  personalPanel.hidden = source !== 'personal';
+  exploreToolbar.hidden = source !== 'explore';
+  frame.hidden = source !== 'explore';
+  try {sessionStorage.setItem('knoltalk-left-source',source);} catch {}
+  if(source === 'personal') window.dispatchEvent(new Event('knoltalk-personal-reference-refresh'));
+  else if (!pane.hidden) ensureFrame();
+}
+leftSource.addEventListener('change', () => selectSource(leftSource.value));
 if (new URLSearchParams(location.search).get('view') === 'both') state = {...state, mode:'both', route:'home', y:0};
 let loaded = false;
 let restoring = false;
@@ -98,8 +115,10 @@ function renderMode({restoreWriting = false} = {}) {
     ? '좁은 화면에서는 탐구와 기록이 위아래로 표시됩니다. 기록만 또는 탐구만 보기를 이용하세요.'
     : state.mode === 'both' ? '가운데 분할선을 드래그하거나 방향키로 탐구·기록 너비를 조절하세요.' : '작성 내용과 탐구 위치는 유지됩니다.';
   if (!pane.hidden) {
-    ensureFrame();
-    if (wasHidden) requestAnimationFrame(restoreFrame);
+    if (source === 'explore') {
+      ensureFrame();
+      if (wasHidden) requestAnimationFrame(restoreFrame);
+    } else window.dispatchEvent(new Event('knoltalk-personal-reference-refresh'));
   }
   if (restoreWriting) {
     window.scrollTo({top:writingY, behavior:'instant'});
@@ -130,6 +149,7 @@ document.querySelectorAll('[data-explore-route]').forEach(link => {
     event.preventDefault();
     const changed = route !== state.route;
     state = {...state, route, y:changed ? 0 : state.y}; persist();
+    selectSource('explore');
     show(narrow.matches ? 'explore' : 'both');
     ensureFrame();
     if (changed) restoreFrame();
@@ -154,4 +174,5 @@ window.addEventListener('message', event => {
   state = {...state, ...paneState({...state, route:value.route, y:value.y})}; persist();
 });
 narrow.addEventListener('change', () => renderMode());
+selectSource(source);
 renderMode();
