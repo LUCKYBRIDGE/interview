@@ -1,0 +1,95 @@
+/* Classroom-first layout redesign: keep the writing task visually dominant. */
+:root{--workspace-gap:16px}
+header{position:relative;z-index:12}
+.header-inner{min-height:64px;gap:14px}
+.workroom-global-nav{gap:6px}
+.workroom-global-nav a,.workroom-global-nav button{min-height:40px}
+.workroom-global-nav a:nth-child(2){background:#fff!important;color:var(--knol-deep)!important}
+.workroom-global-nav a[href="index.html#home"]:first-child{display:none}
+.compact-intro{padding:15px 0 4px}
+.compact-intro h1{font-size:clamp(21px,2.7vw,29px);margin:3px 0}
+.compact-intro p{font-size:12px;margin:3px 0;color:var(--knol-muted)}
+.activity-top-nav{margin:10px 0 10px}
+.activity-top-nav button{min-height:53px;padding:10px 14px;font-size:17px}
+.activity-top-nav button small{font-size:11px}
+.activity-guide{margin:9px 0;padding:10px 15px;border-left-width:3px}
+.activity-guide strong{font-size:14px}
+.activity-guide p{font-size:12px;margin:3px 0}
+.activity-guide button{font-size:12px;min-height:36px;padding:5px 11px}
+.workbench-nav{gap:5px;padding:6px 0;margin:4px 0 12px}
+.workbench-nav button{min-height:40px;padding:8px 13px;font-size:13px}
+.workbench-nav p{font-size:11px;margin:0}
+body[data-workspace-view=both] main.shell,body[data-workspace-view=explore] main.shell{max-width:1550px}
+body[data-workspace-view=both] .workbench{grid-template-columns:minmax(315px,2fr) minmax(500px,3fr);gap:16px}
+#explore-pane{top:18px}
+#explore-frame{height:calc(100dvh - 90px);min-height:480px}
+.explore-toolbar{gap:5px;padding:8px}
+.explore-toolbar a,.explore-toolbar button{font-size:12px;min-height:36px;padding:7px 9px}
+.save-panel{padding:7px 11px;gap:8px;background:var(--knol-wash)}
+.save-panel #save-status{font-size:12px}
+.save-panel p:not(#save-status){display:none}
+.save-panel button{min-height:35px;padding:6px 10px;font-size:12px}
+.step-nav{margin:12px 0 10px;gap:6px}
+.step-nav a{font-size:12px;padding:8px 9px;border:1px solid var(--line);border-radius:9px;background:#fff}
+#activity>h2{margin:12px 0 8px;font-size:19px}
+.activity-section{padding:20px;margin:12px 0}
+.activity-section h2{font-size:22px}
+.activity-section>.section-note{font-size:13px}
+.field label{font-size:15px}
+#activity-fields:has(#personal-perspectives) .activity-section textarea{min-height:160px}
+#personal-proposal textarea[data-field=proposal],#personal-proposal textarea[data-field=reason]{min-height:190px}
+#group-decision textarea[data-field=proposal],#group-decision textarea[data-field=reason]{min-height:200px}
+.identity{display:flex;align-items:flex-end;flex-wrap:wrap;max-width:none;gap:8px 16px;margin:8px 0}
+.identity>.field{flex:1 1 165px;max-width:260px;margin:0}
+.identity .field small{font-size:11px}
+.identity>p{flex:1 1 100%;margin:0;font-size:12px}
+.next-activity{margin-top:16px;background:var(--knol-deep);color:#fff;border-color:var(--knol-deep);font-weight:800}
+.next-activity:hover{background:var(--knol-ink);color:#fff}
+.group-padlet-top{padding:10px 14px;margin:9px 0}
+.group-padlet-top h2{font-size:14px;margin:0 0 4px}
+.group-padlet-top>p{font-size:11px;margin:0 0 7px}
+.group-padlet-top .group-padlet-links{gap:5px}
+.group-padlet-top .group-padlet-links .image-download{font-size:12px;min-height:36px;padding:6px}
+.group-padlet-top .whole-class-padlet{min-height:40px;margin-top:7px;font-size:13px}
+.opinion-image-tools{padding:17px;margin-top:18px;box-shadow:none}
+.opinion-image-tools h3{font-size:18px}
+.opinion-image-tools .image-create-button{min-height:66px;padding:12px}
+.image-create-button strong{font-size:19px}
+.image-create-hint{font-size:12px;margin-bottom:10px}
+.padlet-direct-panel{padding:13px;margin-top:11px}
+.padlet-direct-panel h3{font-size:17px}
+.padlet-direct-panel p{font-size:12px;margin-bottom:10px}
+.padlet-direct-panel .image-download{font-size:13px;min-height:42px}
+.resource-links{margin-top:16px}
+.personal-reference{position:relative;top:auto;max-height:none;overflow:visible;padding:4px 12px;margin:10px 0}
+.personal-reference .reference-content{max-height:24vh}
+#group-sharing .entry{padding:12px}
+#group-sharing .entry h3{font-size:16px}
+#group-sharing .sharing-grid{gap:8px}
+#group-sharing .field textarea{min-height:85px}
+.criteria-editor{margin:12px 0}
+@media(max-width:1120px){
+ body[data-workspace-view=both] .workbench{grid-template-columns:minmax(0,1fr)}
+ #explore-pane{position:static}
+ #explore-frame{height:52dvh;min-height:320px}
+}
+@media(max-width:700px){
+ .header-inner{padding-block:8px}
+ .workroom-global-nav{width:100%;margin:0}
+ .workroom-global-nav a,.workroom-global-nav button{font-size:11px;padding:6px 9px}
+ .compact-intro{padding:10px 0 0}
+ .compact-intro h1{font-size:23px}
+ .activity-top-nav{grid-template-columns:1fr 1fr}
+ .activity-top-nav button{font-size:14px;min-height:48px;padding:8px 5px}
+ .activity-top-nav button small{font-size:10px}
+ .activity-guide{padding:10px 12px}
+ .activity-guide p{display:none}
+ .workbench-nav{position:sticky;top:0;z-index:10;background:var(--knol-wash)}
+ .workbench-nav p{display:none}
+ .activity-section{padding:15px}
+ .identity>.field{max-width:none}
+ #activity-fields:has(#personal-perspectives) .activity-section textarea{min-height:140px}
+ #personal-proposal textarea[data-field=proposal],#personal-proposal textarea[data-field=reason]{min-height:160px}
+ .image-submission-links{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media print{.activity-guide,.workbench-nav{display:none!important}}
