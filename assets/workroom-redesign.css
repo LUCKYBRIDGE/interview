@@ -144,3 +144,26 @@ body[data-workspace-view="both"] #writing-pane{margin-left:0;min-width:0}
 .left-personal-entry p{white-space:pre-wrap;overflow-wrap:anywhere;margin:0;font-size:15px;line-height:1.75}
 @media(max-width:1120px){.left-personal{height:55dvh;min-height:300px}}
 @media print{.left-personal,.reference-source-bar{display:none!important}}
+
+/* Two-sided workspace and empty source state */
+#right-pane{min-width:0}
+#right-explore-frame{display:block;width:100%;min-height:500px;height:calc(100dvh - 160px);border:0;background:#fff}
+#right-explore-frame[hidden],#right-pane[hidden],#left-empty[hidden]{display:none!important}
+.left-empty{min-height:370px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:35px 18px;background:var(--knol-wash)}
+.left-empty-symbol{display:grid;place-items:center;width:76px;height:76px;border:2px dashed var(--knol-line);border-radius:24px;font-size:40px;font-weight:800;color:var(--knol-accent);background:#fff}
+.left-empty strong{font-size:17px;color:var(--knol-deep)}
+.left-empty p{margin:0;font-size:13px;color:var(--knol-muted)}
+body[data-workspace-view=both] .workbench{grid-template-columns:minmax(0,var(--split-left,40%)) 16px minmax(0,1fr)}
+/* Uniform group worksheet rows and equal-size written responses. */
+#group-sharing .entry .sharing-grid{display:grid;grid-template-columns:minmax(125px,1fr) minmax(0,3fr);gap:12px 16px;align-items:start}
+#group-sharing .entry .field-grid:not(.sharing-grid){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 16px;align-items:start}
+#group-sharing .entry .field{display:flex;flex-direction:column;min-width:0;margin:0}
+#group-sharing .entry .field label{display:flex;align-items:flex-start;min-height:42px;margin:0;font-size:14px;line-height:1.5}
+#group-sharing .entry .field input:not([type=checkbox]),#group-sharing .entry .field textarea{box-sizing:border-box;width:100%;height:106px;min-height:106px;max-height:none;margin:0;padding:12px;border-radius:10px;line-height:1.6}
+#group-sharing .entry .field input:not([type=checkbox]){height:106px}
+#group-sharing .entry .field textarea{resize:vertical}
+#group-sharing .entry{display:grid;gap:12px}
+#group-sharing .entry h3{margin:0}
+@media(max-width:1120px){body[data-workspace-view=both] .workbench{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:650px){#group-sharing .entry .sharing-grid,#group-sharing .entry .field-grid:not(.sharing-grid){grid-template-columns:1fr}#group-sharing .entry .field label{min-height:0;margin-bottom:6px}#group-sharing .entry .field input:not([type=checkbox]){height:48px;min-height:48px}}
+@media print{.left-empty,.right-source-bar,#right-explore-frame{display:none!important}}
