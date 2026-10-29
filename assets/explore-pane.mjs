@@ -49,7 +49,7 @@ function selectRight(next) {
   writing.hidden = isExplore || state.mode === 'explore';
   if(next === 'personal' || next === 'group') {
     const modeButton = $(next === 'personal' ? 'mode-personal' : 'mode-group');
-    if(location.hash !== '#' + next) modeButton.click();
+    if(modeButton.getAttribute('aria-pressed') !== 'true') modeButton.click();
   }
   try {sessionStorage.setItem('knoltalk-right-source',next);} catch {}
 }
