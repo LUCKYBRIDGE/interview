@@ -12,7 +12,7 @@ let loaded = false;
 let restoring = false;
 let writingY = 0;
 let lastField;
-const narrow = matchMedia('(max-width: 1050px)');
+const narrow = matchMedia('(max-width: 1120px)');
 const persist = () => writePane(storage, state);
 
 const splitter = $('split-divider');
