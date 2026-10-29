@@ -75,7 +75,11 @@ function renderGroupPadletTop(){
   const links=el('nav',undefined,'image-submission-links group-padlet-links');links.setAttribute('aria-label','1~6모둠 패들렛');
   PADLET_GROUPS.forEach(([name,url],i)=>{const link=el('a',name+' ↗','image-download');link.href=url;link.target='_blank';link.rel='noopener noreferrer';link.dataset.padletGroup=String(i+1);links.append(link);});
   const whole=el('a','전체 의견 패들렛 · 모둠 최종 의견 제출 ↗','image-download whole-class-padlet');whole.id='whole-class-padlet-top';whole.href=CLASS_PADLET;whole.target='_blank';whole.rel='noopener noreferrer';
-  top.replaceChildren(title,el('p','모둠별 게시판에서 개인 의견을 보고, 최종 모둠 의견은 전체 의견 게시판에 올려요.','subtle'),links,whole);
+  const reference=el('details',undefined,'group-padlet-reference');
+  reference.append(el('summary','모둠별 개인 의견 게시판 펼치기'),links);
+  top.replaceChildren(title,el('p','다른 친구의 개인 의견을 참고하고, 최종 모둠 의견은 마지막 단계에서 제출하세요.','subtle'),reference);
+  // Final submission stays beside the final opinion, not duplicated at the top.
+
 }
 function renderOpinionImage(parent){
   const direct=el('section',undefined,'padlet-direct-panel');
@@ -200,7 +204,19 @@ function renderGroup(){
     const more=extra(box,[`members.${i}.problem`,`members.${i}.source`,`members.${i}.reason`],'개인 기록 불러오기 · 더 기록하기');memberImport(more,i);field(more,`members.${i}.reason`,'개인 의견의 이유·근거 (참고)',{rows:2});field(more,`members.${i}.problem`,'해결하려는 문제',{rows:2});field(more,`members.${i}.source`,'근거와 출처',{rows:2});
   });
   if(data.focus||data.focusReason){const archive=el('details',undefined,'extra-fields');archive.append(el('summary','이전에 정리한 문제 기록'),el('pre',[data.focus,data.focusReason].filter(Boolean).join('\n')));a.append(archive);}
-  const b=section('group-gathering','11~12차시','2 의견 모으기 · 장단점 검토하기','검토 기준으로 의견별 장점과 단점을 비교해요. 기준은 모둠에 맞게 고치거나 더하고 지울 수 있어요.');preventionNotice(b);
+  const b=section('group-gathering','11~12차시','2 의견 모으기 · 장단점 검토하기','검토 기준으로 친구들의 의견과 장단점을 비교해요. 기준은 모둠에 맞게 고칠 수 있어요.');
+  const opinionOverview=el('details',undefined,'group-opinion-overview');
+  opinionOverview.open=true;
+  opinionOverview.append(el('summary','모둠원의 의견·장단점 다시 보기'));
+  data.members.forEach((m,i)=>{
+    const item=el('article',undefined,'group-opinion-summary');
+    item.append(el('strong',(m.name||'모둠원 '+(i+1))+' · '+(m.proposal||'아직 의견 없음')));
+    if(m.strength) item.append(el('p','좋은 점: '+m.strength));
+    if(m.concern) item.append(el('p','걱정되는 점: '+m.concern));
+    opinionOverview.append(item);
+  });
+  b.append(opinionOverview);
+  preventionNotice(b);
   renderCriteria(b);field(b,'discussion','함께 비교한 장단점과 그 이유',{rows:6});
   const reviewPaths=data.members.flatMap((_,i)=>['question','revision'].map(key=>`members.${i}.${key}`));const reviews=extra(b,reviewPaths,'의견별로 더 기록하기');
   data.members.forEach((m,i)=>{const box=entry(reviews,`${i+1}번 의견`);const note=el('p',`${m.name||`모둠원 ${i+1}`}의 제안: ${m.proposal||'앞에서 적어 주세요.'}`,'subtle');note.dataset.proposalFor=i;box.append(note);field(box,`members.${i}.question`,'확인할 점',{rows:2});field(box,`members.${i}.revision`,'고치거나 더할 점',{rows:2});});
