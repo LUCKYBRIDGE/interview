@@ -10,6 +10,7 @@ const exploreToolbar = $('explore-toolbar');
 const rightSource = $('right-source');
 const rightFrame = $('right-explore-frame');
 const rightPane = $('right-pane');
+const rightEmpty = $('right-empty');
 const singleSource = $('single-source');
 const singleWrap = $('single-source-wrap');
 let singleChoice = 'personal';
@@ -37,6 +38,7 @@ function selectSource(next) {
     rightSource.value='none';
     writing.hidden=true;
     rightFrame.hidden=true;
+    rightEmpty.hidden=false;
   }
   leftSource.value=source;
   leftEmpty.hidden=source!=='none';
@@ -58,6 +60,7 @@ function selectRight(next) {
   rightChoice = next;
   if(source === next && state.mode==='both')selectSource('none');
   rightSource.value = next;
+  rightEmpty.hidden = next !== 'none';
   syncChoices();
   const isExplore = next === 'explore';
   rightFrame.hidden = !isExplore;
@@ -163,6 +166,7 @@ function renderMode({restoreWriting = false} = {}) {
   rightPane.hidden = leftOnly;
   rightSource.closest('.right-source-bar').hidden = single;
   writing.hidden = leftOnly || (single ? singleChoice === 'explore' : rightChoice === 'explore' || rightChoice === 'none');
+  rightEmpty.hidden = single || rightChoice !== 'none';
   rightFrame.hidden = leftOnly || (single ? singleChoice !== 'explore' : rightChoice !== 'explore');
   singleWrap.hidden = !single;
   singleSource.value = singleChoice;
