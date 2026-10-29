@@ -15,6 +15,59 @@ let lastField;
 const narrow = matchMedia('(max-width: 1050px)');
 const persist = () => writePane(storage, state);
 
+const splitter = $('split-divider');
+const workbench = $('workbench');
+const resetSplit = $('reset-split');
+const SPLIT_KEY = 'knoltalk-workspace-split-v1';
+const SPLIT_MIN = 25, SPLIT_MAX = 70, SPLIT_DEFAULT = 40;
+let splitValue = SPLIT_DEFAULT;
+try {
+  const stored = Number(localStorage.getItem(SPLIT_KEY));
+  if (Number.isFinite(stored) && stored >= SPLIT_MIN && stored <= SPLIT_MAX) splitValue = stored;
+} catch {}
+function setSplit(value, save = false) {
+  splitValue = Math.max(SPLIT_MIN, Math.min(SPLIT_MAX, Math.round(value)));
+  workbench.style.setProperty('--split-left', splitValue + '%');
+  splitter.setAttribute('aria-valuenow', String(splitValue));
+  splitter.setAttribute('aria-valuetext', '탐구 ' + splitValue + '%, 기록 ' + (100 - splitValue) + '%');
+  if (save) try { localStorage.setItem(SPLIT_KEY, String(splitValue)); } catch {}
+}
+setSplit(splitValue);
+let dragging = false;
+splitter.addEventListener('pointerdown', event => {
+  if (document.body.dataset.workspaceView !== 'both' || narrow.matches || event.button !== 0) return;
+  dragging = true;
+  splitter.setPointerCapture(event.pointerId);
+  document.body.classList.add('is-resizing');
+  event.preventDefault();
+});
+splitter.addEventListener('pointermove', event => {
+  if (!dragging) return;
+  const rect = workbench.getBoundingClientRect();
+  // Reserve the divider width and use the same percent convention as CSS.
+  setSplit((event.clientX - rect.left - 8) / rect.width * 100);
+});
+const finishSplit = () => {
+  if (!dragging) return;
+  dragging = false;
+  document.body.classList.remove('is-resizing');
+  setSplit(splitValue, true);
+};
+splitter.addEventListener('pointerup', finishSplit);
+splitter.addEventListener('pointercancel', finishSplit);
+splitter.addEventListener('lostpointercapture', finishSplit);
+splitter.addEventListener('keydown', event => {
+  const delta = event.shiftKey ? 10 : 5;
+  if (event.key === 'ArrowLeft') setSplit(splitValue - delta, true);
+  else if (event.key === 'ArrowRight') setSplit(splitValue + delta, true);
+  else if (event.key === 'Home') setSplit(SPLIT_MIN, true);
+  else if (event.key === 'End') setSplit(SPLIT_MAX, true);
+  else return;
+  event.preventDefault();
+});
+resetSplit.addEventListener('click', () => setSplit(SPLIT_DEFAULT, true));
+
+
 writing.addEventListener('focusin', event => {
   if (event.target.matches('input,textarea,select')) lastField = event.target;
 });
@@ -42,8 +95,8 @@ function renderMode({restoreWriting = false} = {}) {
   }
   const hint = $('workspace-hint');
   if (hint) hint.textContent = state.mode === 'both' && narrow.matches
-    ? '이 화면에서는 탐구와 기록이 위아래로 이어집니다. 버튼으로 한쪽만 볼 수도 있어요.'
-    : '탐구를 오가도 작성 내용과 보던 자료는 그대로 남아요.';
+    ? '좁은 화면에서는 탐구와 기록이 위아래로 표시됩니다. 기록만 또는 탐구만 보기를 이용하세요.'
+    : state.mode === 'both' ? '가운데 분할선을 드래그하거나 방향키로 탐구·기록 너비를 조절하세요.' : '작성 내용과 탐구 위치는 유지됩니다.';
   if (!pane.hidden) {
     ensureFrame();
     if (wasHidden) requestAnimationFrame(restoreFrame);
