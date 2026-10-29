@@ -93,3 +93,24 @@ body[data-workspace-view=both] .workbench{grid-template-columns:minmax(315px,2fr
  .image-submission-links{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media print{.activity-guide,.workbench-nav{display:none!important}}
+
+/* Adjustable workspace divider. Width managed by CSS custom property from explore-pane.mjs. */
+body[data-workspace-view="both"] .workbench{--split-left:40%;display:grid;grid-template-columns:minmax(0,var(--split-left)) 16px minmax(0,1fr);column-gap:0;align-items:start}
+#split-divider{display:none;align-self:stretch;position:relative;min-height:450px;cursor:col-resize;touch-action:none;user-select:none;z-index:3}
+body[data-workspace-view="both"] #split-divider{display:flex;justify-content:center;align-items:flex-start}
+#split-divider:before{content:"";position:absolute;top:0;bottom:0;left:7px;width:2px;background:var(--knol-line);transition:background .12s}
+#split-divider:hover:before,#split-divider:focus-visible:before,body.is-resizing #split-divider:before{background:var(--knol-accent);width:3px}
+.split-grip{position:sticky;top:45%;display:grid;place-items:center;width:16px;height:64px;margin-top:140px;border:1px solid var(--knol-line);border-radius:12px;background:#fff;color:var(--knol-deep);font-size:25px;box-shadow:0 2px 8px #18263220}
+#split-divider:focus-visible{outline:3px solid var(--knol-accent);outline-offset:2px;border-radius:9px}
+#reset-split{margin-left:auto;background:transparent;color:var(--knol-muted);font-size:12px;min-height:36px;padding:6px 10px}
+body:not([data-workspace-view="both"]) #reset-split{display:none}
+body.is-resizing,body.is-resizing *{cursor:col-resize!important}
+body.is-resizing iframe{pointer-events:none}
+body[data-workspace-view="both"] #explore-pane{margin-right:0}
+body[data-workspace-view="both"] #writing-pane{margin-left:0;min-width:0}
+@media(max-width:1120px){
+ body[data-workspace-view="both"] .workbench{grid-template-columns:minmax(0,1fr);gap:14px}
+ body[data-workspace-view="both"] #split-divider{display:none}
+ #reset-split{display:none}
+}
+@media print{#split-divider,#reset-split{display:none!important}body[data-workspace-view="both"] .workbench{display:block!important}}
