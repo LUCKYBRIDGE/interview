@@ -20,7 +20,7 @@ if (window.parent !== window) location.replace('index.html?embed=1#home');
 <link rel="icon" type="image/png" sizes="32x32" href="assets/brand/knoltalk-favicon.png">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/brand/knoltalk-touch.png">
 <link rel="stylesheet" href="assets/brand.css?v=20261028-2">
-<link rel="stylesheet" href="assets/workroom-redesign.css?v=20261029-4">
+<link rel="stylesheet" href="assets/workroom-redesign.css?v=20261029-5">
 </head>
 <body>
 <a class="skip-link" href="#activity">활동 기록으로 바로가기</a>
@@ -30,10 +30,10 @@ if (window.parent !== window) location.replace('index.html?embed=1#home');
 <nav class="mode-nav activity-top-nav" aria-label="활동 유형"><button id="mode-personal" type="button" aria-pressed="true">개인활동 <small>의견 마련하기</small></button><button id="mode-group" type="button" aria-pressed="false">모둠활동 <small>의견 나누기·모으기·결정하기</small></button></nav>
 <section id="group-padlet-top" class="padlet-direct-panel group-padlet-top" aria-labelledby="group-padlet-title" hidden></section>
 <aside class="activity-guide" aria-label="활동 시작 안내"><strong id="activity-guide"></strong><p>모든 칸을 채울 필요는 없어요. 이미지로 공유할 때는 <b>의견과 이유·근거</b>만 적으면 돼요. 이름과 모둠은 선택 사항이에요.</p><button id="start-writing" type="button">기록할 단계 고르기 ↓</button></aside>
-<nav class="pane-switch workbench-nav" aria-label="탐구와 기록"><button id="show-writing" type="button" aria-pressed="false">기록만</button><button id="show-explore" type="button" aria-pressed="false">탐구만</button><button id="show-both" type="button" aria-pressed="true">함께 보기</button><button id="reset-split" type="button" title="탐구 40%, 기록 60%로 되돌리기">비율 초기화</button><p id="workspace-hint"></p></nav>
+<nav class="pane-switch workbench-nav" aria-label="탐구와 기록"><button id="show-writing" type="button" aria-pressed="false">기록만</button><button id="show-explore" type="button" aria-pressed="false">왼쪽만</button><button id="show-both" type="button" aria-pressed="true">함께 보기</button><button id="reset-split" type="button" title="탐구 40%, 기록 60%로 되돌리기">비율 초기화</button><p id="workspace-hint"></p></nav>
 <div class="workbench" id="workbench">
 <aside id="explore-pane" hidden aria-label="탐구 자료"><div class="reference-source-bar"><label for="left-source">왼쪽에 표시할 내용</label><select id="left-source"><option value="explore">탐구·인터뷰 자료</option><option value="personal">개인활동 기록</option></select></div><div class="explore-toolbar" id="explore-toolbar"><a href="index.html#home" data-explore-route="home">탐구</a><a href="index.html#walking" data-explore-route="walking">인물 인터뷰</a><a href="index.html#study" data-explore-route="study">학습 자료</a><a href="index.html#discussion" data-explore-route="discussion">모둠토의 도우미</a><button id="open-explore-window" type="button">별도 창에서 보기</button><button id="close-explore" type="button">탐구 닫기</button></div><iframe id="explore-frame" title="보행 안전 탐구 자료" loading="lazy"></iframe><section id="left-personal" class="left-personal" aria-label="개인활동 기록 참고" hidden><div class="left-personal-head"><strong>개인활동 기록 · 읽기 전용</strong><button id="refresh-left-personal" type="button">새로고침</button></div><p class="left-personal-note">오른쪽 모둠활동을 유지하면서 개인 기록을 참고할 수 있습니다. 이 브라우저에 저장된 기록이나 다른 기기의 JSON 파일을 불러오세요.</p><label class="left-personal-file">개인 기록 JSON 열기<input id="left-personal-file" type="file" accept=".json,application/json"></label><p id="left-personal-status" role="status" aria-live="polite"></p><div id="left-personal-content"></div></section></aside>
-<div id="split-divider" role="separator" aria-label="탐구와 기록 화면 너비 조절" aria-orientation="vertical" aria-valuemin="25" aria-valuemax="70" aria-valuenow="40" tabindex="0" title="드래그하거나 방향키로 좌우 너비 조절"><span class="split-grip" aria-hidden="true">⋮</span></div>
+<div id="split-divider" role="separator" aria-label="왼쪽 참고 자료와 오른쪽 기록 화면 너비 조절" aria-orientation="vertical" aria-valuemin="25" aria-valuemax="70" aria-valuenow="40" tabindex="0" title="드래그하거나 방향키로 좌우 너비 조절"><span class="split-grip" aria-hidden="true">⋮</span></div>
 <div id="writing-pane">
 
 <aside class="save-panel" aria-label="기록 보관"><div><p id="save-status" role="status" aria-live="polite">기록을 준비하고 있습니다.</p><p>글은 이 브라우저에 자동 저장돼요. 친구에게 공유하려면 의견 아래의 이미지·패들렛 버튼을 이용하세요.</p></div><button id="save-now" type="button">글 저장하기</button></aside>
