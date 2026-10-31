@@ -3,7 +3,7 @@
 // 계약(docs/architecture.md 4절): 메시지 discussion-activity, discussion-explore-position,
 // discussion-explore-restore는 같은 출처와 해당 iframe만 주고받는다. 상태는 interview-explore-pane-v1에 둔다.
 import {ROUTES, readPane, writePane, frameURL, paneState} from './explore-state.mjs';
-import {WIDE_QUERY, modeFor, panelOpenOnLoad, panelOpenAfterResize} from './workroom-layout.mjs?v=20261031-2';
+import {WIDE_QUERY, isWideWidth, modeFor, panelOpenOnLoad, panelOpenAfterResize} from './workroom-layout.mjs?v=20261031-7';
 
 const $ = id => document.getElementById(id);
 const panel = $('reference-panel');
@@ -13,6 +13,7 @@ const closeButton = $('reference-close');
 const title = $('reference-title');
 const writing = $('writing-pane');
 const wide = matchMedia(WIDE_QUERY);
+const isWide = () => isWideWidth(window.innerWidth);
 const TITLES = {home: '보행자 안전 자료', walking: '가상 인물 인터뷰', study: '토의 방법 학습 자료', discussion: '모둠 의견 점검 도우미', noise: '보행자 안전 자료', interview: '보행자 안전 자료'};
 
 let storage;
@@ -28,13 +29,13 @@ if (params.has('view') || params.has('panel')) {
   const query = params.toString();
   history.replaceState(null, '', location.pathname + (query ? `?${query}` : '') + location.hash);
 }
-let open = panelOpenOnLoad({mode: state.mode, forced, wide: wide.matches});
+let open = panelOpenOnLoad({mode: state.mode, forced, wide: isWide()});
 let loadedRoute = '';
 let restoring = false;
 let returnFocus = null;
 
 const persist = () => writePane(storage, state);
-const sheet = () => open && !wide.matches;
+const sheet = () => open && !isWide();
 const background = () => [$('site-header'), $('activity-nav'), $('group-padlet-top'), writing, document.querySelector('footer'), document.querySelector('.skip-link')].filter(Boolean);
 
 function restoreFrame() {
@@ -107,10 +108,17 @@ document.addEventListener('click', event => {
 $('open-explore-window').addEventListener('click', () => {
   window.open(`index.html?explore=1#${state.route}`, '_blank', 'noopener,noreferrer');
 });
-wide.addEventListener('change', () => {
-  open = panelOpenAfterResize({mode: state.mode, wide: wide.matches});
+// 태블릿을 돌릴 때. 화면 흉내나 일부 브라우저에서 change가 오지 않을 때를 대비해 resize도 본다.
+let lastWide = isWide();
+function onWideChange() {
+  if (isWide() === lastWide) return;
+  lastWide = isWide();
+  open = panelOpenAfterResize({mode: state.mode, wide: lastWide});
   render();
-});
+}
+if (typeof wide.addEventListener === 'function') wide.addEventListener('change', onWideChange);
+else wide.addListener?.(onWideChange);
+window.addEventListener('resize', () => { onWideChange(); requestAnimationFrame(onWideChange); });
 
 window.addEventListener('message', event => {
   if (event.origin !== location.origin || event.source !== frame.contentWindow) return;

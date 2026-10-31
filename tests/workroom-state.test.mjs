@@ -205,3 +205,14 @@ test('group text follows worksheet terminology and preserves prior adjustment no
  data.changes='기존에 적었던 내용';
  assert.match(formatText('group',data),/이전에 기록한 의견 조정 내용: 기존에 적었던 내용/);
 });
+
+test('text output follows the on-screen steps and omits empty earlier-version fields', () => {
+  const personal = formatText('personal', createData('personal'));
+  for (const heading of ['1 듣고, 찾고, 알고 있던 것', '2 집중할 문제', '3 아이디어', '4 내 의견 정하기']) assert.match(personal, new RegExp(`^${heading}$`, 'm'));
+  assert.doesNotMatch(personal, /^5 /m);
+  assert.doesNotMatch(personal, /수업용 가상 인물|조사 자료 1|누가:|더 확인할 점/);
+  const group = formatText('group', createData('group'));
+  for (const heading of ['1 의견 나누기', '2 의견 모으기 · 장단점 검토하기', '3 의견 결정하기']) assert.match(group, new RegExp(`^${heading}$`, 'm'));
+  assert.doesNotMatch(group, /^4 /m);
+  assert.doesNotMatch(group, /해결하려는 문제|결정 방법과 협의 과정/);
+});

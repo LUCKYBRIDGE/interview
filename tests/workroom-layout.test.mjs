@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import {WIDE_QUERY, currentStepIndex, modeFor, panelOpenAfterResize, panelOpenOnLoad} from '../assets/workroom-layout.mjs';
+import {WIDE_MIN, WIDE_QUERY, currentStepIndex, isWideWidth, modeFor, panelOpenAfterResize, panelOpenOnLoad} from '../assets/workroom-layout.mjs';
 import {paneState} from '../assets/explore-state.mjs';
 
 test('panel state is stored with the legacy interview-explore-pane-v1 mode values', () => {
@@ -33,4 +33,12 @@ test('the current step is the last heading above the sticky step bar', () => {
   assert.equal(currentStepIndex([300, 900, 1500], 100), 0, 'before any step the first one is current');
   assert.equal(currentStepIndex([-400, 80, 700], 100), 1);
   assert.equal(currentStepIndex([-1400, -800, -200], 100), 2);
+});
+
+test('the side panel width threshold is 1024px in both the media query and the width check', () => {
+  assert.equal(WIDE_MIN, 1024);
+  assert.equal(isWideWidth(1023), false);
+  assert.equal(isWideWidth(1024), true);
+  assert.equal(isWideWidth(1280), true);
+  assert.equal(isWideWidth(Number.NaN), false);
 });

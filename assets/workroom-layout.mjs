@@ -1,7 +1,10 @@
 // 기록장 배치 규칙(DOM 없음). 기록 영역은 늘 보이고, 자료는 패널로 연다.
 // 폭 1024px 이상(가로 태블릿, PC)은 기록 옆 패널, 그보다 좁으면(세로 태블릿) 기록 위에 덮는 시트다.
 // 저장은 기존 interview-explore-pane-v1의 mode 값을 그대로 쓴다: both = 열림, writing = 닫힘.
-export const WIDE_QUERY = '(min-width: 1024px)';
+export const WIDE_MIN = 1024;
+export const WIDE_QUERY = `(min-width: ${WIDE_MIN}px)`;
+// 미디어 쿼리 change 이벤트는 회전이나 화면 흉내에서 빠질 때가 있어, 판단은 실제 폭으로 한다.
+export const isWideWidth = width => Number.isFinite(width) && width >= WIDE_MIN;
 
 export function modeFor(open) {
   return open ? 'both' : 'writing';

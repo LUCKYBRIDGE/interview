@@ -121,23 +121,29 @@ export function saveRecord(storage,record) {
   catch { return {ok:false,message:'이 브라우저에 저장하지 못했습니다. 기록 파일을 내려받아 보관하세요.'}; }
 }
 const line=(label,value)=>`${label}: ${value||'(아직 기록하지 않음)'}`;
+// 화면에 없는 이전 버전 항목은 내용이 있을 때만 출력한다.
+const filled=value=>typeof value==='string'&&value.trim().length>0;
+const optional=(label,value)=>filled(value)?[line(label,value)]:[];
 export function formatText(kind,data) {
   validateData(kind,data);
-  if(kind==='personal')return [
-    '개인 의견 마련하기 | 9~10차시',line('모둠',data.groupNumber?data.groupNumber+'모둠':''),line('이름',data.label),'',
-    '1 다양한 입장 알아보기',...data.perspectives.flatMap((p,i)=>[`${i+1}. ${p.kind==='fictional'?'수업용 가상 인물':'실제 주변 사람'} · ${p.person||'인물 미기록'}`,line('어려움',p.difficulty),line('중요하게 여기는 것',p.value)]),line('듣고, 찾고, 알고 있던 것',data.experience),'',
-    '2 자료로 확인하기',...data.sources.flatMap((s,i)=>[`${i+1}. ${s.title||'자료 제목 미기록'}`,line('주소 또는 발행 기관',s.url),line('확인 날짜',s.date),line('대상과 지역 및 시기',s.scope),line('확인한 내용',s.claim),line('내 문제와의 관련',s.relevance)]),'',
-    '3 해결할 문제',line('누가',data.who),line('어디에서',data.where),line('어떤 어려움',data.difficulty),line('내가 집중할 문제',data.problem),'',
-    '4 아이디어 자유롭게 적기',...data.ideas.map((s,i)=>line(String(i+1),s)),'',
-    '5 내 의견과 이유',line('제안',data.proposal),line('이유',data.reason),line('연결한 자료와 근거',data.evidence),line('더 확인할 점',data.uncertainties),line('모둠에서 함께 살펴볼 점',data.handoff),
-    '', '가상 인물의 이야기는 실제 지역 현황의 증거가 아닙니다.'
-  ].join('\n');
+  if(kind==='personal'){
+    const perspectives=data.perspectives.filter(p=>[p.person,p.difficulty,p.value].some(filled)).flatMap((p,i)=>[`${i+1}. ${p.kind==='fictional'?'수업용 가상 인물':'실제 주변 사람'} · ${p.person||'인물 미기록'}`,line('어려움',p.difficulty),line('중요하게 여기는 것',p.value)]);
+    const sources=data.sources.filter(s=>Object.values(s).some(filled)).flatMap((s,i)=>[`조사 자료 ${i+1}. ${s.title||'자료 제목 미기록'}`,line('주소 또는 발행 기관',s.url),line('확인 날짜',s.date),line('대상과 지역 및 시기',s.scope),line('확인한 내용',s.claim),line('내 문제와의 관련',s.relevance)]);
+    return [
+      '개인 의견 마련하기 | 9~10차시',line('모둠',data.groupNumber?data.groupNumber+'모둠':''),line('이름',data.label),'',
+      '1 듣고, 찾고, 알고 있던 것',line('듣고, 찾고, 알고 있던 것',data.experience),...perspectives,...sources,'',
+      '2 집중할 문제',line('내가 집중할 문제',data.problem),...optional('누가',data.who),...optional('어디에서',data.where),...optional('어떤 어려움',data.difficulty),'',
+      '3 아이디어',line('아이디어',data.ideas[0]),...optional('아이디어 2',data.ideas[1]),...optional('아이디어 3',data.ideas[2]),'',
+      '4 내 의견 정하기',line('내 의견',data.proposal),line('이유나 근거',data.reason),...optional('연결한 자료와 근거',data.evidence),...optional('더 확인할 점',data.uncertainties),...optional('모둠에서 함께 살펴볼 점',data.handoff),
+      '', '가상 인물의 이야기는 실제 지역 현황의 증거가 아닙니다.'
+    ].join('\n');
+  }
   return ['모둠 의견 나누기 모으기 결정하기 | 11~12차시',line('모둠',data.groupNumber?data.groupNumber+'모둠':data.label),'',
-    '1 의견 나누기',...data.members.flatMap((m,i)=>[`${i+1}. ${m.name||'모둠원'}`,line('해결하려는 문제',m.problem),line('제안하는 의견',m.proposal),line('장점과 이유',m.strength),line('단점과 이유',m.concern),line('개인 의견의 이유·근거 (참고)',m.reason),line('근거와 출처',m.source)]),'',
+    '1 의견 나누기',...data.members.flatMap((m,i)=>[`${i+1}. ${m.name||'모둠원'}`,line('제안하는 의견',m.proposal),line('장점과 이유',m.strength),line('단점과 이유',m.concern),...optional('해결하려는 문제',m.problem),...optional('개인 의견의 이유·근거 (참고)',m.reason),...optional('근거와 출처',m.source)]),'',
     ...(data.focus||data.focusReason?['이전에 정리한 문제 기록',data.focus,data.focusReason,'']:[]),
-    '3 의견 모으기 · 장단점 검토하기',line('함께 비교한 장단점과 그 이유',data.discussion),`검토 기준: ${data.criteriaList.filter(value=>value.trim()).join(', ')||'(정한 기준 없음)'}`,
-    ...data.members.flatMap((m,i)=>[`${i+1}. ${m.name||'모둠원'}의 의견 검토`,line('장점과 이유',m.strength),line('단점과 이유',m.concern),line('더 물어보거나 확인할 점',m.question),line('고치거나 더할 점',m.revision)]),'',
-    '4 의견 결정하기',line('우리 모둠의 최종 의견',data.proposal),line('최종 의견의 근거',data.reason),line('핵심 근거와 출처',data.evidence),...(data.changes?[line('이전에 기록한 의견 조정 내용',data.changes)]:[]),line('남은 걱정과 다른 의견',data.remaining),line('결정 방법과 협의 과정',data.method),line('전달을 위해 보완할 부분',data.clarity),line('다음에 확인하거나 할 일',data.next),
+    '2 의견 모으기 · 장단점 검토하기',`검토 기준: ${data.criteriaList.filter(value=>value.trim()).join(', ')||'(정한 기준 없음)'}`,line('함께 비교한 장단점과 그 이유',data.discussion),
+    ...data.members.flatMap((m,i)=>{const notes=[...optional('더 물어보거나 확인할 점',m.question),...optional('고치거나 더할 점',m.revision)];return notes.length?[`${i+1}. ${m.name||'모둠원'}의 의견 더 살펴보기`,...notes]:[];}),'',
+    '3 의견 결정하기',line('우리 모둠의 최종 의견',data.proposal),line('최종 의견의 근거',data.reason),line('남은 걱정과 다른 의견',data.remaining),...optional('근거와 출처 보충',data.evidence),...(data.changes?[line('이전에 기록한 의견 조정 내용',data.changes)]:[]),...optional('결정 방법과 협의 과정',data.method),...optional('전달을 위해 보완할 부분',data.clarity),...optional('다음에 확인하거나 할 일',data.next),
     `최종 내용 확인: ${data.members.map((m,i)=>`${m.name||`모둠원 ${i+1}`} ${m.checked?'확인함':'아직 확인 전'}`).join(' / ')}`,
     '', 'AI는 설명의 명확성을 점검할 수 있습니다. 제안과 근거는 모둠이 직접 결정합니다.'
   ].join('\n');
