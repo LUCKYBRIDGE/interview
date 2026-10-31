@@ -2,9 +2,12 @@
 // 1) 입력 자동 저장(openclass-student-inputs-v1): 저장된 값을 되살리고, 고칠 때마다 저장된 값 위에 합쳐 쓴다.
 //    화면에서 뺀 칸의 값도 지우지 않는다(규칙은 explore-inputs.mjs).
 // 2) 위험 상황 묶음 8개의 선택지를 접고 고른 수를 보인다.
+// 3) 화면에서 뺀 칸(2026-10-28에 숨긴 STEP 2·3·4 등)에 예전 글이 있으면 '이전에 적은 내용'으로 읽기 전용으로 보여 준다.
 // 모듈은 문서를 다 읽고 다른 스크립트가 돈 뒤에 실행된다. 그 스크립트들은 값을 되살린 뒤 보내는 input·change 이벤트로 화면을 맞춘다.
 import {nextTabIndex, riskSummaryText} from './explore-labels.mjs?v=20261031-2';
-import {INPUTS_DAMAGED_KEY, INPUTS_KEY, fieldKey, parseInputs, planSave} from './explore-inputs.mjs?v=20261101-1';
+import {
+  CASE_KEY, INPUTS_DAMAGED_KEY, INPUTS_KEY, fieldKey, parseCaseStudy, parseInputs, planSave, previousGroups, previousText,
+} from './explore-inputs.mjs?v=20261101-1';
 
 // 탭 방향키 규칙(인라인 탭 스크립트가 있으면 쓴다).
 window.knolNextTabIndex = nextTabIndex;
@@ -17,7 +20,7 @@ const readStored = key => {
 };
 
 function startAutosave(root) {
-  if (!root) return;
+  if (!root) return {};
   const stageEvals = [...document.querySelectorAll('.stage-eval')];
   const fields = [...root.querySelectorAll('input,textarea,select')].filter(el =>
     !['button', 'submit', 'reset', 'file', 'hidden'].includes(el.type)
@@ -67,6 +70,47 @@ function startAutosave(root) {
     el.dispatchEvent(new Event('change', {bubbles: true}));
   }
   paused = false;
+  return saved.data;
+}
+
+const element = (tag, className, text) => {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text !== undefined) node.textContent = text;
+  return node;
+};
+
+function showPreviousInputs(saved) {
+  const box = document.getElementById('previous-inputs');
+  if (!box) return;
+  const groups = previousGroups(saved, parseCaseStudy(readStored(CASE_KEY)));
+  if (!groups.length) return;
+  const details = element('details');
+  const summary = element('summary', '', '이전에 적은 내용');
+  summary.append(element('span', '', '예전 자료 페이지에 쓴 글'));
+  details.append(summary, element('p', '', '예전 자료 페이지에 적은 글이에요. 지금은 기록장에 써요. 필요하면 복사해서 기록장에 옮겨 적어요.'));
+  for (const group of groups) {
+    const list = element('dl');
+    for (const item of group.items) list.append(element('dt', '', item.label), element('dd', '', item.value));
+    details.append(element('p', 'previous-inputs-title', group.title), list);
+  }
+  const actions = element('div', 'previous-inputs-actions');
+  const copy = element('button', '', '이전에 적은 내용 복사');
+  copy.type = 'button';
+  const status = element('span');
+  status.setAttribute('role', 'status');
+  copy.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(previousText(groups));
+      status.textContent = '복사했어요. 기록장에 붙여 넣어요.';
+    } catch {
+      status.textContent = '자동으로 복사되지 않아요. 위 글을 보고 옮겨 적어요.';
+    }
+  });
+  actions.append(copy, status);
+  details.append(actions);
+  box.append(details);
+  box.hidden = false;
 }
 
 function foldRiskGroups() {
@@ -85,5 +129,6 @@ function foldRiskGroups() {
   }
 }
 
-startAutosave(document.querySelector('main'));
+const saved = startAutosave(document.querySelector('main'));
 foldRiskGroups();
+showPreviousInputs(saved);
