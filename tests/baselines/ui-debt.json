@@ -3,7 +3,7 @@
   "max": {
     "alertCalls": 0,
     "importantDeclarations": 44,
-    "inlineStyleBlocks": 1,
+    "inlineStyleBlocks": 0,
     "fontSizesUnder13px": 68
   }
 }
