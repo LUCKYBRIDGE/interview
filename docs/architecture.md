@@ -6,7 +6,7 @@
 
 | 파일 | 역할 | 진입 주소 |
 | --- | --- | --- |
-| `index.html` | 자료: 두 주제의 탐구 자료, 가상 인물 인터뷰, 토의 방법 학습 자료, 활동지·지도안 다운로드 | 해시가 없거나 `#home`이면 `workroom.html?view=both#personal`로 이동한다(첫 인라인 스크립트). `?explore=1`은 자료만 단독으로, `?embed=1`은 기록장 안 패널로 연다. |
+| `index.html` | 자료: 두 주제의 탐구 자료, 가상 인물 인터뷰, 토의 방법 학습 자료, 활동지·지도안 다운로드 | 해시가 없거나 `#home`이면 `workroom.html?view=both#personal`로 이동한다(머리의 인라인 스크립트. 2026-11-01부터 사이트에 남은 유일한 인라인 스크립트다). `?explore=1`은 자료만 단독으로, `?embed=1`은 기록장 안 패널로 연다. |
 | `workroom.html` | 기록장: 개인 활동, 모둠 활동, 자료 패널 | `#personal`, `#group`. `?view=both`는 넓은 화면에서 자료 패널을 연 채로 시작한다. `?view`와 옛 `?panel=1`은 읽은 뒤 주소에서 지운다(새로고침해도 학생이 닫은 패널이 다시 열리지 않게). 다른 페이지의 iframe 안에서 열리면 자료로 돌아간다. |
 
 ### 자료 경로 (계약)
@@ -18,10 +18,10 @@
 | `#discussion` | `panel-discussion` | ③ 모둠 의견 점검 |
 | `#noise` | `panel-noise` | ① 소음 탐색·자료 조사 (준비 중) |
 | `#interview` | `panel-interview` | ② 인물 인터뷰 (32명, 준비 중) |
-
-3단계(2026-10-31)부터 탭 5개가 머리글 아래에 늘 보인다(소음 탭 두 개는 준비 중이라 숨긴다). 탭은 기록장 패널 안(`?embed=1`)에서는 숨는다(패널에 자료 버튼이 따로 있다). 늦은 시각 소음 경로는 준비 중이다(결정 0003). 탭, 주제 카드, 머리글 버튼, 소음으로 가는 링크를 누르거나 `#noise`·`#interview`로 들어오면 `#home`으로 돌아가고 `#noise-pending-note`에 안내 문구를 보인다. 패널 내용은 그대로 있다. 본문 안 절로 가는 해시(예: `#policy-cases`)는 그 절이 있는 탭을 보여 주고 그 절로 스크롤한다.
 | `#study` | `panel-resources` | 토의 방법 |
 | `#downloads` | `panel-downloads` | 활동지·지도안 |
+
+3단계(2026-10-31)부터 탭 5개가 머리글 아래에 늘 보인다(소음 탭 두 개는 준비 중이라 숨긴다). 탭은 기록장 패널 안(`?embed=1`)에서는 숨는다(패널에 자료 버튼이 따로 있다). 늦은 시각 소음 경로는 준비 중이다(결정 0003). 탭, 주제 카드, 머리글 버튼, 소음으로 가는 링크를 누르거나 `#noise`·`#interview`로 들어오면 `#home`으로 돌아가고 `#noise-pending-note`에 안내 문구를 보인다. 패널 내용은 그대로 있다. 본문 안 절로 가는 해시(예: `#policy-cases`)는 그 절이 있는 탭을 보여 주고 그 절로 스크롤한다.
 
 `assets/explore-state.mjs`의 `ROUTES`(home, walking, study, discussion, noise, interview)는 기록장 자료 패널이 받아들이는 경로다.
 
@@ -37,9 +37,11 @@
 | `assets/explore-embed.mjs`, `.css` | `index.html?embed=1` 안에서 기록장 링크를 부모 화면 전환으로 바꾸고 스크롤 위치를 알림 | 없음 |
 | `assets/opinion-image.mjs` | 1920×1080 의견 이미지와 파일 이름 | `tests/opinion-image.test.mjs` |
 | `assets/brand.css` | 색 토큰(`--knol-*`)과 로고 | |
-| `assets/explore.css` | 자료 페이지 스타일. 3단계에서 `index.html`의 인라인 style(약 41KB)을 같은 자리의 파일로 옮겼다 | |
-| `assets/explore-page.mjs`, `assets/explore-labels.mjs` | 위험 상황 묶음 8개를 접고 고른 수를 보인다. 탭 방향키가 숨은·준비 중 탭을 건너뛴다(규칙은 `explore-labels.mjs`) | `tests/explore-labels.test.mjs` |
-| `index.html` 인라인 | 스크립트 5개(가장 큰 것 약 29KB: 탭, 인물 카드, 위험 상황, 통계, 대화상자, QR, 입력 자동 저장) | 없음 |
+| `assets/explore.css` | 자료 페이지 스타일. 3단계에서 `index.html`의 인라인 style(약 43KB)을 같은 자리의 파일로 옮겼다 | |
+| `assets/explore-main.js` | 자료 페이지의 화면 동작(일반 스크립트, 본문 끝에서 바로 돈다): 사례 검색 링크, 탭과 해시, 인물 카드와 방문 표시, 사이트 QR, 위험 상황 대화상자, 통계 필터, 소음 정리, 대화상자 닫기 안전장치. 2026-11-01에 `index.html` 인라인 스크립트를 순서 그대로 옮겼고 부분마다 `try`로 감쌌다 | 없음(브라우저 확인) |
+| `assets/explore-page.mjs` | 입력 자동 저장(되살리기, 합쳐 저장), 위험 상황 묶음 8개 접기와 고른 수, '이전에 적은 내용'. 위 스크립트 다음에 돈다 | 없음(규칙만 아래 모듈에서 테스트) |
+| `assets/explore-inputs.mjs` | 자동 저장 규칙(DOM 없음): 칸 키 형식, 저장된 값 읽기, 합쳐 저장, 손상 값 백업, 화면에서 뺀 칸 목록과 '이전에 적은 내용' | `tests/explore-inputs.test.mjs` |
+| `assets/explore-labels.mjs` | 위험 상황 묶음의 고른 수 문구, 탭 방향키가 숨은·준비 중 탭을 건너뛰는 규칙 | `tests/explore-labels.test.mjs` |
 
 기록장 스타일은 `assets/workroom.css` → `assets/brand.css` → `assets/workroom-redesign.css` 순서로 덮어쓴다. 2단계에서 분할 화면용 `explore-pane.css`와 옛 배치 블록을 지우고, `workroom.html`의 인라인 style 2개를 `workroom-redesign.css` 맨 앞으로 옮겼다(`brand.css`와 겹치는 규칙이 없다). 새 배치 규칙은 `workroom-redesign.css` 끝에 있다. 글 파일·인쇄 출력(`formatText`)의 단계 번호는 화면과 같고, 화면에 없는 이전 버전 항목은 내용이 있을 때만 나온다. 같은 선택자를 여러 파일에서 다시 정의한 곳이 많다([기준선 점검](audits/2026-10-31-baseline.md#1-기록장)).
 
@@ -53,8 +55,13 @@
 | --- | --- | --- | --- |
 | localStorage | `interview-workroom-v4-personal`, `interview-workroom-v4-group` | 기록장 기록(현재 버전) | 여기에만 쓴다 |
 | localStorage | `interview-workroom-v3-*`, `-v2-*`, `-v1-*` | 이전 버전 기록 | 읽기만 하고 지우지 않는다. v4가 없을 때 v3, v2, v1 순서로 읽는다 |
-| localStorage | `pedestrian-case-study-v1` | 자료 페이지의 정책 사례 비교 입력 | 학생 입력이다. 지우지 않는다 |
-| localStorage | `openclass-student-inputs-v1` | 자료 페이지의 입력란 자동 저장(지금은 숨긴 단계의 칸 포함) | 학생 입력이다. 지우지 않는다 |
+| localStorage | `openclass-student-inputs-v1` | 자료 페이지의 입력란 자동 저장. 칸마다 `id:칸id`, `risk:묶음:문구`, `noise:문구`, `noise-source:문구`, `stage-eval:번호` 키에 값이나 체크 여부를 둔다 | 학생 입력이다. 지우지 않는다. 저장할 때 화면의 값을 저장된 값 위에 합쳐서, 화면에서 뺀 칸의 값도 남는다(2026-11-01부터). 칸 문구가 키라서 위험 상황 문구를 바꾸면 이관이 필요하다 |
+| localStorage | `openclass-student-inputs-v1-damaged` | 위 값을 읽을 수 없을 때, 새로 쓰기 전에 원문을 한 번 옮겨 둔 것 | 지우지 않는다. 이미 있으면 다시 쓰지 않는다 |
+| localStorage | `pedestrian-case-study-v1` | 2026-10-28에 잠시 보였던 사례 조사 칸 7개(배열) | 읽기만 한다. 칸은 2026-11-01에 지웠고, 값은 '이전에 적은 내용'으로만 보인다. 지우지 않는다 |
+
+2026-10-28에 숨기고 2026-11-01에 지운 자료 페이지 칸(STEP 2·3·4, 아이디어, 사례 조사, 위험 상황 출처와 메모)은 `assets/explore-inputs.mjs`의 `PREVIOUS_GROUPS`에 있다. 그 칸에 글이 있으면 홈 위쪽에 닫힌 '이전에 적은 내용' 상자(읽기 전용, 복사)를 보인다.
+
+GitHub Pages 프로젝트 사이트는 모두 같은 출처(`https://luckybridge.github.io`)라서 LUCKYBRIDGE의 다른 Pages 사이트와 localStorage를 함께 쓴다. 새 키를 만들 때는 다른 사이트와 겹치지 않을 이름을 쓴다.
 
 ### 기록 파일과 데이터
 

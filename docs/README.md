@@ -17,6 +17,7 @@
 | [audits/2026-10-31-stage2-workroom.md](audits/2026-10-31-stage2-workroom.md) | 2단계(기록 하나와 자료 패널) 뒤의 측정과 동작 확인 |
 | [audits/2026-10-31-stage3-explore.md](audits/2026-10-31-stage3-explore.md) | 3단계(자료 페이지 길 찾기) 뒤의 측정과 동작 확인 |
 | [audits/2026-10-31-stage4-content.md](audits/2026-10-31-stage4-content.md) | 4단계에서 바꾼 학생 문구와 통계 카드 확인 결과 |
+| [audits/2026-11-01-stage3-cleanup.md](audits/2026-11-01-stage3-cleanup.md) | 3단계 남은 정리(숨긴 칸 지우기, 자동 저장 합치기, 인라인 스크립트 옮기기) |
 | [decisions/README.md](decisions/README.md) | 정한 결정과 이유 |
 | [logs/2026-10-31-ux-revamp-stage2-handoff.md](logs/2026-10-31-ux-revamp-stage2-handoff.md) | 2단계 인수인계(2026-10-31). 같은 날 2단계를 마쳐 지금은 기록으로만 남긴다 |
 | [logs/2026-10-31-ux-revamp-stage3-handoff.md](logs/2026-10-31-ux-revamp-stage3-handoff.md) | 3단계 인수인계(2026-10-31). 같은 날 3단계를 마쳐 기록으로만 남긴다 |

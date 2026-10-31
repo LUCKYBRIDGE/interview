@@ -60,7 +60,7 @@ npm run check
 
 가상 시민의 이야기는 실제 지역 현황의 증거가 아닙니다. 조사 자료는 제목·발행 기관 또는 주소·확인 날짜·대상 지역과 시기를 기록하고, 제안의 근거와 연결합니다. 외부 Gemini·NotebookLM 자료는 계정과 공유 권한에 따라 접근이 제한될 수 있습니다. 방문 표시는 링크를 눌렀다는 뜻이며 인터뷰 완료 여부를 증명하지 않습니다.
 
-Gem 링크는 `index.html`의 `links`, 보행 인물 `.walk-card`에서 관리합니다. 소음 인물 정보는 `people`에 있습니다. 프로필 이미지는 `profiles/01.webp`~`profiles/23.webp`이며 이후 번호는 대체 표시를 사용합니다.
+Gem 링크는 `assets/explore-main.js`의 `links`(소음 인물)와 `index.html`의 보행 인물 `.walk-card`에서 관리합니다. 소음 인물 정보는 `assets/explore-main.js`의 `people`에 있습니다. 프로필 이미지는 `profiles/01.webp`~`profiles/23.webp`이며 이후 번호는 대체 표시를 사용합니다.
 
 ## 배포와 로컬 수업 문서
 
