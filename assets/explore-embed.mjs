@@ -13,7 +13,7 @@ if (new URLSearchParams(location.search).get('embed') === '1' && window.parent !
   }, true);
   const note = document.createElement('p');
   note.className = 'embedded-note';
-  note.textContent = '이곳은 탐구 자료입니다. 기록은 옆의 활동지에 적어요. Gemini는 새 탭이나 별도 창에서 열립니다.';
+  note.textContent = '자료를 보며 기록장에 써요. Gemini 인터뷰는 새 탭이나 새 창에서 열려요.';
   document.querySelector('main').prepend(note);
   let restoring = false;
   let timer;

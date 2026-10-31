@@ -7,7 +7,7 @@
 | 파일 | 역할 | 진입 주소 |
 | --- | --- | --- |
 | `index.html` | 자료: 두 주제의 탐구 자료, 가상 인물 인터뷰, 토의 방법 학습 자료, 활동지·지도안 다운로드 | 해시가 없거나 `#home`이면 `workroom.html?view=both#personal`로 이동한다(첫 인라인 스크립트). `?explore=1`은 자료만 단독으로, `?embed=1`은 기록장 안 패널로 연다. |
-| `workroom.html` | 기록장: 개인 활동, 모둠 활동, 자료 패널 | `#personal`, `#group`. `?view=both`는 분할 화면을 강제한다. `?panel=1`은 기록장 안의 편집 iframe용이다. 다른 페이지의 iframe 안에서 `?panel=1` 없이 열리면 자료로 돌아간다. |
+| `workroom.html` | 기록장: 개인 활동, 모둠 활동, 자료 패널 | `#personal`, `#group`. `?view=both`는 넓은 화면에서 자료 패널을 연 채로 시작한다. `?view`와 옛 `?panel=1`은 읽은 뒤 주소에서 지운다(새로고침해도 학생이 닫은 패널이 다시 열리지 않게). 다른 페이지의 iframe 안에서 열리면 자료로 돌아간다. |
 
 ### 자료 경로 (계약)
 
@@ -32,14 +32,14 @@
 | `assets/workroom-state.mjs` | 기록 모델, 검증, 이관, 저장, 글 파일 출력. DOM이 없는 순수 모듈 | `tests/workroom-state.test.mjs` |
 | `assets/workroom.mjs` | 기록장 렌더링, 자동 저장, 충돌 경고, 불러오기·내보내기·인쇄, 의견 이미지, 패들렛 링크 | 없음(브라우저 확인) |
 | `assets/explore-state.mjs` | 자료 패널 상태 정규화, 경로 목록, iframe 주소 | `tests/explore-state.test.mjs` |
-| `assets/explore-pane.mjs` | 화면 구성(한 화면, 분할 화면), 왼쪽·오른쪽 내용 선택, 분할선, iframe 메시지 | 없음 |
+| `assets/explore-pane.mjs` | 자료 패널: 열기·닫기, 볼 자료 고르기, 1024px 이상은 옆 패널·그보다 좁으면 덮는 시트, 시트일 때 배경 `inert`와 Esc, iframe 메시지와 스크롤 위치 | 없음(배치 규칙만 아래 모듈에서 테스트) |
+| `assets/workroom-layout.mjs` | 배치 규칙(DOM 없음): 처음 열 때와 회전할 때 패널을 열지, 지금 보고 있는 단계 | `tests/workroom-layout.test.mjs` |
 | `assets/explore-embed.mjs`, `.css` | `index.html?embed=1` 안에서 기록장 링크를 부모 화면 전환으로 바꾸고 스크롤 위치를 알림 | 없음 |
-| `assets/left-personal.mjs` | 읽기 전용 개인 기록 패널. 지금은 늘 숨겨져 있다 | 없음 |
 | `assets/opinion-image.mjs` | 1920×1080 의견 이미지와 파일 이름 | `tests/opinion-image.test.mjs` |
 | `assets/brand.css` | 색 토큰(`--knol-*`)과 로고 | |
 | `index.html` 인라인 | 스타일 약 41KB, 스크립트 6개(가장 큰 것 약 29KB: 탭, 인물 카드, 위험 상황, 통계, 대화상자, QR) | 없음 |
 
-기록장 스타일은 `assets/workroom.css` → `assets/explore-pane.css` → `workroom.html` 인라인 style 2개 → `assets/brand.css` → `assets/workroom-redesign.css` 순서로 덮어쓴다. 같은 선택자를 여러 파일에서 다시 정의한 곳이 많다([기준선 점검](audits/2026-10-31-baseline.md#1-기록장)).
+기록장 스타일은 `assets/workroom.css` → `workroom.html` 인라인 style 2개 → `assets/brand.css` → `assets/workroom-redesign.css` 순서로 덮어쓴다. 2단계에서 분할 화면용 `explore-pane.css`와 옛 배치 블록을 지웠고, 새 배치 규칙은 `workroom-redesign.css` 끝에 있다. 같은 선택자를 여러 파일에서 다시 정의한 곳이 많다([기준선 점검](audits/2026-10-31-baseline.md#1-기록장)).
 
 ## 3. 학생 기록 (계약)
 
@@ -70,9 +70,8 @@
 
 | 저장소 | 키 | 내용 |
 | --- | --- | --- |
-| sessionStorage | `interview-explore-pane-v1` | 자료 패널 `{route, mode, y}`. 개편 뒤에도 이전 값을 읽어 새 상태로 바꾼다 |
-| sessionStorage | `knoltalk-single-source`, `knoltalk-left-source`, `knoltalk-right-source` | 한 화면·왼쪽·오른쪽에 고른 내용 |
-| localStorage | `knoltalk-workspace-split-v1` | 분할 비율(25~70, 기본 40) |
+| sessionStorage | `interview-explore-pane-v1` | 자료 패널 `{route, mode, y}`. mode는 `both`가 패널 열림, `writing`이 닫힘이다. 예전 값 `explore`는 열림으로 읽는다 |
+| sessionStorage, localStorage | `knoltalk-single-source`, `knoltalk-left-source`, `knoltalk-right-source`, `knoltalk-workspace-split-v1` | 2단계 전 분할 화면의 선택과 비율. 지금은 읽지도 쓰지도 않는다(남은 값은 그대로 둔다) |
 | localStorage | `interview-visited-v1` | 인터뷰 링크를 열어 본 표시(완료가 아니다) |
 
 ## 4. 페이지 사이 메시지 (계약)
@@ -84,7 +83,6 @@
 | `discussion-activity` `{kind}` | 자료 iframe → 기록장 | 자료 안의 기록장 링크를 누르면 부모의 활동을 바꾼다 |
 | `discussion-explore-position` `{route, y, restored}` | 자료 iframe → 기록장 | 자료 경로와 스크롤 위치를 알린다 |
 | `discussion-explore-restore` `{route, y}` | 기록장 → 자료 iframe | 저장한 위치로 되돌린다 |
-| `knoltalk-personal-reference-refresh` | 기록장 안 이벤트 | 개인 기록 패널 새로 읽기 |
 
 ## 5. 캐시 갱신 값 `?v=`
 

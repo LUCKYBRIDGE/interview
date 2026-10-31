@@ -1,5 +1,6 @@
 import {MAX_RECORD_BYTES,createData,blankMember,makeRecord,parseRecord,updateActivity,updateCriteria,importPersonalToMember,formatText,loadRecord,saveRecord,storageKey} from './workroom-state.mjs?v=20261028-13';
 import {exportOpinionImage,opinionImageFilename} from './opinion-image.mjs?v=20261028-17';
+import {currentStepIndex} from './workroom-layout.mjs?v=20261031-2';
 
 const PADLET_GROUPS=[
     ['1모둠','https://padlet.com/lucky20220528/1-s024wztgp5vbe1kgd9pi'],
@@ -37,7 +38,7 @@ function check(parent,path,title) {
   const label=el('label',undefined,'check-label');const input=document.createElement('input');input.type='checkbox';input.id='field-'+path.replaceAll('.','-');input.dataset.field=path;input.checked=at(path);const text=el('span',title);const memberPath=/^members\.(\d+)\.checked$/.exec(path);if(memberPath)text.dataset.confirmationFor=memberPath[1];label.append(input,text);parent.append(label);
 }
 function section(id,number,title,note) {
-  const root=el('section',undefined,'activity-section');root.id=id;root.append(el('span',number,'stage-label'),el('h2',title));if(note)root.append(el('p',note,'section-note'));$('activity-fields').append(root);
+  const root=el('section',undefined,'activity-section');root.id=id;root.append(el('h2',title));if(note)root.append(el('p',note,'section-note'));$('activity-fields').append(root);
   const a=el('a',title);a.href='#'+id;a.addEventListener('click',event=>{event.preventDefault();root.scrollIntoView({behavior:'auto',block:'start'});root.querySelector('h2').tabIndex=-1;root.querySelector('h2').focus({preventScroll:true});});$('step-nav').append(a);return root;
 }
 function entry(parent,title) {const node=el('div',undefined,'entry');node.append(el('h3',title));parent.append(node);return node;}
@@ -208,11 +209,9 @@ function renderGroup(){
   const opinionOverview=el('details',undefined,'group-opinion-overview');
   opinionOverview.open=true;
   opinionOverview.append(el('summary','모둠원의 의견·장단점 다시 보기'));
-  data.members.forEach((m,i)=>{
-    const item=el('article',undefined,'group-opinion-summary');
-    item.append(el('strong',(m.name||'모둠원 '+(i+1))+' · '+(m.proposal||'아직 의견 없음')));
-    if(m.strength) item.append(el('p','좋은 점: '+m.strength));
-    if(m.concern) item.append(el('p','걱정되는 점: '+m.concern));
+  data.members.forEach((_,i)=>{
+    const item=el('article',undefined,'group-opinion-summary');item.dataset.summaryFor=String(i);
+    item.append(el('strong'),el('p'),el('p'));
     opinionOverview.append(item);
   });
   b.append(opinionOverview);
@@ -227,9 +226,6 @@ function renderGroup(){
 }
 function render(){
   renderGroupPadletTop();
-  $('activity-guide').textContent=kind==='personal'
-    ?'자료 살펴보기 → 문제 고르기 → 방법 떠올리기 → 내 의견과 근거 정하기 → 공유하기'
-    :'친구 의견 듣기 → 기준에 따라 장단점 비교하기 → 모둠 의견과 근거 정하기 → 전체 공유하기';
   $('mode-personal').setAttribute('aria-pressed',String(kind==='personal'));$('mode-group').setAttribute('aria-pressed',String(kind==='group'));
   $('activity-title').textContent=kind==='personal'?'의견 마련하기':'모둠 토의하기';
   if(opinionImageUrl){URL.revokeObjectURL(opinionImageUrl);opinionImageUrl=null;}
@@ -252,6 +248,7 @@ function render(){
     current.append(button);
   });
   updatePrint();
+  requestAnimationFrame(markStep);
 }
 function warning(message){blockedKinds.set(kind,message);blocked=true;$('storage-warning').hidden=false;$('storage-warning-text').textContent=message;$('save-status').textContent='자동 저장을 멈췄습니다. 기록 파일을 먼저 보관하세요.';}
 function load(){
@@ -277,6 +274,7 @@ function updatePrint(){
   document.querySelectorAll('input[type=checkbox][data-field]').forEach(input=>{input.checked=at(input.dataset.field);});
   document.querySelectorAll('[data-confirmation-for]').forEach(node=>{const i=Number(node.dataset.confirmationFor);node.textContent=`${data.members[i].name||`모둠원 ${i+1}`} 최종 내용 확인`;});
   document.querySelectorAll('[data-print-for]').forEach(node=>{const path=node.dataset.printFor;let value=at(path);const input=document.querySelector(`[data-field="${path}"]`);if(input?.tagName==='SELECT')value=input.selectedOptions[0]?.textContent;node.textContent=value||' ';});
+  document.querySelectorAll('[data-summary-for]').forEach(node=>{const i=Number(node.dataset.summaryFor),m=data.members[i];if(!m)return;const [head,good,bad]=node.children;head.textContent=(m.name||'모둠원 '+(i+1))+' · '+(m.proposal||'아직 의견 없음');good.textContent=m.strength?'좋은 점: '+m.strength:'';good.hidden=!m.strength;bad.textContent=m.concern?'걱정되는 점: '+m.concern:'';bad.hidden=!m.concern;});
   document.querySelectorAll('[data-proposal-for]').forEach(node=>{const i=Number(node.dataset.proposalFor),m=data.members[i];node.textContent=`${m.name||`모둠원 ${i+1}`}의 제안: ${m.proposal||'앞의 의견 나누기에 제안을 적어 주세요.'}`;});
 }
 form.addEventListener('submit',event=>event.preventDefault());
@@ -288,7 +286,6 @@ form.addEventListener('input',event=>{
 });
 function switchMode(next){if(next===kind){if(next==='group')$('group-padlet-top').scrollIntoView({block:'start',behavior:'auto'});return;}activityRevision+=1;save();kind=next;load();render();$('tool-status').textContent='';$('copy-fallback').hidden=true;history.replaceState(null,'',`#${kind}`);if(kind==='group'){$('group-padlet-top').scrollIntoView({block:'start',behavior:'auto'});$('group-padlet-title').focus({preventScroll:true});}else $('activity-title').focus();}
 $('mode-personal').addEventListener('click',()=>switchMode('personal'));$('mode-group').addEventListener('click',()=>switchMode('group'));
-$('start-writing').addEventListener('click',()=>{if($('writing-pane').hidden)$('show-writing').click();$('step-nav').scrollIntoView({block:'start'});$('step-nav').querySelector('a')?.focus({preventScroll:true});});
 window.addEventListener('hashchange',()=>{if(['#personal','#group'].includes(location.hash))switchMode(location.hash.slice(1));});
 $('save-now').addEventListener('click',()=>{if(blocked){$('storage-warning').scrollIntoView({block:'center'});$('resume-saving').focus();}else save();});
 $('resume-saving').addEventListener('click',()=>{if(!confirm('현재 화면의 내용으로 이 활동의 저장 기록을 바꿀까요? 다른 기록이 있다면 먼저 파일로 보관하세요.'))return;blockedKinds.delete(kind);blocked=false;$('storage-warning').hidden=true;save();});
@@ -317,4 +314,16 @@ $('import-json').addEventListener('change',async event=>{
   catch(error){$('tool-status').textContent=`불러오지 못했습니다. ${error.message}`;}
   finally{input.value='';}
 });
+let stepFrame=0;
+function markStep(){
+  stepFrame=0;
+  const nav=$('step-nav');const links=[...nav.querySelectorAll('a')];const sections=[...document.querySelectorAll('#activity-fields > .activity-section')];
+  if(!links.length||links.length!==sections.length)return;
+  const offset=$('writing-bar').getBoundingClientRect().bottom+24;
+  const index=currentStepIndex(sections.map(section=>section.getBoundingClientRect().top),offset);
+  links.forEach((link,i)=>{if(i===index)link.setAttribute('aria-current','step');else link.removeAttribute('aria-current');});
+  const active=links[index];
+  if(active&&(active.offsetLeft<nav.scrollLeft||active.offsetLeft+active.offsetWidth>nav.scrollLeft+nav.clientWidth))nav.scrollTo({left:Math.max(0,active.offsetLeft-16)});
+}
+window.addEventListener('scroll',()=>{if(!stepFrame)stepFrame=requestAnimationFrame(markStep);},{passive:true});
 load();render();

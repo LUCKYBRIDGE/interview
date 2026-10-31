@@ -2,8 +2,8 @@
   "description": "DESIGN.md 9절의 화면 부채 상한. 늘면 npm test가 실패한다. 줄였으면 npm run baseline:debt로 낮춘다.",
   "max": {
     "alertCalls": 0,
-    "importantDeclarations": 55,
+    "importantDeclarations": 44,
     "inlineStyleBlocks": 3,
-    "fontSizesUnder13px": 83
+    "fontSizesUnder13px": 68
   }
 }

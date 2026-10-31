@@ -8,42 +8,41 @@
 <title>놀토의 · 보행 안전 활동 기록</title>
 <script>
 // Never allow a workbench to render inside another workbench's research frame.
-if (window.parent !== window && !new URLSearchParams(location.search).has('panel')) location.replace('index.html?embed=1#home');
+if (window.parent !== window) location.replace('index.html?embed=1#home');
 </script>
 <link rel="stylesheet" href="assets/workroom.css?v=20261028-17">
-<script type="module" src="assets/workroom.mjs?v=20261031-1"></script>
-<link rel="stylesheet" href="assets/explore-pane.css?v=20261028-5">
-<script type="module" src="assets/explore-pane.mjs?v=20261029-14"></script>
-<script type="module" src="assets/left-personal.mjs?v=20261029-1"></script>
+<script type="module" src="assets/workroom.mjs?v=20261031-2"></script>
+<script type="module" src="assets/explore-pane.mjs?v=20261031-2"></script>
 <style>.activity-top-nav{margin:10px 0 14px}.activity-top-nav button{font-size:18px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}.activity-top-nav button small{font-size:12px;font-weight:500;opacity:.83}@media(max-width:650px){.activity-top-nav button{font-size:16px}.activity-top-nav button small{display:block;width:100%}}</style><style>.header-inner{gap:10px;flex-wrap:wrap}.workroom-global-nav{display:flex;align-items:center;gap:6px;margin-left:auto;flex-wrap:wrap}.workroom-global-nav a,.workroom-global-nav button{border:1px solid var(--knol-line);background:#fff;color:var(--knol-deep);text-decoration:none;border-radius:9px;padding:8px 11px;min-height:40px;font-size:12px;font-weight:750;cursor:pointer}.workroom-global-nav a:nth-child(2){background:var(--knol-deep);color:#fff}@media(max-width:700px){.header-inner .brand{width:100%;font-size:16px}.header-inner .brand span{font-size:12px}.workroom-global-nav{margin-left:0}}</style>
 <link rel="icon" type="image/svg+xml" href="assets/brand/knoltalk-mark.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/brand/knoltalk-favicon.png">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/brand/knoltalk-touch.png">
 <link rel="stylesheet" href="assets/brand.css?v=20261028-2">
-<link rel="stylesheet" href="assets/workroom-redesign.css?v=20261031-1">
+<link rel="stylesheet" href="assets/workroom-redesign.css?v=20261031-2">
 </head>
 <body>
 <a class="skip-link" href="#activity">활동 기록으로 바로가기</a>
-<header><div class="shell header-inner"><a class="brand knol-brand" href="index.html#home"><img class="knol-brand-icon" src="assets/brand/knoltalk-mark.svg" width="48" height="48" alt=""><span class="knol-brand-copy"><strong class="knol-brand-name">놀토의</strong><small class="knol-brand-tagline">우리 주변의 문제를 토의해요</small></span></a><nav class="workroom-global-nav" aria-label="전체 메뉴"><a href="index.html?explore=1#home">보행자 안전 자료</a><button type="button" id="noise-pending" aria-disabled="true">늦은 시각 소음 (준비 중)</button></nav></div></header>
+<header id="site-header"><div class="shell header-inner"><a class="brand knol-brand" href="index.html#home"><img class="knol-brand-icon" src="assets/brand/knoltalk-mark.svg" width="48" height="48" alt=""><span class="knol-brand-copy"><strong class="knol-brand-name">놀토의</strong><small class="knol-brand-tagline">우리 주변의 문제를 토의해요</small></span></a><nav class="workroom-global-nav" aria-label="전체 메뉴"><a href="index.html?explore=1#home">보행자 안전 자료</a><button type="button" id="noise-pending" aria-disabled="true">늦은 시각 소음 (준비 중)</button></nav></div></header>
 <main class="shell">
-<section class="intro compact-intro"><span class="eyebrow">5학년 국어 · 의견을 조정해요</span><h1>내 생각을 모아 함께 결정해요</h1><p>현재 활동의 단계에 따라 기록하고, 필요한 탐구 자료를 함께 살펴보세요.</p></section>
-<nav class="mode-nav activity-top-nav" aria-label="활동 유형"><button id="mode-personal" type="button" aria-pressed="true">개인활동 <small>의견 마련하기</small></button><button id="mode-group" type="button" aria-pressed="false">모둠활동 <small>의견 나누기·모으기·결정하기</small></button></nav>
+<h1 class="sr-only">놀토의 기록장</h1>
+<nav class="mode-nav activity-top-nav" id="activity-nav" aria-label="활동 유형"><button id="mode-personal" type="button" aria-pressed="true">개인 활동 <small>의견 마련하기</small></button><button id="mode-group" type="button" aria-pressed="false">모둠 활동 <small>의견 나누기·모으기·결정하기</small></button></nav>
 <section id="group-padlet-top" class="padlet-direct-panel group-padlet-top" aria-labelledby="group-padlet-title" hidden></section>
-<aside class="activity-guide" aria-label="활동 시작 안내"><strong id="activity-guide"></strong><p>모든 칸을 채울 필요는 없어요. 이미지로 공유할 때는 <b>의견과 이유·근거</b>만 적으면 돼요. 이름과 모둠은 선택 사항이에요.</p><button id="start-writing" type="button">기록할 단계 고르기 ↓</button></aside>
-<nav class="pane-switch workbench-nav" aria-label="화면 구성"><span class="view-switch-label">화면 구성</span><button id="show-writing" type="button" aria-pressed="false">한 화면</button><button id="show-explore" type="button" hidden tabindex="-1" aria-pressed="false">참고 화면</button><button id="show-both" type="button" aria-pressed="true">분할 화면</button><label id="single-source-wrap" for="single-source" hidden>표시할 내용 <select id="single-source"><option value="personal">개인활동 편집</option><option value="group">모둠활동 편집</option><option value="explore">탐구·인터뷰 자료</option><option value="personal-reference">개인활동 기록 보기</option></select></label><button id="reset-split" type="button" title="분할 비율 40:60으로 초기화">비율 초기화</button><p id="workspace-hint"></p></nav>
-<div class="workbench" id="workbench">
-<aside id="explore-pane" hidden aria-label="탐구 자료"><div class="reference-source-bar"><label for="left-source">왼쪽에 표시할 내용</label><select id="left-source"><option value="none">화면 선택하기</option><option value="explore">탐구·인터뷰 자료</option><option value="personal">개인활동 편집</option><option value="group">모둠활동 편집</option></select></div><div id="left-empty" class="left-empty" hidden><div class="left-empty-symbol" aria-hidden="true">?</div><strong>왼쪽에 표시할 화면을 선택하세요</strong><p>위 메뉴에서 다른 화면을 선택하세요.</p></div><div class="explore-toolbar" id="explore-toolbar"><a href="index.html#home" data-explore-route="home">탐구</a><a href="index.html#walking" data-explore-route="walking">인물 인터뷰</a><a href="index.html#study" data-explore-route="study">학습 자료</a><a href="index.html#discussion" data-explore-route="discussion">모둠토의 도우미</a><button id="open-explore-window" type="button">별도 창에서 보기</button><button id="close-explore" type="button">탐구 닫기</button></div><iframe id="explore-frame" title="보행 안전 탐구 자료" loading="lazy"></iframe><iframe id="left-editor-frame" title="왼쪽 활동 편집" hidden></iframe><section id="left-personal" class="left-personal" aria-label="개인활동 기록 참고" hidden><div class="left-personal-head"><strong>개인활동 기록 · 읽기 전용</strong><button id="refresh-left-personal" type="button">새로고침</button></div><p class="left-personal-note">오른쪽 모둠활동을 유지하면서 개인 기록을 참고할 수 있습니다. 이 브라우저에 저장된 기록이나 다른 기기의 JSON 파일을 불러오세요.</p><label class="left-personal-file">개인 기록 JSON 열기<input id="left-personal-file" type="file" accept=".json,application/json"></label><p id="left-personal-status" role="status" aria-live="polite"></p><div id="left-personal-content"></div></section></aside>
-<div id="split-divider" role="separator" aria-label="왼쪽 참고 자료와 오른쪽 기록 화면 너비 조절" aria-orientation="vertical" aria-valuemin="25" aria-valuemax="70" aria-valuenow="40" tabindex="0" title="드래그하거나 방향키로 좌우 너비 조절"><span class="split-grip" aria-hidden="true">⋮</span></div>
-<section id="right-pane"><div class="reference-source-bar right-source-bar"><label for="right-source">오른쪽에 표시할 내용</label><select id="right-source"><option value="none">화면 선택하기</option><option value="personal">개인활동 편집</option><option value="group">모둠활동 편집</option><option value="explore">탐구·인터뷰 자료</option></select></div><div id="right-empty" class="left-empty" hidden><div class="left-empty-symbol" aria-hidden="true">?</div><strong>오른쪽에 표시할 화면을 선택하세요</strong></div><iframe id="right-explore-frame" title="오른쪽 탐구 자료" loading="lazy" hidden></iframe><div id="writing-pane">
+<div class="workspace" id="workspace">
+<div id="writing-pane">
+<div class="writing-bar" id="writing-bar"><nav id="step-nav" class="step-nav" aria-label="활동 순서"></nav><button id="reference-toggle" class="reference-toggle" type="button" aria-expanded="false" aria-controls="reference-panel">자료 보기</button></div>
+<p class="activity-tip">모든 칸을 채우지 않아도 돼요. 공유할 때는 <b>의견과 이유·근거</b>만 있으면 돼요.</p>
 
 <aside class="save-panel" aria-label="기록 보관"><div><p id="save-status" role="status" aria-live="polite">기록을 준비하고 있습니다.</p><p>글은 이 브라우저에 자동 저장돼요. 친구에게 공유하려면 의견 아래의 이미지·패들렛 버튼을 이용하세요.</p></div><button id="save-now" type="button">글 저장하기</button></aside><p id="tool-status" role="status" aria-live="polite"></p>
 <div id="storage-warning" class="warning" hidden><p id="storage-warning-text"></p><button type="button" id="warning-export-json">기록 파일 내려받기</button><button type="button" id="reload-record">저장된 기록 다시 읽기</button><button type="button" id="resume-saving">현재 내용으로 저장 다시 시작</button></div>
-<nav id="step-nav" class="step-nav" aria-label="활동 순서"></nav>
 <form id="activity" novalidate aria-labelledby="activity-title"><h2 id="activity-title" tabindex="-1"></h2><div id="activity-fields"></div></form><pre id="print-summary"></pre>
 <details class="storage-tools"><summary>기록 파일과 인쇄</summary><section class="record-tools" aria-labelledby="tools-title"><h2 id="tools-title">기록 보관과 인쇄</h2><p>기록 파일은 다른 기기에서 이어 쓸 때 사용합니다. 글 파일은 문서에 옮기거나 모둠에서 함께 볼 때 사용하세요. 파일을 불러오면 현재 선택한 활동의 내용이 바뀝니다.</p><div class="button-row"><button id="export-json" type="button">기록 파일 내려받기</button><label class="file-button" for="import-json">기록 파일 불러오기<input id="import-json" type="file" accept=".json,application/json"></label><button id="export-text" type="button">글 파일 내려받기</button><button id="copy-text" type="button">기록 복사</button><button id="print-record" type="button">작성한 기록 인쇄</button></div><div id="copy-fallback" hidden><label for="copy-content">자동 복사를 사용할 수 없습니다. 아래 내용을 선택해 복사하세요.</label><textarea id="copy-content" readonly rows="10"></textarea></div></section>
 </details><section class="resource-links" aria-labelledby="resources-title"><h2 id="resources-title">인터뷰와 조사 자료</h2><p>가상 인물의 이야기는 입장을 이해하기 위한 자료입니다. 실제 지역의 현황이나 정책은 조사 자료로 확인하세요.</p><div class="button-row"><a href="index.html#walking" data-explore-route="walking">가상 인물 24명 인터뷰</a><a href="index.html#home" data-explore-route="home">보행 안전 탐구 자료</a><a href="https://its.gn.go.kr/guide/openChild" target="_blank" rel="noopener noreferrer">강릉 어린이보호구역 자료</a><a href="https://www.law.go.kr/LSW/lsInfoP.do?lsiSeq=248781" target="_blank" rel="noopener noreferrer">보행안전법 본문(2023년판)</a><a href="index.html#study" data-explore-route="study">토의 방법 학습 자료</a></div><div class="button-row worksheet-links"><a href="materials/personal-9-10.pdf" download>개인 활동지 PDF</a><a href="materials/group-11-12.pdf?v=20261028-6" download>모둠 활동지 PDF (양면)</a></div></section>
 </div>
-</section>
+<aside id="reference-panel" class="reference-panel" aria-labelledby="reference-title" hidden>
+<div class="reference-head"><h2 id="reference-title">보행자 안전 자료</h2><button id="open-explore-window" type="button">새 창 ↗</button><button id="reference-close" type="button">자료 닫기</button></div>
+<nav class="reference-routes" aria-label="볼 자료 고르기"><button type="button" data-explore-route="home" aria-pressed="true">보행자 안전 자료</button><button type="button" data-explore-route="walking" aria-pressed="false">가상 인물 인터뷰</button><button type="button" data-explore-route="study" aria-pressed="false">토의 방법</button><button type="button" data-explore-route="discussion" aria-pressed="false">모둠 의견 점검</button></nav>
+<iframe id="explore-frame" title="보행자 안전 자료"></iframe>
+</aside>
 </div>
 </main>
 <footer class="shell"><p>학생의 제안과 결정은 학생에게 있습니다. AI는 인물의 입장을 들려주거나, 결정한 내용의 설명이 명확한지 살피는 데 활용합니다.</p></footer>

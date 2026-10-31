@@ -1,257 +1,132 @@
+// 기록장 자료 패널. 기록 영역은 늘 보이고, 같은 사이트의 자료(index.html?embed=1)를 패널로 연다.
+// 폭 1024px 이상은 기록 옆 패널, 그보다 좁으면 기록 위에 덮는 시트다(DESIGN.md 6절).
+// 계약(docs/architecture.md 4절): 메시지 discussion-activity, discussion-explore-position,
+// discussion-explore-restore는 같은 출처와 해당 iframe만 주고받는다. 상태는 interview-explore-pane-v1에 둔다.
 import {ROUTES, readPane, writePane, frameURL, paneState} from './explore-state.mjs';
+import {WIDE_QUERY, modeFor, panelOpenOnLoad, panelOpenAfterResize} from './workroom-layout.mjs?v=20261031-2';
 
 const $ = id => document.getElementById(id);
+const panel = $('reference-panel');
 const frame = $('explore-frame');
+const toggle = $('reference-toggle');
+const closeButton = $('reference-close');
+const title = $('reference-title');
 const writing = $('writing-pane');
-const pane = $('explore-pane');
-const leftSource = $('left-source');
-const personalPanel = $('left-personal');
-const exploreToolbar = $('explore-toolbar');
-const rightSource = $('right-source');
-const rightFrame = $('right-explore-frame');
-const rightPane = $('right-pane');
-const rightEmpty = $('right-empty');
-const singleSource = $('single-source');
-const singleWrap = $('single-source-wrap');
-let singleChoice = 'personal';
-try {const saved = sessionStorage.getItem('knoltalk-single-source'); if(['personal','group','explore','personal-reference'].includes(saved))singleChoice=saved;} catch {}
+const wide = matchMedia(WIDE_QUERY);
+const TITLES = {home: '보행자 안전 자료', walking: '가상 인물 인터뷰', study: '토의 방법 학습 자료', discussion: '모둠 의견 점검 도우미', noise: '보행자 안전 자료', interview: '보행자 안전 자료'};
+
 let storage;
 try { storage = window.sessionStorage; } catch { storage = null; }
 let state = readPane(storage);
-let source = 'explore';
-try { const saved=sessionStorage.getItem('knoltalk-left-source'); if(['explore','personal','group','none'].includes(saved))source=saved; } catch {}
-const leftEmpty = $('left-empty');
-const leftEditor = $('left-editor-frame');
-const initialRight = location.hash === '#group' ? 'group' : 'personal';
-let rightChoice = initialRight;
-function syncChoices() {
-  for (const option of leftSource.options) option.disabled = false;
-  // Right side always accepts a new choice; it takes priority on conflict.
-  for (const option of rightSource.options) option.disabled = false;
+const params = new URLSearchParams(location.search);
+const forced = params.get('view') === 'both';
+if (forced) state = {...state, mode: 'both', route: 'home', y: 0};
+// 한 번 읽은 화면 매개변수는 주소에서 지운다. 그래야 새로고침해도 학생이 닫은 패널이 다시 열리지 않는다.
+if (params.has('view') || params.has('panel')) {
+  params.delete('view');
+  params.delete('panel');
+  const query = params.toString();
+  history.replaceState(null, '', location.pathname + (query ? `?${query}` : '') + location.hash);
 }
-function selectSource(next) {
-  if(!['personal','group','explore','none'].includes(next))next='none';
-  // The most recently selected side wins; the other side becomes unassigned.
-  source=next;
-  if(state.mode==='both' && next!=='none' && rightChoice===next){
-    rightChoice='none';
-    rightSource.value='none';
-    writing.hidden=true;
-    rightFrame.hidden=true;
-    rightEmpty.hidden=false;
-  }
-  leftSource.value=source;
-  leftEmpty.hidden=source!=='none';
-  personalPanel.hidden=true;
-  exploreToolbar.hidden=source!=='explore';
-  frame.hidden=source!=='explore';
-  const editing=['personal','group'].includes(source);
-  leftEditor.hidden=!editing;
-  const target=editing ? 'workroom.html?panel=1#'+source : '';
-  if(editing && !leftEditor.src.endsWith(target))leftEditor.src=target;
-  if(!editing)leftEditor.removeAttribute('src');
-  syncChoices();
-  try{sessionStorage.setItem('knoltalk-left-source',source);}catch{}
-  if(source==='explore' && !pane.hidden)ensureFrame();
-}
-leftSource.addEventListener('change',()=>selectSource(leftSource.value));
-function selectRight(next) {
-  if(!['personal','group','explore','none'].includes(next))return;
-  rightChoice = next;
-  if(source === next && state.mode==='both')selectSource('none');
-  rightSource.value = next;
-  rightEmpty.hidden = next !== 'none';
-  syncChoices();
-  const isExplore = next === 'explore';
-  rightFrame.hidden = !isExplore;
-  if(isExplore && !rightFrame.src)rightFrame.src = frameURL(state.route);
-  writing.hidden = next==='none' || isExplore || state.mode === 'explore';
-  if(next === 'personal' || next === 'group') {
-    const button = $(next === 'personal' ? 'mode-personal' : 'mode-group');
-    if(button.getAttribute('aria-pressed') !== 'true')button.click();
-  }
-  try {sessionStorage.setItem('knoltalk-right-source',next);} catch {}
-}
-rightSource.addEventListener('change',()=>selectRight(rightSource.value));
-window.addEventListener('hashchange',()=>{const next=location.hash.slice(1);if(['personal','group'].includes(next)&&next!==rightChoice)selectRight(next);});
-$('mode-personal').addEventListener('click',()=>selectRight('personal'));
-$('mode-group').addEventListener('click',()=>selectRight('group'));
-
-if (new URLSearchParams(location.search).has('panel')){state={...state,mode:'writing'};singleChoice=location.hash==='#group'?'group':'personal';}
-if (new URLSearchParams(location.search).get('view') === 'both') state = {...state, mode:'both', route:'home', y:0};
-let loaded = false;
+let open = panelOpenOnLoad({mode: state.mode, forced, wide: wide.matches});
+let loadedRoute = '';
 let restoring = false;
-let writingY = 0;
-let lastField;
-const narrow = matchMedia('(max-width: 1120px)');
+let returnFocus = null;
+
 const persist = () => writePane(storage, state);
-
-const splitter = $('split-divider');
-const workbench = $('workbench');
-const resetSplit = $('reset-split');
-const SPLIT_KEY = 'knoltalk-workspace-split-v1';
-const SPLIT_MIN = 25, SPLIT_MAX = 70, SPLIT_DEFAULT = 40;
-let splitValue = SPLIT_DEFAULT;
-try {
-  const stored = Number(localStorage.getItem(SPLIT_KEY));
-  if (Number.isFinite(stored) && stored >= SPLIT_MIN && stored <= SPLIT_MAX) splitValue = stored;
-} catch {}
-function setSplit(value, save = false) {
-  splitValue = Math.max(SPLIT_MIN, Math.min(SPLIT_MAX, Math.round(value)));
-  workbench.style.setProperty('--split-left', splitValue + '%');
-  splitter.setAttribute('aria-valuenow', String(splitValue));
-  splitter.setAttribute('aria-valuetext', '탐구 ' + splitValue + '%, 기록 ' + (100 - splitValue) + '%');
-  if (save) try { localStorage.setItem(SPLIT_KEY, String(splitValue)); } catch {}
-}
-setSplit(splitValue);
-let dragging = false;
-splitter.addEventListener('pointerdown', event => {
-  if (document.body.dataset.workspaceView !== 'both' || narrow.matches || event.button !== 0) return;
-  dragging = true;
-  splitter.setPointerCapture(event.pointerId);
-  document.body.classList.add('is-resizing');
-  event.preventDefault();
-});
-splitter.addEventListener('pointermove', event => {
-  if (!dragging) return;
-  const rect = workbench.getBoundingClientRect();
-  // Reserve the divider width and use the same percent convention as CSS.
-  setSplit((event.clientX - rect.left - 8) / rect.width * 100);
-});
-const finishSplit = () => {
-  if (!dragging) return;
-  dragging = false;
-  document.body.classList.remove('is-resizing');
-  setSplit(splitValue, true);
-};
-splitter.addEventListener('pointerup', finishSplit);
-splitter.addEventListener('pointercancel', finishSplit);
-splitter.addEventListener('lostpointercapture', finishSplit);
-splitter.addEventListener('keydown', event => {
-  const delta = event.shiftKey ? 10 : 5;
-  if (event.key === 'ArrowLeft') setSplit(splitValue - delta, true);
-  else if (event.key === 'ArrowRight') setSplit(splitValue + delta, true);
-  else if (event.key === 'Home') setSplit(SPLIT_MIN, true);
-  else if (event.key === 'End') setSplit(SPLIT_MAX, true);
-  else return;
-  event.preventDefault();
-});
-resetSplit.addEventListener('click', () => setSplit(SPLIT_DEFAULT, true));
-
-
-writing.addEventListener('focusin', event => {
-  if (event.target.matches('input,textarea,select')) lastField = event.target;
-});
-
-function ensureFrame() {
-  if (loaded) return;
-  loaded = true;
-  frame.src = frameURL(state.route);
-}
+const sheet = () => open && !wide.matches;
+const background = () => [$('site-header'), $('activity-nav'), $('group-padlet-top'), writing, document.querySelector('footer'), document.querySelector('.skip-link')].filter(Boolean);
 
 function restoreFrame() {
   restoring = true;
-  frame.contentWindow?.postMessage({type:'discussion-explore-restore', route:state.route, y:state.y}, location.origin);
+  frame.contentWindow?.postMessage({type: 'discussion-explore-restore', route: state.route, y: state.y}, location.origin);
 }
-
 frame.addEventListener('load', restoreFrame);
 
-function renderMode({restoreWriting = false} = {}) {
-  const wasHidden = pane.hidden;
-  const single = state.mode !== 'both';
-  const leftOnly = single && ['explore','personal-reference'].includes(singleChoice);
-  const rightOnly = single && !leftOnly;
-  document.body.dataset.workspaceView = single ? (leftOnly ? 'explore' : 'writing') : 'both';
-  pane.hidden = rightOnly;
-  rightPane.hidden = leftOnly;
-  rightSource.closest('.right-source-bar').hidden = single;
-  writing.hidden = leftOnly || (single ? singleChoice === 'explore' : rightChoice === 'explore' || rightChoice === 'none');
-  rightEmpty.hidden = single || rightChoice !== 'none';
-  rightFrame.hidden = leftOnly || (single ? singleChoice !== 'explore' : rightChoice !== 'explore');
-  singleWrap.hidden = !single;
-  singleSource.value = singleChoice;
-  $('show-writing').setAttribute('aria-pressed',String(single));
-  $('show-both').setAttribute('aria-pressed',String(!single));
-  $('show-explore').setAttribute('aria-pressed','false');
-  $('reset-split').hidden = single;
-  const hint = $('workspace-hint');
-  if(hint)hint.textContent = '';
-  if(!pane.hidden) {
-    if(source === 'explore') {
-      ensureFrame();
-      if(wasHidden)requestAnimationFrame(restoreFrame);
-    } else if(source === 'personal')window.dispatchEvent(new Event('knoltalk-personal-reference-refresh'));
-  }
-  if(restoreWriting && !rightPane.hidden) {
-    window.scrollTo({top:writingY,behavior:'instant'});
-    if(lastField?.isConnected)lastField.focus({preventScroll:true});
-  }
-}
-function selectSingle(next) {
-  if(!['personal','group','explore','personal-reference'].includes(next))return;
-  singleChoice = next;
-  state = {...state,mode:'writing'};
-  if(next === 'explore' && rightChoice === 'explore')rightChoice = 'personal';
-  if(next === 'explore')selectSource('explore');
-  else if(next === 'personal-reference')selectSource('personal');
-  else selectRight(next);
-  try {sessionStorage.setItem('knoltalk-single-source',singleChoice);} catch {}
-  state = {...state,mode:'writing'};
-  persist();
-  renderMode();
-}
-
-function show(mode) {
-  if (state.mode === mode) return;
-  if (mode === 'both' && source === rightChoice) selectSource('none');
-  if (state.mode !== 'explore') writingY = window.scrollY;
-  if (mode === 'writing' && loaded && !pane.hidden) {
-    try { state = {...state, y:frame.contentWindow.scrollY}; } catch {}
-  }
-  state = {...state, mode}; persist();
-  renderMode({restoreWriting:mode === 'writing'});
-  if (mode !== 'writing') pane.scrollIntoView({block:'start', behavior:'instant'});
-}
-
-$('show-writing').addEventListener('click',()=>selectSingle(singleChoice));
-$('show-both').addEventListener('click',()=>show('both'));
-singleSource.addEventListener('change',()=>selectSingle(singleSource.value));
-$('close-explore').addEventListener('click',()=>selectSingle(rightChoice === 'explore' ? 'personal' : rightChoice));
-
-document.querySelectorAll('[data-explore-route]').forEach(link => {
-  link.addEventListener('click', event => {
-    const route = link.dataset.exploreRoute;
-    if (!ROUTES.includes(route)) return;
-    event.preventDefault();
-    const changed = route !== state.route;
-    state = {...state, route, y:changed ? 0 : state.y}; persist();
-    selectSource('explore');
-    if(state.mode === 'both')show('both'); else selectSingle('explore');
-    ensureFrame();
-    if (changed) restoreFrame();
+function syncRoute() {
+  const label = TITLES[state.route] ?? TITLES.home;
+  title.textContent = label;
+  frame.title = label;
+  panel.querySelectorAll('[data-explore-route]').forEach(button => {
+    button.setAttribute('aria-pressed', String(button.dataset.exploreRoute === state.route));
   });
-});
+}
 
+function loadFrame() {
+  if (loadedRoute === state.route && frame.getAttribute('src')) {
+    // 숨겨졌던 iframe은 스크롤 위치를 잃는다. 다시 보일 때 저장한 위치로 돌린다.
+    requestAnimationFrame(restoreFrame);
+    return;
+  }
+  loadedRoute = state.route;
+  frame.src = frameURL(state.route);
+}
+
+function render() {
+  const isSheet = sheet();
+  panel.hidden = !open;
+  document.body.dataset.reference = open ? (isSheet ? 'sheet' : 'side') : 'closed';
+  document.body.classList.toggle('reference-sheet-open', isSheet);
+  for (const node of background()) node.inert = isSheet;
+  toggle.setAttribute('aria-expanded', String(open));
+  toggle.textContent = open ? '자료 닫기' : '자료 보기';
+  syncRoute();
+  if (open) loadFrame();
+}
+
+function setOpen(next, {remember = true} = {}) {
+  if (next === open) return;
+  if (next) returnFocus = document.activeElement;
+  open = next;
+  if (remember) { state = {...state, mode: modeFor(open)}; persist(); }
+  render();
+  if (open) closeButton.focus({preventScroll: true});
+  else (returnFocus?.isConnected && !returnFocus.closest('#reference-panel') ? returnFocus : toggle).focus({preventScroll: true});
+}
+
+function showRoute(route) {
+  if (!ROUTES.includes(route)) return;
+  if (route !== state.route) state = {...state, route, y: 0};
+  persist();
+  if (!open) setOpen(true);
+  else render();
+}
+
+toggle.addEventListener('click', () => setOpen(!open));
+closeButton.addEventListener('click', () => setOpen(false));
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && sheet()) { event.preventDefault(); setOpen(false); }
+});
+// 패널 안 자료 버튼과 기록장 아래쪽 자료 링크가 같은 패널을 연다.
+document.addEventListener('click', event => {
+  const link = event.target.closest('[data-explore-route]');
+  if (!link) return;
+  event.preventDefault();
+  showRoute(link.dataset.exploreRoute);
+});
 $('open-explore-window').addEventListener('click', () => {
   window.open(`index.html?explore=1#${state.route}`, '_blank', 'noopener,noreferrer');
+});
+wide.addEventListener('change', () => {
+  open = panelOpenAfterResize({mode: state.mode, wide: wide.matches});
+  render();
 });
 
 window.addEventListener('message', event => {
   if (event.origin !== location.origin || event.source !== frame.contentWindow) return;
   const value = event.data;
-  if (value?.type === 'discussion-activity' && ['personal','group'].includes(value.kind)) {
+  if (value?.type === 'discussion-activity' && ['personal', 'group'].includes(value.kind)) {
+    if (sheet()) setOpen(false, {remember: false});
     location.hash = value.kind;
-    if(state.mode === 'both')show('both'); else selectSingle(value.kind);
     return;
   }
   if (!value || value.type !== 'discussion-explore-position' || !ROUTES.includes(value.route)) return;
-  if (pane.hidden || (restoring && value.restored !== true)) return;
+  if (panel.hidden || (restoring && value.restored !== true)) return;
   restoring = false;
-  state = {...state, ...paneState({...state, route:value.route, y:value.y})}; persist();
+  state = {...state, ...paneState({...state, route: value.route, y: value.y})};
+  loadedRoute = state.route;
+  persist();
+  syncRoute();
 });
-narrow.addEventListener('change', () => renderMode());
-try {const saved=sessionStorage.getItem('knoltalk-right-source');if(['personal','group','explore'].includes(saved) && !['#personal','#group'].includes(location.hash))rightChoice=saved;} catch {}
-selectRight(rightChoice);
-selectSource(source === rightChoice ? 'none' : source);
-if(state.mode !== 'both')selectSingle(singleChoice);
-else renderMode();
+
+render();
