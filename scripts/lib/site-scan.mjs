@@ -3,6 +3,7 @@
 import {existsSync, readFileSync, readdirSync} from 'node:fs';
 import {dirname, join, resolve, sep} from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {fieldKey} from '../../assets/explore-inputs.mjs';
 
 export const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 export const PAGES = ['index.html', 'workroom.html'];
@@ -10,6 +11,7 @@ export const PAGES = ['index.html', 'workroom.html'];
 export const BASELINES = {
   links: 'tests/baselines/external-links.json',
   debt: 'tests/baselines/ui-debt.json',
+  keys: 'tests/baselines/input-keys.json',
 };
 
 const posix = path => path.split(sep).join('/');
@@ -104,4 +106,34 @@ export function uiDebt() {
     inlineStyleBlocks: count(/<style\b/g, ({file}) => file.endsWith('.html')),
     fontSizesUnder13px: smallFonts,
   };
+}
+
+const ENTITIES = {amp: '&', lt: '<', gt: '>', quot: '"', '#39': "'"};
+const attributes = tag => Object.fromEntries([...tag.matchAll(/\s([\w-]+)(?:="([^"]*)")?/g)]
+  .map(([, name, value = '']) => [name, value.replace(/&(amp|lt|gt|quot|#39);/g, (_, entity) => ENTITIES[entity])]));
+
+// 자료 페이지 입력 자동 저장(openclass-student-inputs-v1)이 index.html의 칸마다 쓰는 키.
+// 브라우저의 explore-page.mjs와 같은 규칙(fieldKey)으로 마크업에서 읽는다. 키가 바뀌면 그 칸에 저장된 학생 글이 이어지지 않는다.
+export function inputKeys(file = 'index.html') {
+  const html = read(file);
+  const main = html.slice(html.indexOf('<main'), html.indexOf('</main>'));
+  const keys = [];
+  let choice = null; // 지금 읽는 .noise-choice 안의 소음 문구
+  let stageEvalIndex = 0;
+  for (const match of main.matchAll(/<label class="noise-choice">|<\/label>|<(input|textarea|select)\b[^>]*>/g)) {
+    if (match[0] === '<label class="noise-choice">') { choice = {value: undefined}; continue; }
+    if (match[0] === '</label>') { choice = null; continue; }
+    const attrs = attributes(match[0].replace(/^<\w+/, ''));
+    const type = match[1] === 'input' ? (attrs.type ?? 'text') : match[1];
+    if (['button', 'submit', 'reset', 'file', 'hidden'].includes(type) || (attrs.id ?? '').startsWith('share-')) continue;
+    const classes = (attrs.class ?? '').split(/\s+/).filter(Boolean);
+    if (choice && classes.includes('noise-check')) choice.value = attrs.value;
+    const key = fieldKey({
+      id: attrs.id, classes, group: attrs['data-group'], value: attrs.value ?? '', name: attrs.name,
+      inNoiseChoice: Boolean(choice), noiseValue: choice?.value,
+      stageEvalIndex: classes.includes('stage-eval') ? stageEvalIndex++ : -1,
+    });
+    if (key) keys.push(key);
+  }
+  return keys;
 }

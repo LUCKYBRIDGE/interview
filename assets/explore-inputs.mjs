@@ -33,11 +33,16 @@ export function parseInputs(raw) {
   return {ok: false, data: {}};
 }
 
-// 저장할 문자열. 읽을 수 없는 원문은 damaged로 돌려주어 덮어쓰기 전에 옮겨 두게 한다.
-export function planSave(raw, current) {
+// 저장할 내용. raw는 지금 저장된 값, damaged는 INPUTS_DAMAGED_KEY의 값이다.
+// value가 null이면 아무것도 쓰지 않는다. backup이 있으면 value보다 먼저 INPUTS_DAMAGED_KEY에 쓴다.
+// 읽을 수 없는 값은 백업 칸이 비었거나 같은 원문이 이미 있을 때만 새로 쓴다. 백업 칸에 다른 원문이 있으면
+// 어느 쪽도 덮어쓰지 않고 저장을 멈춘다(손상된 기록은 덮어쓰지 않는다).
+export function planSave(raw, current, damaged = null) {
   const saved = parseInputs(raw);
-  if (!saved.ok) return {value: JSON.stringify(current), damaged: raw};
-  return {value: JSON.stringify({...saved.data, ...current}), damaged: null};
+  if (saved.ok) return {value: JSON.stringify({...saved.data, ...current}), backup: null};
+  if (damaged === null) return {value: JSON.stringify(current), backup: raw};
+  if (damaged === raw) return {value: JSON.stringify(current), backup: null};
+  return {value: null, backup: null};
 }
 
 export function parseCaseStudy(raw) {
@@ -50,9 +55,10 @@ export function parseCaseStudy(raw) {
 }
 
 // 2026-11-01 정리로 화면에서 뺀 칸(2026-10-28에 숨긴 칸). 순서는 예전 화면의 순서다.
-// 사례 조사 칸의 index는 pedestrian-case-study-v1 배열의 자리다.
+// 사례 조사 칸의 index는 pedestrian-case-study-v1 배열의 자리다. ignore는 처음부터 들어 있던 값이라 학생이 고른 것인지 알 수 없는 값이다.
 export const PREVIOUS_GROUPS = [
-  {title: '위험 상황 메모', fields: [
+  {title: '위험 상황 찾기', fields: [
+    {key: 'id:risk-source-main', label: '선택한 위험 상황을 주로 어디에서 알았나요?', ignore: ['내가 직접 경험함']},
     {key: 'id:risk-place', label: '어디에서, 어떤 상황이 위험했나요?'},
     {key: 'id:risk-people', label: '누구에게 특히 위험할까요? 왜 그렇게 생각하나요?'},
     {key: 'id:risk-question', label: '인터뷰나 자료에서 더 확인하고 싶은 점'},
@@ -91,7 +97,7 @@ export const PREVIOUS_GROUPS = [
   ]},
 ];
 
-const CHECKS_LABEL = '의견 검토에서 고른 것';
+const CHECKS_LABEL = '의견을 따져 보며 체크한 것';
 const text = value => (typeof value === 'string' ? value.trim() : '');
 
 // 저장된 값 가운데 화면에서 뺀 칸의 글만 묶음별로 고른다. 글이 없는 묶음은 뺀다.
@@ -106,7 +112,7 @@ export function previousGroups(saved, caseStudy = []) {
         continue;
       }
       const value = text(saved[field.key]) || (field.index === undefined ? '' : text(caseStudy[field.index]));
-      if (value) items.push({label: field.label, value});
+      if (value && !(field.ignore ?? []).includes(value)) items.push({label: field.label, value});
     }
     if (checked.length) items.push({label: CHECKS_LABEL, value: checked.join(', ')});
     if (items.length) groups.push({title: group.title, items});

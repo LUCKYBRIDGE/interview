@@ -35,17 +35,25 @@ test('saved inputs are read only when they are a plain object', () => {
 test('saving keeps values of fields that are no longer on the page', () => {
   const raw = JSON.stringify({'id:define-who': '어두운 길로 귀가하는 사람들', 'risk:g:v': true, 'id:risk-extra': '옛 값'});
   const plan = planSave(raw, {'risk:g:v': false, 'id:risk-extra': ''});
-  assert.equal(plan.damaged, null);
+  assert.equal(plan.backup, null);
   assert.deepEqual(JSON.parse(plan.value), {'id:define-who': '어두운 길로 귀가하는 사람들', 'risk:g:v': false, 'id:risk-extra': ''},
     'fields on the page win, including a cleared value');
   assert.deepEqual(JSON.parse(planSave(null, {'id:a': 'x'}).value), {'id:a': 'x'});
+  assert.equal(planSave(raw, {}, '{older damage').backup, null, 'a readable value never touches the backup');
 });
 
-test('a damaged saved value is handed back for a backup instead of being lost', () => {
-  const plan = planSave('{oops', {'id:a': 'x'});
-  assert.equal(plan.damaged, '{oops');
-  assert.deepEqual(JSON.parse(plan.value), {'id:a': 'x'});
-  assert.equal(planSave('[]', {}).damaged, '[]');
+test('a damaged saved value is backed up once before it is replaced', () => {
+  const first = planSave('{oops', {'id:a': 'x'}, null);
+  assert.equal(first.backup, '{oops');
+  assert.deepEqual(JSON.parse(first.value), {'id:a': 'x'});
+  assert.equal(planSave('[]', {}).backup, '[]');
+  const again = planSave('{oops', {'id:a': 'y'}, '{oops');
+  assert.equal(again.backup, null, 'the same damaged text is already backed up');
+  assert.deepEqual(JSON.parse(again.value), {'id:a': 'y'});
+});
+
+test('a second, different damaged value stops saving instead of overwriting anything', () => {
+  assert.deepEqual(planSave('[1,2]', {'id:a': 'x'}, '{oops'), {value: null, backup: null});
 });
 
 test('the case study list is read as text values only', () => {
@@ -71,7 +79,14 @@ test('previous inputs list only removed fields that have text, in page order', (
   assert.deepEqual(groups[0].items, [{label: '누가 어려움을 겪나요?', value: '어두운 길로 귀가하는 사람들'}]);
   assert.deepEqual(groups[1].items, [
     {label: '내가 제안할 방법', value: '횡단보도에 조명을 단다'},
-    {label: '의견 검토에서 고른 것', value: '우리가 실제로 할 수 있는 방법인가?, 여러 사람에게 도움이 될까?'},
+    {label: '의견을 따져 보며 체크한 것', value: '우리가 실제로 할 수 있는 방법인가?, 여러 사람에게 도움이 될까?'},
+  ]);
+});
+
+test('the risk source choice shows only when it differs from the first option', () => {
+  assert.deepEqual(previousGroups({'id:risk-source-main': '내가 직접 경험함'}, []), [], 'the first option was selected by default');
+  assert.deepEqual(previousGroups({'id:risk-source-main': '시민 인터뷰에서 들음'}, []), [
+    {title: '위험 상황 찾기', items: [{label: '선택한 위험 상황을 주로 어디에서 알았나요?', value: '시민 인터뷰에서 들음'}]},
   ]);
 });
 

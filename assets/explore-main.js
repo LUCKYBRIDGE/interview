@@ -1,5 +1,6 @@
 // 자료 페이지(index.html)의 화면 동작. 2026-11-01에 index.html 본문 끝의 인라인 스크립트 세 개를 순서 그대로 옮겼다.
-// 예전처럼 한 부분이 실패해도 다음 부분이 돌도록 부분마다 try로 감쌌다. 일반 스크립트라 문서를 읽는 자리에서 바로 돈다.
+// 예전처럼 한 부분이 실패해도 다음 부분이 돌도록 부분마다 try로 감쌌다. 실패는 reportError로 알려 페이지 오류로 잡히게 한다.
+// 일반 스크립트라 문서를 읽는 자리에서 바로 돈다.
 // 입력 자동 저장과 위험 상황 묶음 접기는 explore-page.mjs(모듈, 이 파일 다음에 돈다)가 맡는다.
 
 // 1. 사례 검색, 탭, 인물 카드와 방문 표시, 사이트 QR, 위험 상황 대화상자, 통계 필터, 소음 정리
@@ -105,11 +106,11 @@ document.querySelectorAll(".risk-item-research").forEach(btn=>btn.addEventListen
 document.getElementById("risk-modal-close").addEventListener("click",e=>{e.preventDefault();e.stopPropagation();closeRiskModal()});
 riskModal.addEventListener("click",e=>{if(e.target===riskModal)closeRiskModal()});document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!riskModal.hidden){e.preventDefault();closeRiskModal()}});
 riskModal.addEventListener("keydown",e=>{if(e.key==="Escape"){e.preventDefault();closeRiskModal()}else if(e.key==="Tab"){const focusable=[...riskDialog.querySelectorAll("a[href],button:not([disabled])")];if(!focusable.length)return;const first=focusable[0],last=focusable[focusable.length-1];if(e.shiftKey&&(document.activeElement===first||document.activeElement===riskDialog)){e.preventDefault();last.focus()}else if(!e.shiftKey&&(document.activeElement===last||document.activeElement===riskDialog)){e.preventDefault();first.focus()}}});
-document.getElementById("risk-modal-all").addEventListener("click",()=>{closeRiskModal();document.getElementById("tab-walking").click();document.getElementById("tab-walking").focus()});
+document.getElementById("risk-modal-all").addEventListener("click",()=>{closeRiskModal();const tab=document.getElementById("tab-walking");tab.click();if(tab.getClientRects().length){tab.focus()}else{/* 기록장 패널 안(?embed=1)에서는 탭이 숨어 있어 패널로 초점을 옮긴다. */const panel=document.getElementById("panel-walking");panel.setAttribute("tabindex","-1");panel.focus()}});
  document.getElementById("clear-worksheet").addEventListener("click",()=>{checks.forEach(c=>c.checked=false);document.querySelectorAll(".noise-source").forEach(sel=>sel.selectedIndex=0);inputs.forEach(el=>el.value="");update()});
 })();;;
 } catch (error) {
-  console.error(error);
+  if (typeof reportError === 'function') reportError(error); else console.error(error);
 }
 
 // 2. 대화상자 닫기 안전장치: 다른 동작이 실패해도 위험 상황·QR 대화상자가 닫힌다
@@ -126,12 +127,12 @@ try {
  document.querySelectorAll('#risk-modal-close,#share-qr-close').forEach(button=>{button.type='button';button.style.pointerEvents='auto';});
 })();
 } catch (error) {
-  console.error(error);
+  if (typeof reportError === 'function') reportError(error); else console.error(error);
 }
 
 // 3. 소음 주제(준비 중)로 가는 버튼과 링크는 안내만 보인다
 try {
 (()=>{const pending=()=>window.knolShowNoisePending?.();document.querySelectorAll(".noise-coming-soon").forEach(b=>b.addEventListener("click",pending));document.querySelectorAll('a[href*="#noise"],a[href*="#interview"]').forEach(a=>a.addEventListener("click",e=>{e.preventDefault();pending()},true));})();
 } catch (error) {
-  console.error(error);
+  if (typeof reportError === 'function') reportError(error); else console.error(error);
 }

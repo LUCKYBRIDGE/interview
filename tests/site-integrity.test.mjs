@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {join} from 'node:path';
 import test from 'node:test';
-import {ROOT, cacheTokenConflicts, externalLinks, localReferences, missingReferences, readBaseline, uiDebt} from '../scripts/lib/site-scan.mjs';
+import {ROOT, cacheTokenConflicts, externalLinks, inputKeys, localReferences, missingReferences, readBaseline, uiDebt} from '../scripts/lib/site-scan.mjs';
 import {ROUTES} from '../assets/explore-state.mjs';
 
 const read = file => readFileSync(join(ROOT, file), 'utf8');
@@ -27,6 +27,16 @@ test('외부 링크가 기준선과 같다', () => {
   const added = current.filter(link => !before.has(link));
   assert.deepEqual({removed, added}, {removed: [], added: []},
     '외부 링크가 바뀌었습니다. 지운 링크는 되살리세요. 의도한 변경이면 npm run baseline:links로 기준선을 고치고 이유를 남기세요(docs/content-guide.md 6절).');
+});
+
+test('자료 페이지 자동 저장의 칸 키가 기준선과 같다', () => {
+  const {keys: expected} = readBaseline('keys');
+  const current = inputKeys();
+  assert.equal(new Set(current).size, current.length, '같은 키를 쓰는 칸이 둘 있습니다.');
+  const removed = expected.filter(key => !current.includes(key));
+  const added = current.filter(key => !expected.includes(key));
+  assert.deepEqual({removed, added}, {removed: [], added: []},
+    '칸 키가 바뀌면 그 칸에 저장된 학생 글이 이어지지 않습니다. 위험 상황 문구·묶음 이름·칸 id를 되돌리거나, 옛 키를 옮기는 이관과 테스트를 먼저 만든 뒤 npm run baseline:keys로 고치세요(docs/architecture.md 3절).');
 });
 
 test('화면 부채가 기준보다 늘지 않는다', () => {
