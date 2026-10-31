@@ -92,7 +92,7 @@ body[data-workspace-view=both] .workbench{grid-template-columns:minmax(315px,2fr
  #personal-proposal textarea[data-field=proposal],#personal-proposal textarea[data-field=reason]{min-height:160px}
  .image-submission-links{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
-@media print{.activity-guide,.workbench-nav{display:none!important}}
+@media print{.activity-guide,.workbench-nav,#tool-status{display:none!important}}
 
 /* Adjustable workspace divider. Width managed by CSS custom property from explore-pane.mjs. */
 body[data-workspace-view="both"] .workbench{--split-left:40%;display:grid;grid-template-columns:minmax(0,var(--split-left)) 16px minmax(0,1fr);column-gap:0;align-items:start}
@@ -192,3 +192,11 @@ body[data-workspace-view=explore] #explore-pane{width:100%;max-width:1100px;marg
 body[data-workspace-view=both] #explore-pane{min-width:0}
 @media(max-width:1120px){#left-editor-frame{height:65dvh;min-height:380px}}
 @media print{#left-editor-frame,#right-empty{display:none!important}}
+
+/* Stage 1 (2026-10-31): visible tool status, final confirmations in the decision step, disabled noise topic. */
+#tool-status:empty{min-height:0;margin:0}
+#tool-status:not(:empty){margin:8px 0;padding:10px 14px;border:1px solid var(--knol-line);border-radius:10px;background:var(--knol-soft);color:var(--knol-ink);font-size:15px;font-weight:700;line-height:1.6}
+.confirm-block{margin-top:18px;padding:14px 16px;border:1px solid var(--knol-line);border-radius:12px;background:#fff}
+.confirm-block h3{margin:0 0 4px;font-size:17px}
+.confirm-block>.subtle{margin:0 0 8px;font-size:14px}
+#noise-pending[aria-disabled=true]{color:var(--knol-muted);border-style:dashed;cursor:not-allowed}

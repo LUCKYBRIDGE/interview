@@ -222,7 +222,7 @@ function renderGroup(){
   data.members.forEach((m,i)=>{const box=entry(reviews,`${i+1}번 의견`);const note=el('p',`${m.name||`모둠원 ${i+1}`}의 제안: ${m.proposal||'앞에서 적어 주세요.'}`,'subtle');note.dataset.proposalFor=i;box.append(note);field(box,`members.${i}.question`,'확인할 점',{rows:2});field(box,`members.${i}.revision`,'고치거나 더할 점',{rows:2});});
   const c=section('group-decision','12차시','3 의견 결정하기','장단점을 검토한 뒤 우리 모둠의 최종 의견과 근거를 정해요.');field(c,'proposal','우리 모둠의 최종 의견',{rows:6});field(c,'reason','최종 의견의 근거',{rows:8});field(c,'remaining','남은 걱정이나 확인할 점',{rows:2});
   const ready=extra(c,['evidence','method','clarity','next'],'발표 전에 더 살펴보기');ready.id='group-share-ready';if(data.changes)ready.append(el('p','이전에 기록한 의견 조정 내용','subtle'),el('pre',data.changes));field(ready,'evidence','근거와 출처 보충',{rows:2});field(ready,'method','결정 방법',{rows:2});field(ready,'clarity','설명을 더 분명히 할 부분',{rows:2});field(ready,'next','13차시 전에 더 알아볼 점',{rows:2});
-  const conf=el('div',undefined,'confirmations');data.members.forEach((m,i)=>check(conf,`members.${i}.checked`,`${m.name||`모둠원 ${i+1}`} 최종 내용 확인`));ready.append(conf);
+  const confirmBlock=el('div',undefined,'confirm-block');confirmBlock.append(el('h3','모둠원 최종 확인'),el('p','최종 의견과 근거를 함께 읽었다는 표시예요. 모두가 같은 생각이라는 뜻은 아니에요.','subtle'));const conf=el('div',undefined,'confirmations');data.members.forEach((m,i)=>check(conf,`members.${i}.checked`,`${m.name||`모둠원 ${i+1}`} 최종 내용 확인`));confirmBlock.append(conf);c.append(confirmBlock);
   renderOpinionImage(c);
 }
 function render(){
@@ -308,6 +308,7 @@ function download(text,extension,mime){
 }
 $('export-json').addEventListener('click',()=>download(JSON.stringify(makeRecord(kind,data),null,2),'json','application/json'));
 $('export-text').addEventListener('click',()=>download(formatText(kind,data),'txt','text/plain;charset=utf-8'));
+$('warning-export-json').addEventListener('click',()=>download(JSON.stringify(makeRecord(kind,data),null,2),'json','application/json'));
 $('copy-text').addEventListener('click',async()=>{const text=formatText(kind,data);try{await navigator.clipboard.writeText(text);$('tool-status').textContent='현재 활동 기록을 복사했습니다.';$('copy-fallback').hidden=true;}catch{$('copy-fallback').hidden=false;$('copy-content').value=text;$('copy-content').focus();$('copy-content').select();$('tool-status').textContent='아래 글을 직접 복사할 수 있습니다.';}});
 $('print-record').addEventListener('click',()=>{updatePrint();$('print-summary').textContent=formatText(kind,data);window.print();});
 $('import-json').addEventListener('change',async event=>{

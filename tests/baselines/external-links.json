@@ -1,8 +1,6 @@
 {
   "description": "사이트(index.html, workroom.html, assets의 모듈과 스타일)에 있는 외부 주소 목록. 외부 링크는 지우지 않는다(docs/content-guide.md 6절). 의도해서 바꿨다면 npm run baseline:links로 고치고 이유를 남긴다.",
   "links": [
-    "https://api.qrserver.com/v1/create-qr-code/?size=160x160&margin=8&data=https%3A%2F%2Fluckybridge.github.io%2Finterview%2F",
-    "https://api.qrserver.com/v1/create-qr-code/?size=340x340&margin=12&data=https%3A%2F%2Fluckybridge.github.io%2Finterview%2F",
     "https://dl.nanet.go.kr/detail/MONO1201762644",
     "https://drive.google.com/drive/folders/1gLw1YDJKoILpqh-shaFMWwuCsNfNYW3X?usp=drive_link",
     "https://gemini.google.com/",

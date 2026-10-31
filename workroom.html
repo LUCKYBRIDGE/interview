@@ -11,7 +11,7 @@
 if (window.parent !== window && !new URLSearchParams(location.search).has('panel')) location.replace('index.html?embed=1#home');
 </script>
 <link rel="stylesheet" href="assets/workroom.css?v=20261028-17">
-<script type="module" src="assets/workroom.mjs?v=20261029-3"></script>
+<script type="module" src="assets/workroom.mjs?v=20261031-1"></script>
 <link rel="stylesheet" href="assets/explore-pane.css?v=20261028-5">
 <script type="module" src="assets/explore-pane.mjs?v=20261029-14"></script>
 <script type="module" src="assets/left-personal.mjs?v=20261029-1"></script>
@@ -20,11 +20,11 @@ if (window.parent !== window && !new URLSearchParams(location.search).has('panel
 <link rel="icon" type="image/png" sizes="32x32" href="assets/brand/knoltalk-favicon.png">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/brand/knoltalk-touch.png">
 <link rel="stylesheet" href="assets/brand.css?v=20261028-2">
-<link rel="stylesheet" href="assets/workroom-redesign.css?v=20261029-13">
+<link rel="stylesheet" href="assets/workroom-redesign.css?v=20261031-1">
 </head>
 <body>
 <a class="skip-link" href="#activity">활동 기록으로 바로가기</a>
-<header><div class="shell header-inner"><a class="brand knol-brand" href="index.html#home"><img class="knol-brand-icon" src="assets/brand/knoltalk-mark.svg" width="48" height="48" alt=""><span class="knol-brand-copy"><strong class="knol-brand-name">놀토의</strong><small class="knol-brand-tagline">우리 주변의 문제를 토의해요</small></span></a><nav class="workroom-global-nav" aria-label="전체 메뉴"><a href="index.html?explore=1#home">보행 안전 탐구</a><button type="button" id="noise-pending" title="준비 중인 활동">소음 탐구 (준비 중)</button></nav></div></header>
+<header><div class="shell header-inner"><a class="brand knol-brand" href="index.html#home"><img class="knol-brand-icon" src="assets/brand/knoltalk-mark.svg" width="48" height="48" alt=""><span class="knol-brand-copy"><strong class="knol-brand-name">놀토의</strong><small class="knol-brand-tagline">우리 주변의 문제를 토의해요</small></span></a><nav class="workroom-global-nav" aria-label="전체 메뉴"><a href="index.html?explore=1#home">보행자 안전 자료</a><button type="button" id="noise-pending" aria-disabled="true">늦은 시각 소음 (준비 중)</button></nav></div></header>
 <main class="shell">
 <section class="intro compact-intro"><span class="eyebrow">5학년 국어 · 의견을 조정해요</span><h1>내 생각을 모아 함께 결정해요</h1><p>현재 활동의 단계에 따라 기록하고, 필요한 탐구 자료를 함께 살펴보세요.</p></section>
 <nav class="mode-nav activity-top-nav" aria-label="활동 유형"><button id="mode-personal" type="button" aria-pressed="true">개인활동 <small>의견 마련하기</small></button><button id="mode-group" type="button" aria-pressed="false">모둠활동 <small>의견 나누기·모으기·결정하기</small></button></nav>
@@ -36,11 +36,11 @@ if (window.parent !== window && !new URLSearchParams(location.search).has('panel
 <div id="split-divider" role="separator" aria-label="왼쪽 참고 자료와 오른쪽 기록 화면 너비 조절" aria-orientation="vertical" aria-valuemin="25" aria-valuemax="70" aria-valuenow="40" tabindex="0" title="드래그하거나 방향키로 좌우 너비 조절"><span class="split-grip" aria-hidden="true">⋮</span></div>
 <section id="right-pane"><div class="reference-source-bar right-source-bar"><label for="right-source">오른쪽에 표시할 내용</label><select id="right-source"><option value="none">화면 선택하기</option><option value="personal">개인활동 편집</option><option value="group">모둠활동 편집</option><option value="explore">탐구·인터뷰 자료</option></select></div><div id="right-empty" class="left-empty" hidden><div class="left-empty-symbol" aria-hidden="true">?</div><strong>오른쪽에 표시할 화면을 선택하세요</strong></div><iframe id="right-explore-frame" title="오른쪽 탐구 자료" loading="lazy" hidden></iframe><div id="writing-pane">
 
-<aside class="save-panel" aria-label="기록 보관"><div><p id="save-status" role="status" aria-live="polite">기록을 준비하고 있습니다.</p><p>글은 이 브라우저에 자동 저장돼요. 친구에게 공유하려면 의견 아래의 이미지·패들렛 버튼을 이용하세요.</p></div><button id="save-now" type="button">글 저장하기</button></aside>
-<div id="storage-warning" class="warning" hidden><p id="storage-warning-text"></p><button type="button" id="reload-record">저장된 기록 다시 읽기</button><button type="button" id="resume-saving">현재 내용으로 저장 다시 시작</button></div>
+<aside class="save-panel" aria-label="기록 보관"><div><p id="save-status" role="status" aria-live="polite">기록을 준비하고 있습니다.</p><p>글은 이 브라우저에 자동 저장돼요. 친구에게 공유하려면 의견 아래의 이미지·패들렛 버튼을 이용하세요.</p></div><button id="save-now" type="button">글 저장하기</button></aside><p id="tool-status" role="status" aria-live="polite"></p>
+<div id="storage-warning" class="warning" hidden><p id="storage-warning-text"></p><button type="button" id="warning-export-json">기록 파일 내려받기</button><button type="button" id="reload-record">저장된 기록 다시 읽기</button><button type="button" id="resume-saving">현재 내용으로 저장 다시 시작</button></div>
 <nav id="step-nav" class="step-nav" aria-label="활동 순서"></nav>
 <form id="activity" novalidate aria-labelledby="activity-title"><h2 id="activity-title" tabindex="-1"></h2><div id="activity-fields"></div></form><pre id="print-summary"></pre>
-<details class="storage-tools"><summary>기록 파일과 인쇄</summary><section class="record-tools" aria-labelledby="tools-title"><h2 id="tools-title">기록 보관과 인쇄</h2><p>기록 파일은 다른 기기에서 이어 쓸 때 사용합니다. 글 파일은 문서에 옮기거나 모둠에서 함께 볼 때 사용하세요. 파일을 불러오면 현재 선택한 활동의 내용이 바뀝니다.</p><div class="button-row"><button id="export-json" type="button">기록 파일 내려받기</button><label class="file-button" for="import-json">기록 파일 불러오기<input id="import-json" type="file" accept=".json,application/json"></label><button id="export-text" type="button">글 파일 내려받기</button><button id="copy-text" type="button">기록 복사</button><button id="print-record" type="button">작성한 기록 인쇄</button></div><p id="tool-status" role="status" aria-live="polite"></p><div id="copy-fallback" hidden><label for="copy-content">자동 복사를 사용할 수 없습니다. 아래 내용을 선택해 복사하세요.</label><textarea id="copy-content" readonly rows="10"></textarea></div></section>
+<details class="storage-tools"><summary>기록 파일과 인쇄</summary><section class="record-tools" aria-labelledby="tools-title"><h2 id="tools-title">기록 보관과 인쇄</h2><p>기록 파일은 다른 기기에서 이어 쓸 때 사용합니다. 글 파일은 문서에 옮기거나 모둠에서 함께 볼 때 사용하세요. 파일을 불러오면 현재 선택한 활동의 내용이 바뀝니다.</p><div class="button-row"><button id="export-json" type="button">기록 파일 내려받기</button><label class="file-button" for="import-json">기록 파일 불러오기<input id="import-json" type="file" accept=".json,application/json"></label><button id="export-text" type="button">글 파일 내려받기</button><button id="copy-text" type="button">기록 복사</button><button id="print-record" type="button">작성한 기록 인쇄</button></div><div id="copy-fallback" hidden><label for="copy-content">자동 복사를 사용할 수 없습니다. 아래 내용을 선택해 복사하세요.</label><textarea id="copy-content" readonly rows="10"></textarea></div></section>
 </details><section class="resource-links" aria-labelledby="resources-title"><h2 id="resources-title">인터뷰와 조사 자료</h2><p>가상 인물의 이야기는 입장을 이해하기 위한 자료입니다. 실제 지역의 현황이나 정책은 조사 자료로 확인하세요.</p><div class="button-row"><a href="index.html#walking" data-explore-route="walking">가상 인물 24명 인터뷰</a><a href="index.html#home" data-explore-route="home">보행 안전 탐구 자료</a><a href="https://its.gn.go.kr/guide/openChild" target="_blank" rel="noopener noreferrer">강릉 어린이보호구역 자료</a><a href="https://www.law.go.kr/LSW/lsInfoP.do?lsiSeq=248781" target="_blank" rel="noopener noreferrer">보행안전법 본문(2023년판)</a><a href="index.html#study" data-explore-route="study">토의 방법 학습 자료</a></div><div class="button-row worksheet-links"><a href="materials/personal-9-10.pdf" download>개인 활동지 PDF</a><a href="materials/group-11-12.pdf?v=20261028-6" download>모둠 활동지 PDF (양면)</a></div></section>
 </div>
 </section>
@@ -48,5 +48,5 @@ if (window.parent !== window && !new URLSearchParams(location.search).has('panel
 </main>
 <footer class="shell"><p>학생의 제안과 결정은 학생에게 있습니다. AI는 인물의 입장을 들려주거나, 결정한 내용의 설명이 명확한지 살피는 데 활용합니다.</p></footer>
 <noscript><p class="shell warning">활동 기록에는 JavaScript가 필요합니다. PDF 활동지를 내려받아 사용하거나 브라우저 설정을 확인하세요.</p></noscript>
-<script>document.getElementById("noise-pending").addEventListener("click",()=>alert("잠시 준비 중인 페이지입니다."));</script></body>
+<script>document.getElementById("noise-pending").addEventListener("click",()=>{const status=document.getElementById("tool-status");if(status)status.textContent="늦은 시각 소음은 준비 중이에요. 지금은 보행자 안전 활동을 해요.";});</script></body>
 </html>
