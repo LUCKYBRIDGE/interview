@@ -14,8 +14,9 @@
 | [plans/ux-revamp.md](plans/ux-revamp.md) | UI·UX 개편 단계, 완료 조건, 열린 결정 |
 | [audits/2026-10-31-baseline.md](audits/2026-10-31-baseline.md) | 개편 전 기준선 점검 |
 | [audits/2026-10-31-tablet-pc.md](audits/2026-10-31-tablet-pc.md) | 주 기기(태블릿, PC) 크기에서 다시 잰 측정 |
+| [audits/2026-10-31-stage2-workroom.md](audits/2026-10-31-stage2-workroom.md) | 2단계(기록 하나와 자료 패널) 뒤의 측정과 동작 확인 |
 | [decisions/README.md](decisions/README.md) | 정한 결정과 이유 |
-| [logs/2026-10-31-ux-revamp-stage2-handoff.md](logs/2026-10-31-ux-revamp-stage2-handoff.md) | 다른 곳에서 2단계(브랜치 `stage2-workroom-layout`)를 이어받을 때 |
+| [logs/2026-10-31-ux-revamp-stage2-handoff.md](logs/2026-10-31-ux-revamp-stage2-handoff.md) | 2단계 인수인계(2026-10-31). 같은 날 2단계를 마쳐 지금은 기록으로만 남긴다 |
 | [PROJECT_STATUS.md](../PROJECT_STATUS.md), [CHECKLIST.md](../CHECKLIST.md) | 현재 상태와 확인 항목 |
 | [../.agents/skills/](../.agents/skills/) | 작업 절차 6개: discuss-ui-change, discuss-content-edit, discuss-records-compat, discuss-materials, discuss-verify, discuss-release |
 | [../.kiro/README.md](../.kiro/README.md) | Kiro에서 이 지침을 읽는 방식 |

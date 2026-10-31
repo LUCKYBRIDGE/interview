@@ -39,7 +39,7 @@
 | `assets/brand.css` | 색 토큰(`--knol-*`)과 로고 | |
 | `index.html` 인라인 | 스타일 약 41KB, 스크립트 6개(가장 큰 것 약 29KB: 탭, 인물 카드, 위험 상황, 통계, 대화상자, QR) | 없음 |
 
-기록장 스타일은 `assets/workroom.css` → `workroom.html` 인라인 style 2개 → `assets/brand.css` → `assets/workroom-redesign.css` 순서로 덮어쓴다. 2단계에서 분할 화면용 `explore-pane.css`와 옛 배치 블록을 지웠고, 새 배치 규칙은 `workroom-redesign.css` 끝에 있다. 같은 선택자를 여러 파일에서 다시 정의한 곳이 많다([기준선 점검](audits/2026-10-31-baseline.md#1-기록장)).
+기록장 스타일은 `assets/workroom.css` → `assets/brand.css` → `assets/workroom-redesign.css` 순서로 덮어쓴다. 2단계에서 분할 화면용 `explore-pane.css`와 옛 배치 블록을 지우고, `workroom.html`의 인라인 style 2개를 `workroom-redesign.css` 맨 앞으로 옮겼다(`brand.css`와 겹치는 규칙이 없다). 새 배치 규칙은 `workroom-redesign.css` 끝에 있다. 글 파일·인쇄 출력(`formatText`)의 단계 번호는 화면과 같고, 화면에 없는 이전 버전 항목은 내용이 있을 때만 나온다. 같은 선택자를 여러 파일에서 다시 정의한 곳이 많다([기준선 점검](audits/2026-10-31-baseline.md#1-기록장)).
 
 ## 3. 학생 기록 (계약)
 
