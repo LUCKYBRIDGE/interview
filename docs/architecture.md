@@ -55,8 +55,8 @@
 | --- | --- | --- | --- |
 | localStorage | `interview-workroom-v4-personal`, `interview-workroom-v4-group` | 기록장 기록(현재 버전) | 여기에만 쓴다 |
 | localStorage | `interview-workroom-v3-*`, `-v2-*`, `-v1-*` | 이전 버전 기록 | 읽기만 하고 지우지 않는다. v4가 없을 때 v3, v2, v1 순서로 읽는다 |
-| localStorage | `openclass-student-inputs-v1` | 자료 페이지의 입력란 자동 저장. 칸마다 `id:칸id`, `risk:묶음:문구`, `noise:문구`, `noise-source:문구`, `stage-eval:번호` 키에 값이나 체크 여부를 둔다 | 학생 입력이다. 지우지 않는다. 저장할 때 화면의 값을 저장된 값 위에 합쳐서, 화면에서 뺀 칸의 값도 남는다(2026-11-01부터). 칸 문구가 키라서 위험 상황 문구를 바꾸면 이관이 필요하다 |
-| localStorage | `openclass-student-inputs-v1-damaged` | 위 값을 읽을 수 없을 때, 새로 쓰기 전에 원문을 한 번 옮겨 둔 것 | 지우지 않는다. 이미 있으면 다시 쓰지 않는다 |
+| localStorage | `openclass-student-inputs-v1` | 자료 페이지의 입력란 자동 저장. 칸마다 `id:칸id`, `risk:묶음:문구`, `noise:문구`, `noise-source:문구`, `stage-eval:번호`, `name:이름:값` 키에 값이나 체크 여부를 둔다(id가 있으면 id 키가 먼저다) | 학생 입력이다. 지우지 않는다. 저장할 때 화면의 값을 저장된 값 위에 합쳐서, 화면에서 뺀 칸의 값도 남는다(2026-11-01부터). 모듈이 돌기 전에 학생이 고친 칸은 되살리기로 덮지 않는다. 칸 문구와 id가 키라서, 위험 상황 문구·묶음 이름·칸 id를 바꾸면 이관이 필요하다. 지금 칸의 키 목록은 `tests/baselines/input-keys.json`이고 `npm test`가 지킨다 |
+| localStorage | `openclass-student-inputs-v1-damaged` | 위 값을 읽을 수 없을 때, 새로 쓰기 전에 원문을 옮겨 둔 것 | 지우지 않는다. 비어 있을 때만 쓴다. 여기에 다른 원문이 이미 있는데 또 읽을 수 없는 값이 생기면 둘 다 덮어쓰지 않고 그 페이지의 자동 저장을 멈춘다 |
 | localStorage | `pedestrian-case-study-v1` | 2026-10-28에 잠시 보였던 사례 조사 칸 7개(배열) | 읽기만 한다. 칸은 2026-11-01에 지웠고, 값은 '이전에 적은 내용'으로만 보인다. 지우지 않는다 |
 
 2026-10-28에 숨기고 2026-11-01에 지운 자료 페이지 칸(STEP 2·3·4, 아이디어, 사례 조사, 위험 상황 출처와 메모)은 `assets/explore-inputs.mjs`의 `PREVIOUS_GROUPS`에 있다. 그 칸에 글이 있으면 홈 위쪽에 닫힌 '이전에 적은 내용' 상자(읽기 전용, 복사)를 보인다.

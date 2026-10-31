@@ -11,7 +11,7 @@ description: 놀토의(knoldiscuss) 기록장의 저장 키, 기록 파일(JSON)
 
 `docs/architecture.md`의 '학생 기록' 절이 정본이다. 요약:
 - `interview-workroom-v4-personal`, `interview-workroom-v4-group`에 쓰고 v1~v3은 읽기만 한다. 어떤 키도 지우지 않는다.
-- 자료 페이지의 `pedestrian-case-study-v1`, `openclass-student-inputs-v1`도 학생 입력이다.
+- 자료 페이지의 `pedestrian-case-study-v1`, `openclass-student-inputs-v1`도 학생 입력이다. `openclass-student-inputs-v1`은 칸마다 키를 두고 합쳐 저장하며, 지금 칸의 키 목록은 `tests/baselines/input-keys.json`이 지킨다(바꾸면 이관을 먼저 만들고 `npm run baseline:keys`).
 - 기록 파일의 봉투와 data 필드는 키 집합을 엄격히 검사한다. 필드 하나를 더하거나 빼도 기존 파일이 거부된다.
 
 ## 바꿀 때
