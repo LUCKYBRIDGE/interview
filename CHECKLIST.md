@@ -1,5 +1,21 @@
 # 확인 항목
 
+## 2026-10-31 하네스
+
+- [x] knoldiscuss 폴더가 원격 main `7347d9a`와 같다(이력 포함).
+- [x] `npm test` 35개 통과(기존 29, 사이트 무결성 6).
+- [x] `npm run check` 통과(경고 4: 옛 Windows 경로).
+- [x] 일부러 넣은 오류 9종(깨진 링크, 없는 앵커, 고아 문서, Liquid, always 스티어링, 절대 경로, 스킬 이름, 외부 링크 삭제, alert 추가)을 두 검사가 잡는다(임시 사본).
+- [x] `npm start` 미리보기가 점으로 시작하는 경로를 내보내지 않는다.
+- [x] fileMatch 스티어링(discuss-ui, discuss-records, discuss-materials)이 맞는 파일을 다룰 때 붙는다.
+- [ ] auto 스티어링(discuss-content, discuss-verify, discuss-release)이 요청 내용으로 붙는다.
+- [ ] GitHub에서 CI가 통과한다(push 뒤).
+- [ ] 개편 계획의 열린 결정 1~10에 답을 받는다.
+
+## 2026-10-28 이전 (당시 기록)
+
+아래 항목 중 '함께 보기', '중첩 활동 화면 없음', 활동지 'A4 한 쪽'은 그 뒤 바뀌었다. 지금 동작은 `docs/audits/2026-10-31-baseline.md`에 있다.
+
 - [x] 홈에서 개인활동과 함께 보기가 선택된다.
 - [x] 개인활동 입력란은 단계별 1·1·1·2개다.
 - [x] 탐구 패널에는 활동 선택 메뉴와 중첩 활동 화면이 표시되지 않는다.

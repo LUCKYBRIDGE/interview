@@ -1,0 +1,15 @@
+{
+  "name": "knoldiscuss",
+  "private": true,
+  "description": "놀토의: 초등 5학년 국어 토의 단원 정적 웹 (GitHub LUCKYBRIDGE/interview)",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node scripts/serve.mjs",
+    "test": "node --test \"tests/*.test.mjs\"",
+    "check": "node scripts/check-harness.mjs",
+    "baseline:links": "node scripts/site-baseline.mjs links",
+    "baseline:debt": "node scripts/site-baseline.mjs debt"
+  }
+}

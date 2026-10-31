@@ -2,6 +2,8 @@
 
 초등학교 5학년 국어 「의견을 조정해요」에서 보행 안전과 늦은 시각 소음 문제를 탐구하는 정적 웹사이트입니다. 가상 시민과의 인터뷰, 조사 자료, 개인 의견 마련과 모둠 토의를 연결합니다.
 
+작업 지침은 [AGENTS.md](AGENTS.md), 화면 기준은 [DESIGN.md](DESIGN.md), 문서 지도는 [docs/README.md](docs/README.md)에 있습니다. UI·UX 개편 계획은 [docs/plans/ux-revamp.md](docs/plans/ux-revamp.md)입니다.
+
 ## 수업 흐름
 
 | 차시 | 활동 |
@@ -18,26 +20,27 @@
 - `workroom.html#group`: 11~12차시 모둠 활동 기록. 각 모둠원 칸에서 개인 JSON 기록을 불러와 다시 입력하는 수고를 줄일 수 있습니다. 3~5명 기록, 공통 문제, 검토 기준, 의견별 장점·단점과 그 이유, 최종 의견과 근거를 남깁니다. 예전 조정 기록은 접힌 참고 영역에 보존합니다.
 - `materials/personal-9-10.pdf`, `materials/group-11-12.pdf`: 개인은 A4 한 쪽, 모둠은 A4 앞뒤 두 쪽 양면 활동지입니다. 개인은 학생마다 한 장, 모둠은 모둠마다 한 장을 사용합니다.
 
-개인 기본 화면은 네 단계, 모둠은 세 단계로 간단히 기록합니다. 추가 항목과 이전 상세 기록은 ‘더 기록하기’에서 확인합니다. 상단의 기록만·탐구만·함께 보기로 탐구를 오가며 적을 수 있고 넓은 화면에서는 좌우로 함께 표시합니다.
+개인 기본 화면은 네 단계, 모둠은 세 단계로 간단히 기록합니다. 추가 항목과 이전 상세 기록은 접힌 영역(‘더 기록하기’, ‘이전에 작성한 상세 기록 보기’)에서 확인합니다. 상단의 화면 구성(한 화면, 분할 화면)으로 자료를 보며 적을 수 있고, 넓은 화면의 분할 화면에서는 자료와 기록을 좌우로 함께 표시합니다.
 
 학생이 의견을 만들고 조정하도록 돕는 기록 도구입니다. 제안 순위를 자동으로 매기거나 해결책을 생성하지 않습니다.
 
 ## 실행과 검증
 
-보행자 안전 홈은 개인활동과 함께 보기가 선택된 활동 공간으로 열립니다. 탐구 자료만 별도로 보려면 `index.html?explore=1#home`을 사용합니다. 개인활동은 1~3단계에 큰 자유 입력란을 하나씩, 4단계에 의견과 이유·근거 입력란을 제공합니다. 기존 상세 기록과 JSON 파일은 v4로 이어 쓸 수 있으며 이전 상세 항목은 읽기 전용으로 확인합니다.
+사이트 첫 주소는 개인 활동 기록장의 분할 화면(`workroom.html?view=both#personal`)으로 열립니다. 탐구 자료만 별도로 보려면 `index.html?explore=1#home`을 사용합니다. 개인활동은 1~3단계에 큰 자유 입력란을 하나씩, 4단계에 의견과 이유·근거 입력란을 제공합니다. 기존 상세 기록과 JSON 파일은 v4로 이어 쓸 수 있으며 이전 상세 항목은 읽기 전용으로 확인합니다.
 
-추가 패키지 설치나 빌드 과정이 없습니다. 프로젝트 폴더에서 HTTP 서버로 실행합니다.
+추가 패키지 설치나 빌드 과정이 없습니다. Node 22 이상으로 프로젝트 폴더에서 미리보기 서버를 실행합니다(`python3 -m http.server 4173`도 됩니다).
 
 ```sh
-python3 -m http.server 4173
+npm start
 ```
 
-브라우저에서 `http://localhost:4173/`을 엽니다. 모듈을 사용하는 기록 페이지는 파일을 직접 여는 대신 HTTP 서버를 이용합니다.
+브라우저에서 `http://127.0.0.1:4173/`을 엽니다. 모듈을 사용하는 기록 페이지는 파일을 직접 여는 대신 HTTP 서버를 이용합니다.
 
-상태·파일 검증·텍스트 출력·저장 실패 처리는 Node 기본 테스트로 확인합니다.
+기록 상태·파일 검증·이미지 단위 테스트와 사이트 무결성 검사(로컬 참조, 캐시 갱신 값 일치, 외부 링크 기준선, 화면 부채 지표)를 실행합니다. 지침과 문서를 고쳤다면 하네스 검사도 실행합니다.
 
 ```sh
-node --test --experimental-test-coverage tests/*.test.mjs
+npm test
+npm run check
 ```
 
 ## 저장과 기기 이동
@@ -61,13 +64,13 @@ Gem 링크는 `index.html`의 `links`, 보행 인물 `.walk-card`에서 관리�
 
 ## 배포와 로컬 수업 문서
 
-GitHub Pages는 `main` 브랜치의 루트 폴더를 배포 대상으로 사용할 수 있습니다. 현재 수정본은 로컬 검토용이며 이 작업에서 푸시하거나 배포하지 않았습니다.
+GitHub Pages가 `main` 브랜치의 루트 폴더를 https://luckybridge.github.io/interview/ 로 공개합니다. main에 push하면 몇 분 안에 바뀌므로 공개 절차(`.agents/skills/discuss-release/SKILL.md`)를 따릅니다.
 
-상위 워크스페이스의 `../teaching/`에는 지도안과 활동지의 편집용 문서가 함께 관리됩니다. 상위 폴더는 이 Git 저장소나 GitHub Pages 배포에 포함되지 않으며, 웹 배포용 PDF만 이 저장소의 `materials/`에 복사합니다.
+지도안과 활동지의 편집용 원본과 생성기 일부는 이 저장소 밖의 수업 자료 작업 공간(discussion)에 있고, 그 폴더는 배포되지 않습니다. 웹 다운로드 파일은 `materials/`에 있으며, 어떤 파일을 어디서 만드는지는 `.agents/skills/discuss-materials/SKILL.md`에 정리했습니다.
 
 ## 활동지 다운로드
 
-홈페이지의 **활동지 다운로드** 탭 또는 `index.html#downloads`에서 개인 의견 마련(9~10차시)과 모둠 토의(11~12차시) 활동지를 받습니다. 개인은 A4 한 쪽, 모둠은 양면 두 쪽이며 인쇄용 PDF와 편집용 DOCX를 제공합니다. 최신 원본은 상위 teaching/02-활동지이며 scripts/sync_materials.py로 웹 materials/에 동기화합니다.
+홈페이지의 **활동지 다운로드** 탭 또는 `index.html#downloads`에서 개인 의견 마련(9~10차시)과 모둠 토의(11~12차시) 활동지를 받습니다. 개인은 A4 한 쪽, 모둠은 양면 두 쪽이며 인쇄용 PDF와 편집용 DOCX를 제공합니다. 만드는 위치와 순서는 `.agents/skills/discuss-materials/SKILL.md`를 봅니다. 저장소 밖 작업 공간의 동기화 스크립트는 옛 사본을 대상으로 하므로 쓰지 않습니다.
 
 다운로드 탭에는 전체 지도안·본시 지도안(11~12차시)·개인 활동지·모둠 활동지의 HWPX가 있습니다. 지도안은 2026년 10월 28일 제공된 수정본 HWPX·PDF를 원본 그대로 사용합니다. 전체 지도안 PDF는 12쪽, 본시 지도안 PDF는 6쪽이며, 개인 활동지는 한 쪽, 모둠 활동지는 양면 두 쪽입니다.
 
@@ -83,7 +86,7 @@ GitHub Pages는 `main` 브랜치의 루트 폴더를 배포 대상으로 사용�
 
 모둠활동지 PDF·HWPX·DOCX는 장단점 검토와 넓은 최종 의견·근거 칸이 있는 수정본입니다. 웹에서도 모둠원별 제안과 장단점을 기록하고 최종 의견·근거를 넓은 입력란에 적습니다. 이전 ‘바뀐 점’ 입력란은 없애고, 기존 기록이 있을 때 참고용으로만 표시합니다.
 
-재생성 원본은 `scripts/templates/`에 보존합니다. `scripts/revise_group_worksheet.py`로 PDF를 만든 뒤 `materials/group-11-12.pdf`로 복사하고, `scripts/sync_group_editables.py`로 편집본을 갱신합니다. Python 의존성은 pypdf·reportlab·python-docx·lxml이며 HWPX 미리보기 생성에 Poppler의 pdftoppm을 사용합니다.
+재생성 원본은 `scripts/templates/`에 보존합니다. `scripts/revise_group_worksheet.py`로 PDF를 만든 뒤 `materials/group-11-12.pdf`로 복사하고, `scripts/sync_group_editables.py`로 편집본을 갱신합니다. Python 의존성은 pypdf·reportlab·python-docx·lxml·Pillow·fontTools·qrcode·zxing-cpp이며 HWPX 미리보기 생성에 Poppler의 pdftoppm을 사용합니다. 스크립트의 글꼴 경로는 Windows의 맑은 고딕 기준입니다.
 
 모둠활동지 뒷면에는 다섯 가지 토의 약속과 선 없는 큰 자유 메모 칸이 있습니다. PDF 인쇄는 A4 양면·긴 쪽으로 넘기기를 사용합니다. 웹 모둠활동에도 토의 약속을 접어서 확인할 수 있도록 제공합니다.
 

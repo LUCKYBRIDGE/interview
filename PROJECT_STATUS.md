@@ -1,5 +1,26 @@
 # 현재 상태
 
+최신 항목이 위에 있다.
+
+## 2026-10-31 하네스 구축 (로컬 브랜치 `harness-foundation`, push 전)
+
+- 이 Mac의 knoldiscuss 폴더에 원격 main `7347d9a`를 이력째 받았다. 원격 main, 공개 사이트 빌드와 같은 커밋이다.
+- 작업 지침과 기준을 저장소 안에 만들었다: `AGENTS.md`, `DESIGN.md`, `docs/README.md`, `docs/architecture.md`, `docs/content-guide.md`, `docs/lesson-contract.md`, `docs/plans/ux-revamp.md`, `docs/audits/2026-10-31-baseline.md`, `docs/decisions/0001-working-copy-and-harness.md`.
+- 작업 절차 스킬 6개(`.agents/skills/discuss-*`), Kiro 스티어링 6개(`.kiro/steering/`, always 없음), `.kiro/README.md`를 만들었다.
+- 검사 도구: `package.json`(start, test, check, baseline 명령), `scripts/serve.mjs`, `scripts/check-harness.mjs`, `scripts/site-baseline.mjs`, `scripts/lib/site-scan.mjs`, `tests/site-integrity.test.mjs`, 기준선 `tests/baselines/`(외부 링크 119개, 화면 부채 alert 5·!important 55·인라인 style 3·13px 미만 글자 83), `.github/workflows/ci.yml`. `.gitignore`에 `.DS_Store`, `node_modules/`를 더했다.
+- README의 낡은 문장(옛 화면 이름, 배포하지 않았다는 주장, 저장소 밖 경로, 실행·테스트 명령)을 고쳤다. 웹 화면, 기록 형식, 자료 파일은 바꾸지 않았다.
+- 검증: `npm test` 35개 통과(기존 29, 사이트 무결성 6). `npm run check` 통과, 경고 4개(옛 Windows 경로가 있는 스크립트와 문서, 개편 6단계에서 정리). 임시 사본에 깨진 링크와 앵커, 고아 문서, Liquid 문법, always 스티어링, 절대 경로, 스킬 이름 불일치, 외부 링크 삭제, alert 추가를 넣었을 때 두 검사가 모두 실패로 잡았다. 미리보기 서버는 사이트 파일에 200, 점으로 시작하는 경로와 경로 벗어나기에 404로 응답했다. 개편 전 화면 측정은 `docs/audits/2026-10-31-baseline.md`.
+- 확인하지 못한 것: Kiro 새 세션에서 auto 스티어링이 붙는지, GitHub에서 CI가 도는지(push 전), 다른 컴퓨터(Windows)의 미커밋 작업.
+- 다음: 개편 계획의 열린 결정 1~5에 답을 받은 뒤 1단계를 시작한다.
+
+## 2026-10-29 (2026-10-31에 git 이력으로 보충)
+
+- 기록장에 한 화면·분할 화면, 왼쪽·오른쪽·한 화면에 표시할 내용 선택, 분할선 크기 조절, 빈 상태를 더했다(커밋 40개, `127fe7b`~`7347d9a`, 다른 컴퓨터). 이 파일과 CHECKLIST에는 검증 기록이 없었다. 지금 동작과 문제는 기준선 점검 1절에 있다.
+
+## 2026-10-28 기록 (당시 작성, 고치지 않음)
+
+아래의 '푸시·배포하지 않았다'는 문장은 그 뒤 main에 반영되어 지금은 맞지 않는다. 화면 이름 '함께 보기'는 10-29에 '분할 화면'으로 바뀌었다.
+
 - 2026-10-28: GitHub `LUCKYBRIDGE/interview` main의 `8345ee8`에서 로컬 작업 시작.
 - 보행자 안전 홈은 개인활동·함께 보기로 진입한다. 별도 탐구 창은 `index.html?explore=1#home`으로 열 수 있다.
 - 개인활동 1~3단계는 큰 자유 입력란 하나씩, 4단계는 의견과 이유·근거 입력란을 제공한다.
