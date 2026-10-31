@@ -116,3 +116,4 @@
 #walk-risk-choices .risk-item-label{min-height:44px;display:flex;align-items:center;gap:10px;cursor:pointer}
 #walk-risk-choices .risk-check{width:22px;height:22px;flex:none}
 #walk-risk-choices .risk-item-tools button{min-height:44px;padding:8px 14px;font-size:14px}
+.data-tile a{display:inline-flex;align-items:center;min-height:44px;font-size:14px;line-height:1.4}
