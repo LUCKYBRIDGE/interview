@@ -10,7 +10,10 @@
 - [x] fileMatch 스티어링(discuss-ui, discuss-records, discuss-materials)이 맞는 파일을 다룰 때 붙는다.
 - [ ] auto 스티어링(discuss-content, discuss-verify, discuss-release)이 요청 내용으로 붙는다.
 - [ ] GitHub에서 CI가 통과한다(push 뒤).
-- [ ] 개편 계획의 열린 결정 1~10에 답을 받는다.
+- [x] 결정 1: 주 기기는 태블릿과 PC(`docs/decisions/0002-target-devices.md`).
+- [x] 세로·가로 태블릿과 PC 크기에서 기록장과 자료 홈을 다시 쟀다(가로 넘침 없음).
+- [ ] 개편 계획의 열린 결정 2~10에 답을 받는다.
+- [ ] 실제 태블릿(아이패드 Safari 또는 안드로이드)에서 기록장 입력과 의견 이미지 저장을 확인한다.
 
 ## 2026-10-28 이전 (당시 기록)
 

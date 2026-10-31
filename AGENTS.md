@@ -28,7 +28,7 @@
 - `npm start`: http://127.0.0.1:4173 정적 미리보기
 - `npm test`: 기록 상태·이미지·탐구 상태 단위 테스트와 사이트 무결성(로컬 참조, `?v=` 일치, 외부 링크 기준선, 화면 부채 지표)
 - `npm run check`: 지침·스킬·Kiro 스티어링·문서 링크 검사. 지침이나 `docs/`를 고친 뒤 실행한다.
-- 화면 확인은 `ego-browser`로 390·820·1440px, 키보드, 인쇄를 본다(`discuss-verify`).
+- 화면 확인은 `ego-browser`로 태블릿(세로·가로)과 PC 크기, 키보드, 인쇄를 본다(`discuss-verify`). 주 기기는 태블릿과 PC다.
 
 ## 기록
 작업을 마치면 `PROJECT_STATUS.md`(최신이 위)와 `CHECKLIST.md`를 갱신한다. 정한 결정은 `docs/decisions/`, 점검 근거는 `docs/audits/`에 둔다. 보고는 한국어로 하고 바뀐 파일, 검증, 다음 단계로 끝낸다.

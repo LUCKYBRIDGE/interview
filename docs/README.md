@@ -13,6 +13,7 @@
 | [gems-28-32.md](gems-28-32.md) | 소음 주제 28~32번 가상 시민 Gem 지침 |
 | [plans/ux-revamp.md](plans/ux-revamp.md) | UI·UX 개편 단계, 완료 조건, 열린 결정 |
 | [audits/2026-10-31-baseline.md](audits/2026-10-31-baseline.md) | 개편 전 기준선 점검 |
+| [audits/2026-10-31-tablet-pc.md](audits/2026-10-31-tablet-pc.md) | 주 기기(태블릿, PC) 크기에서 다시 잰 측정 |
 | [decisions/README.md](decisions/README.md) | 정한 결정과 이유 |
 | [PROJECT_STATUS.md](../PROJECT_STATUS.md), [CHECKLIST.md](../CHECKLIST.md) | 현재 상태와 확인 항목 |
 | [../.agents/skills/](../.agents/skills/) | 작업 절차 6개: discuss-ui-change, discuss-content-edit, discuss-records-compat, discuss-materials, discuss-verify, discuss-release |
