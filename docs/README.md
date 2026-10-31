@@ -15,6 +15,7 @@
 | [audits/2026-10-31-baseline.md](audits/2026-10-31-baseline.md) | 개편 전 기준선 점검 |
 | [audits/2026-10-31-tablet-pc.md](audits/2026-10-31-tablet-pc.md) | 주 기기(태블릿, PC) 크기에서 다시 잰 측정 |
 | [audits/2026-10-31-stage2-workroom.md](audits/2026-10-31-stage2-workroom.md) | 2단계(기록 하나와 자료 패널) 뒤의 측정과 동작 확인 |
+| [audits/2026-10-31-stage3-explore.md](audits/2026-10-31-stage3-explore.md) | 3단계(자료 페이지 길 찾기) 뒤의 측정과 동작 확인 |
 | [decisions/README.md](decisions/README.md) | 정한 결정과 이유 |
 | [logs/2026-10-31-ux-revamp-stage2-handoff.md](logs/2026-10-31-ux-revamp-stage2-handoff.md) | 2단계 인수인계(2026-10-31). 같은 날 2단계를 마쳐 지금은 기록으로만 남긴다 |
 | [logs/2026-10-31-ux-revamp-stage3-handoff.md](logs/2026-10-31-ux-revamp-stage3-handoff.md) | 다른 곳에서 3단계부터 이어받을 때 |

@@ -13,15 +13,15 @@
 
 | 해시 | `index.html` 패널 | 탭 이름(현재) |
 | --- | --- | --- |
-| `#home` | `panel-home` | ① 위험 탐색·자료 조사 |
-| `#walking` | `panel-walking` | ② 인물 인터뷰 (24명) |
-| `#discussion` | `panel-discussion` | ③ 모둠토의 |
+| `#home` | `panel-home` | ① 위험 찾기·자료 조사 |
+| `#walking` | `panel-walking` | ② 가상 인물 인터뷰 (24명) |
+| `#discussion` | `panel-discussion` | ③ 모둠 의견 점검 |
 | `#noise` | `panel-noise` | ① 소음 탐색·자료 조사 (준비 중) |
 | `#interview` | `panel-interview` | ② 인물 인터뷰 (32명, 준비 중) |
 
-늦은 시각 소음 경로는 준비 중이다(결정 0003). 탭, 주제 카드, 머리글 버튼, 소음으로 가는 링크를 누르거나 `#noise`·`#interview`로 들어오면 `#home`으로 돌아가고 `#noise-pending-note`에 안내 문구를 보인다. 패널 내용은 그대로 있다. 본문 안 절로 가는 해시(예: `#policy-cases`)는 그 절이 있는 탭을 보여 주고 그 절로 스크롤한다.
-| `#study` | `panel-resources` | 토의 방법·학습 자료 |
-| `#downloads` | `panel-downloads` | 활동지 다운로드 |
+3단계(2026-10-31)부터 탭 5개가 머리글 아래에 늘 보인다(소음 탭 두 개는 준비 중이라 숨긴다). 탭은 기록장 패널 안(`?embed=1`)에서는 숨는다(패널에 자료 버튼이 따로 있다). 늦은 시각 소음 경로는 준비 중이다(결정 0003). 탭, 주제 카드, 머리글 버튼, 소음으로 가는 링크를 누르거나 `#noise`·`#interview`로 들어오면 `#home`으로 돌아가고 `#noise-pending-note`에 안내 문구를 보인다. 패널 내용은 그대로 있다. 본문 안 절로 가는 해시(예: `#policy-cases`)는 그 절이 있는 탭을 보여 주고 그 절로 스크롤한다.
+| `#study` | `panel-resources` | 토의 방법 |
+| `#downloads` | `panel-downloads` | 활동지·지도안 |
 
 `assets/explore-state.mjs`의 `ROUTES`(home, walking, study, discussion, noise, interview)는 기록장 자료 패널이 받아들이는 경로다.
 
@@ -37,7 +37,9 @@
 | `assets/explore-embed.mjs`, `.css` | `index.html?embed=1` 안에서 기록장 링크를 부모 화면 전환으로 바꾸고 스크롤 위치를 알림 | 없음 |
 | `assets/opinion-image.mjs` | 1920×1080 의견 이미지와 파일 이름 | `tests/opinion-image.test.mjs` |
 | `assets/brand.css` | 색 토큰(`--knol-*`)과 로고 | |
-| `index.html` 인라인 | 스타일 약 41KB, 스크립트 6개(가장 큰 것 약 29KB: 탭, 인물 카드, 위험 상황, 통계, 대화상자, QR) | 없음 |
+| `assets/explore.css` | 자료 페이지 스타일. 3단계에서 `index.html`의 인라인 style(약 41KB)을 같은 자리의 파일로 옮겼다 | |
+| `assets/explore-page.mjs`, `assets/explore-labels.mjs` | 위험 상황 묶음 8개를 접고 고른 수를 보인다. 탭 방향키가 숨은·준비 중 탭을 건너뛴다(규칙은 `explore-labels.mjs`) | `tests/explore-labels.test.mjs` |
+| `index.html` 인라인 | 스크립트 5개(가장 큰 것 약 29KB: 탭, 인물 카드, 위험 상황, 통계, 대화상자, QR, 입력 자동 저장) | 없음 |
 
 기록장 스타일은 `assets/workroom.css` → `assets/brand.css` → `assets/workroom-redesign.css` 순서로 덮어쓴다. 2단계에서 분할 화면용 `explore-pane.css`와 옛 배치 블록을 지우고, `workroom.html`의 인라인 style 2개를 `workroom-redesign.css` 맨 앞으로 옮겼다(`brand.css`와 겹치는 규칙이 없다). 새 배치 규칙은 `workroom-redesign.css` 끝에 있다. 글 파일·인쇄 출력(`formatText`)의 단계 번호는 화면과 같고, 화면에 없는 이전 버전 항목은 내용이 있을 때만 나온다. 같은 선택자를 여러 파일에서 다시 정의한 곳이 많다([기준선 점검](audits/2026-10-31-baseline.md#1-기록장)).
 
