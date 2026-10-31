@@ -8,5 +8,6 @@
 | --- | --- | --- |
 | [0001](0001-working-copy-and-harness.md) | knoldiscuss 작업 사본과 저장소 안 하네스 | 채택 (2026-10-31) |
 | [0002](0002-target-devices.md) | 주 기기는 태블릿과 PC | 채택 (2026-10-31) |
+| [0003](0003-deploy-and-delegated-decisions.md) | 배포 방식과 맡겨진 결정 | 채택 (2026-10-31) |
 
 아직 정하지 않은 것은 [개편 계획의 열린 결정](../plans/ux-revamp.md#열린-결정)에 있다.

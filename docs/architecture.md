@@ -16,8 +16,10 @@
 | `#home` | `panel-home` | ① 위험 탐색·자료 조사 |
 | `#walking` | `panel-walking` | ② 인물 인터뷰 (24명) |
 | `#discussion` | `panel-discussion` | ③ 모둠토의 |
-| `#noise` | `panel-noise` | ① 소음 탐색·자료 조사(준비 중, 알림창) |
-| `#interview` | `panel-interview` | ② 인물 인터뷰 (32명)(준비 중, 알림창) |
+| `#noise` | `panel-noise` | ① 소음 탐색·자료 조사 (준비 중) |
+| `#interview` | `panel-interview` | ② 인물 인터뷰 (32명, 준비 중) |
+
+늦은 시각 소음 경로는 준비 중이다(결정 0003). 탭, 주제 카드, 머리글 버튼, 소음으로 가는 링크를 누르거나 `#noise`·`#interview`로 들어오면 `#home`으로 돌아가고 `#noise-pending-note`에 안내 문구를 보인다. 패널 내용은 그대로 있다. 본문 안 절로 가는 해시(예: `#policy-cases`)는 그 절이 있는 탭을 보여 주고 그 절로 스크롤한다.
 | `#study` | `panel-resources` | 토의 방법·학습 자료 |
 | `#downloads` | `panel-downloads` | 활동지 다운로드 |
 
@@ -105,5 +107,6 @@
 | NotebookLM | 토의 방법 학습 카드·퀴즈 6개 | 공유 권한에 따라 열리지 않을 수 있다 |
 | 패들렛 | 개인(1~6모둠)과 모둠(학급) 의견 이미지 제출 | 학생이 직접 이미지를 올린다. 주소는 `assets/workroom.mjs` |
 | Google Drive | 다른 제출 방법(폴더) | |
-| api.qrserver.com | 사이트 QR 대화상자의 QR 이미지 생성 | 화면을 열 때 부르는 유일한 외부 의존이다. 같은 주소의 QR이 `assets/worksheet/site-qr.png`에 있다 |
 | 검색·공공기관·기사 링크 | 자료 찾기 | `tests/baselines/external-links.json`에 목록이 있다 |
+
+화면을 열 때 외부에서 불러오는 파일은 없다. 사이트 QR(다운로드 탭, 사이트 QR 대화상자)은 2026-10-31부터 저장소 안 `assets/worksheet/site-qr.png`(https://luckybridge.github.io/interview/)를 쓴다. 전에는 api.qrserver.com에서 그때그때 만들었다.
