@@ -26,9 +26,9 @@ export function assetFiles(extensions) {
     .sort();
 }
 
-// 브라우저가 실제로 읽는 페이지, 모듈, 스타일.
+// 브라우저가 실제로 읽는 페이지, 모듈, 일반 스크립트, 스타일.
 export function siteSources() {
-  return [...PAGES, ...assetFiles(['.mjs', '.css'])];
+  return [...PAGES, ...assetFiles(['.mjs', '.js', '.css'])];
 }
 
 const SKIP = /^(?:[a-z][a-z0-9+.-]*:|\/\/|#)/i; // 다른 사이트, data:, 같은 페이지 안 이동
@@ -37,6 +37,7 @@ const PATTERNS = {
   html: [/\b(?:src|href)\s*=\s*"([^"]*)"/g],
   css: [/url\(\s*['"]?([^'")]+)['"]?\s*\)/g],
   mjs: [/^\s*import\s+(?:[\s\S]*?\sfrom\s+)?['"]([^'"]+)['"]/gm, /\bimport\(\s*['"]([^'"]+)['"]\s*\)/g],
+  js: [], // 일반 스크립트(assets/explore-main.js)는 다른 파일을 불러오지 않는다. 외부 링크와 화면 부채는 아래에서 함께 센다.
 };
 
 export function localReferences() {
