@@ -17,6 +17,7 @@
 | [audits/2026-10-31-stage2-workroom.md](audits/2026-10-31-stage2-workroom.md) | 2단계(기록 하나와 자료 패널) 뒤의 측정과 동작 확인 |
 | [decisions/README.md](decisions/README.md) | 정한 결정과 이유 |
 | [logs/2026-10-31-ux-revamp-stage2-handoff.md](logs/2026-10-31-ux-revamp-stage2-handoff.md) | 2단계 인수인계(2026-10-31). 같은 날 2단계를 마쳐 지금은 기록으로만 남긴다 |
+| [logs/2026-10-31-ux-revamp-stage3-handoff.md](logs/2026-10-31-ux-revamp-stage3-handoff.md) | 다른 곳에서 3단계부터 이어받을 때 |
 | [PROJECT_STATUS.md](../PROJECT_STATUS.md), [CHECKLIST.md](../CHECKLIST.md) | 현재 상태와 확인 항목 |
 | [../.agents/skills/](../.agents/skills/) | 작업 절차 6개: discuss-ui-change, discuss-content-edit, discuss-records-compat, discuss-materials, discuss-verify, discuss-release |
 | [../.kiro/README.md](../.kiro/README.md) | Kiro에서 이 지침을 읽는 방식 |
