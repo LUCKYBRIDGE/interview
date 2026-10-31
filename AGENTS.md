@@ -31,4 +31,4 @@
 - 화면 확인은 `ego-browser`로 태블릿(세로·가로)과 PC 크기, 키보드, 인쇄를 본다(`discuss-verify`). 주 기기는 태블릿과 PC다.
 
 ## 기록
-작업을 마치면 `PROJECT_STATUS.md`(최신이 위)와 `CHECKLIST.md`를 갱신한다. 정한 결정은 `docs/decisions/`, 점검 근거는 `docs/audits/`에 둔다. 보고는 한국어로 하고 바뀐 파일, 검증, 다음 단계로 끝낸다.
+작업을 마치면 `PROJECT_STATUS.md`(최신이 위)와 `CHECKLIST.md`를 갱신한다. 정한 결정은 `docs/decisions/`, 점검 근거는 `docs/audits/`, 다른 곳으로 넘기는 인수인계는 `docs/logs/`에 둔다. main에는 검증을 마친 묶음만 올리고, 진행 중인 작업은 브랜치에 push한다. 보고는 한국어로 하고 바뀐 파일, 검증, 다음 단계로 끝낸다.

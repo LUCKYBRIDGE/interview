@@ -15,6 +15,7 @@
 | [audits/2026-10-31-baseline.md](audits/2026-10-31-baseline.md) | 개편 전 기준선 점검 |
 | [audits/2026-10-31-tablet-pc.md](audits/2026-10-31-tablet-pc.md) | 주 기기(태블릿, PC) 크기에서 다시 잰 측정 |
 | [decisions/README.md](decisions/README.md) | 정한 결정과 이유 |
+| [logs/2026-10-31-ux-revamp-stage2-handoff.md](logs/2026-10-31-ux-revamp-stage2-handoff.md) | 다른 곳에서 2단계(브랜치 `stage2-workroom-layout`)를 이어받을 때 |
 | [PROJECT_STATUS.md](../PROJECT_STATUS.md), [CHECKLIST.md](../CHECKLIST.md) | 현재 상태와 확인 항목 |
 | [../.agents/skills/](../.agents/skills/) | 작업 절차 6개: discuss-ui-change, discuss-content-edit, discuss-records-compat, discuss-materials, discuss-verify, discuss-release |
 | [../.kiro/README.md](../.kiro/README.md) | Kiro에서 이 지침을 읽는 방식 |
@@ -22,6 +23,7 @@
 ## 문서를 둘 곳
 
 - 지금의 구조와 계약은 `architecture.md`, 기준은 `DESIGN.md`·`content-guide.md`·`lesson-contract.md`, 앞으로 할 일은 `plans/`, 시점 기록은 `audits/`, 정한 이유는 `decisions/`, 진행 상황은 `PROJECT_STATUS.md`에 둔다.
+- 다른 세션·도구·컴퓨터로 넘기는 인수인계는 `logs/<날짜>-<주제>-handoff.md`로 새 파일을 만든다. 예전 노트는 고치지 않는다.
 - 새 문서를 만들면 이 표에 더한다. `npm run check`가 표에 없는 문서를 알려 준다.
 - 공개 저장소다. 학생·교사 실명, 학교·학급 정보, 비공개 링크를 쓰지 않는다. Liquid 문법(여는 중괄호 두 개, 여는 중괄호와 퍼센트)을 쓰지 않는다.
 - 다른 컴퓨터에서도 읽히도록 로컬 절대 경로를 쓰지 않는다. 저장소 밖 작업 공간은 이름(예: discussion)으로만 부른다.

@@ -199,9 +199,10 @@ for (const doc of FILES.filter(path => path.endsWith('.md') && (path.startsWith(
   if (!reachable.has(doc)) errors.push(`${doc}: AGENTS.md에서 링크를 따라 닿지 않습니다. docs/README.md 표에 더하세요.`);
 }
 
-// 지금 기준인 문서의 백틱 경로는 실제로 있어야 한다. 시점 기록(docs/audits/)과 개편 6단계에서 다시 쓸 옛 문서는 뺀다.
+// 지금 기준인 문서의 백틱 경로는 실제로 있어야 한다. 시점 기록(docs/audits/)과 인수인계(docs/logs/, 다른 브랜치의 파일을 가리킬 수 있다),
+// 개편 6단계에서 다시 쓸 옛 문서는 뺀다.
 const LEGACY_DOCS = new Set(['PROJECT_STATUS.md', 'CHECKLIST.md', 'docs/workroom.md', 'docs/gems-28-32.md', 'assets/brand/README.md']);
-for (const doc of FILES.filter(path => path.endsWith('.md') && !LEGACY_DOCS.has(path) && !path.startsWith('docs/audits/'))) {
+for (const doc of FILES.filter(path => path.endsWith('.md') && !LEGACY_DOCS.has(path) && !path.startsWith('docs/audits/') && !path.startsWith('docs/logs/'))) {
   for (const path of backtickPaths(read(doc))) {
     if (!exists(path)) errors.push(`${doc}: 없는 경로 \`${path}\``);
   }

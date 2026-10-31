@@ -1,6 +1,6 @@
 # UI·UX 개편 계획
 
-- 상태(2026-10-31): 0단계와 1단계를 마치고 배포했다(1단계의 지도안 항목은 결정 5를 기다린다). 다음은 2단계. 정한 결정은 [0002](../decisions/0002-target-devices.md)(주 기기: 갤럭시 탭과 PC, 아이패드도 지원)와 [0003](../decisions/0003-deploy-and-delegated-decisions.md)(단계마다 바로 배포, 결정 3·4는 추천안)에 있다.
+- 상태(2026-10-31): 0단계와 1단계를 마치고 배포했다(1단계의 지도안 항목은 결정 5를 기다린다). 2단계는 브랜치 `stage2-workroom-layout`에서 진행 중이다(1~3·5 일부 구현, 브라우저 검증 전, 배포 전). 이어받는 법은 [인수인계](../logs/2026-10-31-ux-revamp-stage2-handoff.md). 정한 결정은 [0002](../decisions/0002-target-devices.md)(주 기기: 갤럭시 탭과 PC, 아이패드도 지원)와 [0003](../decisions/0003-deploy-and-delegated-decisions.md)(단계마다 바로 배포, 결정 3·4는 추천안)에 있다.
 - 근거: [기준선 점검](../audits/2026-10-31-baseline.md). 기준: [DESIGN.md](../../DESIGN.md), [내용 기준](../content-guide.md), [수업 기준](../lesson-contract.md). 지킬 계약: [구조와 계약](../architecture.md).
 - 이 계획은 고칠 수 있다. 범위나 순서가 바뀌면 이 문서를 고치고 이유를 `docs/decisions/`에 남긴다.
 
